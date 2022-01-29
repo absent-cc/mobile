@@ -17,6 +17,9 @@ import AppSettings from './pages/settings/AppSettings';
 import GeneralSettings from './pages/settings/GeneralSettings';
 import TeacherSettings from './pages/settings/TeacherSettings';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { AppStateProvider, useAppState } from './state/AppStateContext';
+import { SettingsProvider, useSettings } from './state/SettingsContext';
+import { APIProvider, useAPI } from './state/APIContext';
 
 const Stack = createNativeStackNavigator();
 
@@ -25,8 +28,11 @@ function App() {
         Inter_400Regular,
         Inter_700Bold,
     });
+    const appState = useAppState();
+    const settings = useSettings();
+    const api = useAPI();
 
-    if (!fontsLoaded) {
+    if (!(fontsLoaded && appState.ready && settings.ready && api.ready)) {
         return <AppLoading />;
     } else {
         return (
@@ -64,13 +70,16 @@ function App() {
     }
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-});
+function AppContexts() {
+    return (
+        <SettingsProvider>
+            <AppStateProvider>
+                <APIProvider>
+                    <App />
+                </APIProvider>
+            </AppStateProvider>
+        </SettingsProvider>
+    );
+}
 
-export default registerRootComponent(App);
+export default registerRootComponent(AppContexts);

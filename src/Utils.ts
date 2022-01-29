@@ -1,10 +1,12 @@
-export const BlockMapping: Record<string, string> = {
-    a: 'A Block',
-    b: 'B Block',
-    c: 'C Block',
-    d: 'D Block',
-    e: 'E Block',
-    f: 'F Block',
-    g: 'G Block',
-    adv: 'Advisory',
+import { Block } from './api/APITypes';
+
+export const BlockMapping: Record<Block, string> = {
+    A: 'A Block',
+    B: 'B Block',
+    C: 'C Block',
+    D: 'D Block',
+    E: 'E Block',
+    F: 'F Block',
+    G: 'G Block',
+    ADV: 'Advisory',
 };

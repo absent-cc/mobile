@@ -7,9 +7,11 @@ import Divider from '../components/Divider';
 import FreeCard from '../components/card/FreeCard';
 import WaveHeaderSafearea from '../components/header/WaveHeaderSafearea';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useSettings } from '../state/SettingsContext';
 
 function Home({ navigation }: { navigation: any }) {
     const insets = useSafeAreaInsets();
+    const settings = useSettings();
 
     return (
         <View style={styles.pageView}>
@@ -21,10 +23,13 @@ function Home({ navigation }: { navigation: any }) {
                 <WaveHeader
                     iconName="settings"
                     iconClick={() => {
-                        console.log('settings icon tapped!');
                         navigation.navigate('Settings');
                     }}
-                    text={'Good morning, Leah! ☀️'}
+                    text={
+                        settings.value.user
+                            ? `Good morning, ${settings.value.user?.profile.first}! ☀️`
+                            : 'Good morning! ☀️'
+                    }
                 />
                 <View style={styles.content}>
                     <Text style={styles.hello}>

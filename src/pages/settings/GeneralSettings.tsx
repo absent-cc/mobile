@@ -28,9 +28,7 @@ function GeneralSettings({ navigation }: { navigation: any }) {
                     text={'General Settings'}
                 />
                 <View style={styles.content}>
-                    <Text style={styles.text}>Edit your account details.</Text>
-                    <Divider />
-                    <Text style={styles.header}>General Info</Text>
+                    <Text style={styles.note}>Edit your account details.</Text>
                     <TextField
                         label="What's your name?"
                         onChange={() => {}}

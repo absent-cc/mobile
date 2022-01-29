@@ -37,6 +37,18 @@ function AppSettings({ navigation }: { navigation: any }) {
                         label="Show free blocks as absent teachers"
                         onChange={() => {}}
                     />
+
+                    <SwitchField
+                        style={styles.inputField}
+                        label="Send notifications"
+                        onChange={() => {}}
+                    />
+
+                    <SwitchField
+                        style={styles.inputField}
+                        label="Send notification even if no teachers are absent"
+                        onChange={() => {}}
+                    />
                 </View>
             </ScrollView>
         </View>
