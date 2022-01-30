@@ -9,9 +9,7 @@ export interface AppStateContextType {
     ready: boolean;
     value: AppStateType;
     resetAppState: () => void;
-    setAppState: (
-        setterFunction: (settings: AppStateType) => Partial<AppStateType>,
-    ) => void;
+    setAppState: React.Dispatch<React.SetStateAction<AppStateType>>;
 }
 
 // Default settings
@@ -22,11 +20,15 @@ export const defaultState: AppStateType = {
 const AppStateContext = React.createContext<AppStateContextType>({
     ready: false,
     value: defaultState,
-    resetAppState: () => {},
-    setAppState: () => {},
+    resetAppState: () => {
+        // default empty function
+    },
+    setAppState: () => {
+        // default empty function
+    },
 });
 
-export function AppStateProvider(props: any) {
+export function AppStateProvider({ children }: { children: React.ReactNode }) {
     const [appState, setAppState] = React.useState<AppStateType>(defaultState);
     const [ready, setReady] = React.useState(false);
 
@@ -64,7 +66,7 @@ export function AppStateProvider(props: any) {
         };
 
         run();
-    }, [appState]);
+    }, [appState, ready]);
 
     // Memoized just in case
     const resetAppState = React.useMemo(() => {
@@ -75,14 +77,21 @@ export function AppStateProvider(props: any) {
         };
     }, [setAppState]);
 
-    const appStateProp = {
-        value: appState,
-        ready,
-        resetAppState: resetAppState,
-        setAppState: setAppState,
-    };
+    const appStateProp: AppStateContextType = React.useMemo(
+        () => ({
+            value: appState,
+            ready,
+            resetAppState,
+            setAppState,
+        }),
+        [ready, appState, resetAppState],
+    );
 
-    return <AppStateContext.Provider {...props} value={appStateProp} />;
+    return (
+        <AppStateContext.Provider value={appStateProp}>
+            {children}
+        </AppStateContext.Provider>
+    );
 }
 
 export function useAppState() {

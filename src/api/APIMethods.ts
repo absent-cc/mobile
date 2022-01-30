@@ -192,3 +192,7 @@ export async function searchTeachers(
 export async function getClassesToday(token: string): Promise<Block[]> {
     return [Block.A, Block.B, Block.F, Block.G];
 }
+
+export async function login(): Promise<string> {
+    return 'thisisatoken';
+}

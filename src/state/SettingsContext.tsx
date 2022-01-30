@@ -1,6 +1,6 @@
 import React from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { UserSettings } from '../api/APITypes';
+import { Schedule, UserSettings } from '../api/APITypes';
 
 export type AppSettings = {
     showFreeBlocks: boolean;
@@ -11,15 +11,14 @@ export type AppSettings = {
 export type SettingsType = {
     app: AppSettings;
     user?: UserSettings;
+    schedule?: Schedule;
 };
 
 export type SettingsContextType = {
     ready: boolean;
     value: SettingsType;
     resetSettings: () => void;
-    setSettings: (
-        setterFunction: (settings: SettingsType) => Partial<SettingsType>,
-    ) => void;
+    setSettings: React.Dispatch<React.SetStateAction<SettingsType>>;
 };
 
 // Default settings
@@ -33,19 +32,21 @@ export const defaultState: SettingsType = {
 
 // Transform to new settings schema
 export function settingsTransformer(oldSettings: any): SettingsType {
-    console.log('Running settings transformer');
-
     return oldSettings;
 }
 
 const SettingsContext = React.createContext<SettingsContextType>({
     ready: false,
     value: defaultState,
-    resetSettings: () => {},
-    setSettings: () => {},
+    resetSettings: () => {
+        // default empty function
+    },
+    setSettings: () => {
+        // default empty function
+    },
 });
 
-export function SettingsProvider(props: any) {
+export function SettingsProvider({ children }: { children: React.ReactNode }) {
     const [settings, setSettings] = React.useState<SettingsType>(defaultState);
     const [ready, setReady] = React.useState(false);
 
@@ -87,7 +88,7 @@ export function SettingsProvider(props: any) {
         };
 
         run();
-    }, [settings]);
+    }, [settings, ready]);
 
     // Memoized just in case
     const resetSettings = React.useMemo(() => {
@@ -98,14 +99,21 @@ export function SettingsProvider(props: any) {
         };
     }, [setSettings]);
 
-    const settingsProp = {
-        value: settings,
-        ready,
-        resetSettings,
-        setSettings,
-    };
+    const settingsProp: SettingsContextType = React.useMemo(
+        () => ({
+            value: settings,
+            ready,
+            resetSettings,
+            setSettings,
+        }),
+        [ready, settings, resetSettings],
+    );
 
-    return <SettingsContext.Provider {...props} value={settingsProp} />;
+    return (
+        <SettingsContext.Provider value={settingsProp}>
+            {children}
+        </SettingsContext.Provider>
+    );
 }
 
 export function useSettings() {

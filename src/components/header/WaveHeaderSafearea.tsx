@@ -1,9 +1,9 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
-import Theme from '../../Theme';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
+import Theme from '../../Theme';
 
 function WaveHeaderSafearea({ style }: { style?: any }) {
     const insets = useSafeAreaInsets();

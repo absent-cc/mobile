@@ -1,13 +1,12 @@
+import React from 'react';
 import { StyleSheet, Text, ScrollView, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Theme from '../Theme';
 import Header from '../components/header/Header';
-import React from 'react';
 import Divider from '../components/Divider';
 import TextButton from '../components/button/TextButton';
 import RowButton from '../components/RowButton';
-import * as Linking from 'expo-linking';
 import Anchor from '../components/Anchor';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import HeaderSafearea from '../components/header/HeaderSafearea';
 
 function Settings({ navigation }: { navigation: any }) {
@@ -25,7 +24,7 @@ function Settings({ navigation }: { navigation: any }) {
                     iconClick={() => {
                         navigation.goBack();
                     }}
-                    text={'Settings'}
+                    text="Settings"
                 />
                 <View style={styles.content}>
                     <RowButton

@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, Switch } from 'react-native';
 import Theme from '../../Theme';
-import { Feather } from '@expo/vector-icons';
 
 function SwitchField({
     label,

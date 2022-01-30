@@ -1,6 +1,7 @@
 import { StyleSheet, Text, ScrollView, View } from 'react-native';
-import Theme from '../Theme';
 import React from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Theme from '../Theme';
 import Divider from '../components/Divider';
 import TextField from '../components/input/TextField';
 import Dropdown from '../components/input/Dropdown';
@@ -8,11 +9,8 @@ import TextButton from '../components/button/TextButton';
 import WaveHeader from '../components/header/WaveHeader';
 import ClassInput from '../components/ClassInput';
 import ExtraTeachers from '../components/ExtraTeachers';
-import {
-    SafeAreaView,
-    useSafeAreaInsets,
-} from 'react-native-safe-area-context';
 import WaveHeaderSafearea from '../components/header/WaveHeaderSafearea';
+import { Block } from '../api/APITypes';
 
 function Onboarding({ navigation }: { navigation: any }) {
     const insets = useSafeAreaInsets();
@@ -25,7 +23,7 @@ function Onboarding({ navigation }: { navigation: any }) {
                 // bounces={false}
             >
                 <WaveHeader
-                    text={'Welcome! 👋'}
+                    text="Welcome! 👋"
                     iconName="x"
                     iconClick={() => {
                         navigation.goBack('Home');
@@ -36,20 +34,26 @@ function Onboarding({ navigation }: { navigation: any }) {
                     <Divider />
                     <TextField
                         label="What's your name?"
-                        onChange={() => {}}
+                        onChange={() => {
+                            // TODO
+                        }}
                         placeholder="e.g. Kevin McFakehead"
                         style={styles.inputField}
                     />
                     <TextField
                         label="What grade are you in?"
-                        onChange={() => {}}
+                        onChange={() => {
+                            // TODO
+                        }}
                         placeholder="e.g. 10"
                         style={styles.inputField}
                         isNumber
                     />
                     <Dropdown
                         label="Which school do you go to?"
-                        onChange={() => {}}
+                        onChange={() => {
+                            // TODO
+                        }}
                         style={[styles.inputField, styles.dropdown]}
                         placeholder="Select a school"
                         options={['South', 'North']}
@@ -61,14 +65,14 @@ function Onboarding({ navigation }: { navigation: any }) {
                         Tap on each block to set up your classes.
                     </Text>
 
-                    <ClassInput style={styles.classInput} blockId="a" />
-                    <ClassInput style={styles.classInput} blockId="b" />
-                    <ClassInput style={styles.classInput} blockId="c" />
-                    <ClassInput style={styles.classInput} blockId="d" />
-                    <ClassInput style={styles.classInput} blockId="e" />
-                    <ClassInput style={styles.classInput} blockId="f" />
-                    <ClassInput style={styles.classInput} blockId="g" />
-                    <ClassInput style={styles.classInput} blockId="adv" />
+                    <ClassInput style={styles.classInput} blockId={Block.A} />
+                    <ClassInput style={styles.classInput} blockId={Block.B} />
+                    <ClassInput style={styles.classInput} blockId={Block.C} />
+                    <ClassInput style={styles.classInput} blockId={Block.D} />
+                    <ClassInput style={styles.classInput} blockId={Block.E} />
+                    <ClassInput style={styles.classInput} blockId={Block.F} />
+                    <ClassInput style={styles.classInput} blockId={Block.G} />
+                    <ClassInput style={styles.classInput} blockId={Block.ADV} />
 
                     <Text style={styles.header}>Extra Teachers</Text>
                     <Text style={styles.note}>

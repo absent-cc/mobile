@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Pressable, TextInput } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import IconButton from './button/IconButton';
 import TextButton from './button/TextButton';
 import TextField from './input/TextField';
@@ -16,7 +16,7 @@ function ExtraTeachers({ style }: { style?: any }) {
 
     const removeTeacher = (index: number) => {
         // delete nth teacher
-        let teachers = [...value];
+        const teachers = [...value];
         teachers.splice(index, 1);
 
         setValue(teachers);
@@ -26,7 +26,7 @@ function ExtraTeachers({ style }: { style?: any }) {
         setTeacherTotalNum(teacherTotalNum + 1);
     };
     const setTeacher = (index: number, name: string) => {
-        let teachers = [...value];
+        const teachers = [...value];
         teachers[index].name = name;
 
         setValue(teachers);

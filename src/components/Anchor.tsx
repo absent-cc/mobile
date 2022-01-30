@@ -1,6 +1,5 @@
 import React from 'react';
 import { Text, StyleSheet, Linking } from 'react-native';
-import Theme from '../Theme';
 
 function Anchor({
     style,

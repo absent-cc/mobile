@@ -1,8 +1,8 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
+import { Feather } from '@expo/vector-icons';
 import Theme from '../../Theme';
 import Wave from './Wave';
-import { Feather } from '@expo/vector-icons';
 
 function WaveHeader({
     iconName,

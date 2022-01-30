@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
+import { Block } from '../../api/APITypes';
 import Theme from '../../Theme';
 import { BlockMapping } from '../../Utils';
 
@@ -11,7 +12,7 @@ function TeacherCard({
     style,
 }: {
     name: string;
-    blockId: string;
+    blockId: Block;
     time: string;
     note: string;
     style?: any;

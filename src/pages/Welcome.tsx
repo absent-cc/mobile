@@ -1,9 +1,13 @@
+import React from 'react';
 import { StyleSheet, Image, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Theme from '../Theme';
 import TextButton from '../components/button/TextButton';
+import { useAPI } from '../state/APIContext';
 
 function Welcome({ navigation }: { navigation: any }) {
+    const api = useAPI();
+
     return (
         <View style={styles.container}>
             <LinearGradient
@@ -15,7 +19,8 @@ function Welcome({ navigation }: { navigation: any }) {
                 <View style={styles.subarea}>
                     <Image
                         style={styles.logo}
-                        source={require('../../assets/text_logo.png')}
+                        // eslint-disable-next-line global-require, import/extensions
+                        source={require('../assets/text_logo.png')}
                     />
                     <Text style={styles.subtitle}>
                         Cancelled classes at your fingertips.
@@ -25,7 +30,7 @@ function Welcome({ navigation }: { navigation: any }) {
                     <Text style={styles.subtitle}>Sign in to get started.</Text>
                     <TextButton
                         onPress={() => {
-                            console.log('sign in tapped!');
+                            api.login();
                             navigation.navigate('Onboarding');
                         }}
                         style={{ marginTop: 10 }}

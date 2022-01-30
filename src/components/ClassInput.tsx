@@ -1,14 +1,15 @@
 import React from 'react';
-import { StyleSheet, Text, View, Pressable, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Pressable } from 'react-native';
+import { Feather } from '@expo/vector-icons';
 import Theme from '../Theme';
 import { BlockMapping } from '../Utils';
 import IconButton from './button/IconButton';
 import TextButton from './button/TextButton';
 import SwitchField from './input/Switch';
 import TextField from './input/TextField';
-import { Feather } from '@expo/vector-icons';
+import { Block } from '../api/APITypes';
 
-function ClassInput({ blockId, style }: { blockId: string; style?: any }) {
+function ClassInput({ blockId, style }: { blockId: Block; style?: any }) {
     // foldable
     const [isOpen, setIsOpen] = React.useState(false);
     const toggleOpen = () => {
@@ -28,7 +29,7 @@ function ClassInput({ blockId, style }: { blockId: string; style?: any }) {
     };
     const removeTeacher = (index: number) => {
         // delete nth teacher
-        let teachers = [...value.teachers];
+        const teachers = [...value.teachers];
         teachers.splice(index, 1);
 
         setValue({
@@ -47,7 +48,7 @@ function ClassInput({ blockId, style }: { blockId: string; style?: any }) {
         setTeacherTotalNum(teacherTotalNum + 1);
     };
     const setTeacher = (index: number, name: string) => {
-        let teachers = [...value.teachers];
+        const teachers = [...value.teachers];
         teachers[index].name = name;
 
         setValue({
@@ -100,7 +101,7 @@ function ClassInput({ blockId, style }: { blockId: string; style?: any }) {
                         onChange={setFree}
                     />
                     {value.isFree ? null : (
-                        <React.Fragment>
+                        <>
                             <Text style={styles.teachers}>Teachers</Text>
 
                             {teachersList}
@@ -112,7 +113,7 @@ function ClassInput({ blockId, style }: { blockId: string; style?: any }) {
                             >
                                 Add Teacher
                             </TextButton>
-                        </React.Fragment>
+                        </>
                     )}
                 </View>
             ) : null}

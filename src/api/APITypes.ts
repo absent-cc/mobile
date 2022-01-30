@@ -19,6 +19,7 @@ export enum Block {
     F = 'F',
     G = 'G',
     ADV = 'ADV',
+    EXTRA = 'EXTRA',
 }
 
 export type ProfileInfo = {

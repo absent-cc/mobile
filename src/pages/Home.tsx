@@ -1,13 +1,14 @@
 import { StyleSheet, Text, ScrollView, View } from 'react-native';
+import React from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Theme from '../Theme';
 import WaveHeader from '../components/header/WaveHeader';
-import React from 'react';
 import TeacherCard from '../components/card/TeacherCard';
 import Divider from '../components/Divider';
 import FreeCard from '../components/card/FreeCard';
 import WaveHeaderSafearea from '../components/header/WaveHeaderSafearea';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSettings } from '../state/SettingsContext';
+import { Block } from '../api/APITypes';
 
 function Home({ navigation }: { navigation: any }) {
     const insets = useSafeAreaInsets();
@@ -42,21 +43,15 @@ function Home({ navigation }: { navigation: any }) {
                     <TeacherCard
                         style={styles.card}
                         name="Kevin McFakehead"
-                        blockId="a"
+                        blockId={Block.A}
                         time="All Day"
                         note="All classes cancelled"
                     />
-                    <FreeCard
-                        style={styles.card}
-                        name="Kerry Marinoff"
-                        blockId="e"
-                        time="All Day"
-                        note="All classes cancelled"
-                    />
+                    <FreeCard style={styles.card} blockId={Block.E} />
                     <TeacherCard
                         style={styles.card}
                         name="Margaret Moon"
-                        blockId="adv"
+                        blockId={Block.ADV}
                         time="Partial Day AM"
                         note="All classes cancelled"
                     />

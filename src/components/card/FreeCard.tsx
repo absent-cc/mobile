@@ -1,21 +1,10 @@
 import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
+import { Block } from '../../api/APITypes';
 import Theme from '../../Theme';
 import { BlockMapping } from '../../Utils';
 
-function FreeCard({
-    name,
-    blockId,
-    time,
-    note,
-    style,
-}: {
-    name: string;
-    blockId: string;
-    time: string;
-    note: string;
-    style?: any;
-}) {
+function FreeCard({ blockId, style }: { blockId: Block; style?: any }) {
     return (
         <View style={[style, styles.container]}>
             <Text style={[styles.text, styles.block]}>

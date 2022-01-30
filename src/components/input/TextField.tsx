@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, TextInput, Text, View } from 'react-native';
-import Theme from '../../Theme';
 import { Feather } from '@expo/vector-icons';
+import Theme from '../../Theme';
 
 function TextField({
     label,

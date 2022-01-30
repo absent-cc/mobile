@@ -1,12 +1,11 @@
 import { StyleSheet, Text, ScrollView, View } from 'react-native';
+import React from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Theme from '../../Theme';
 import Header from '../../components/header/Header';
-import React from 'react';
-import Divider from '../../components/Divider';
 import TextField from '../../components/input/TextField';
 import Dropdown from '../../components/input/Dropdown';
 import TextButton from '../../components/button/TextButton';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import HeaderSafearea from '../../components/header/HeaderSafearea';
 
 function GeneralSettings({ navigation }: { navigation: any }) {
@@ -25,26 +24,32 @@ function GeneralSettings({ navigation }: { navigation: any }) {
                         navigation.goBack();
                     }}
                     isLeft
-                    text={'General Settings'}
+                    text="General Settings"
                 />
                 <View style={styles.content}>
                     <Text style={styles.note}>Edit your account details.</Text>
                     <TextField
                         label="What's your name?"
-                        onChange={() => {}}
+                        onChange={() => {
+                            // TODO
+                        }}
                         placeholder="e.g. Kevin McFakehead"
                         style={styles.inputField}
                     />
                     <TextField
                         label="What grade are you in?"
-                        onChange={() => {}}
+                        onChange={() => {
+                            // TODO
+                        }}
                         placeholder="e.g. 10"
                         style={styles.inputField}
                         isNumber
                     />
                     <Dropdown
                         label="Which school do you go to?"
-                        onChange={() => {}}
+                        onChange={() => {
+                            // TODO
+                        }}
                         style={[styles.inputField, styles.dropdown]}
                         placeholder="Select a school"
                         options={['South', 'North']}
@@ -53,7 +58,9 @@ function GeneralSettings({ navigation }: { navigation: any }) {
                     <TextButton
                         style={[styles.inputField, styles.save]}
                         iconName="save"
-                        onPress={() => {}}
+                        onPress={() => {
+                            // TODO
+                        }}
                         isFilled
                     >
                         Save
@@ -80,22 +87,11 @@ const styles = StyleSheet.create({
         paddingTop: 5,
         paddingBottom: 200,
     },
-    text: {
-        color: Theme.foregroundColor,
-        fontFamily: Theme.regularFont,
-        fontSize: 20,
-    },
     note: {
         color: Theme.foregroundColor,
         fontFamily: Theme.regularFont,
         fontSize: 16,
         marginBottom: 16,
-    },
-    header: {
-        color: Theme.foregroundColor,
-        fontFamily: Theme.strongFont,
-        fontSize: 30,
-        marginBottom: 3,
     },
     inputField: {
         marginTop: 10,
@@ -103,16 +99,6 @@ const styles = StyleSheet.create({
     },
     dropdown: {
         zIndex: 7,
-    },
-    classInput: {
-        marginBottom: 30,
-    },
-    attribution: {
-        textAlign: 'center',
-        fontSize: 20,
-        fontFamily: Theme.regularFont,
-        marginTop: 50,
-        color: '#666',
     },
     save: {
         marginTop: 20,

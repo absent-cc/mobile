@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, Pressable } from 'react-native';
-import Theme from '../../Theme';
 import { Feather } from '@expo/vector-icons';
+import Theme from '../../Theme';
 
 function Dropdown({
     label,

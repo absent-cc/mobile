@@ -1,17 +1,15 @@
+import React from 'react';
 import { StyleSheet, Text, ScrollView, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Theme from '../../Theme';
 import Header from '../../components/header/Header';
-import React from 'react';
-import TeacherCard from '../../components/card/TeacherCard';
-import Divider from '../../components/Divider';
-import TextField from '../../components/input/TextField';
-import Dropdown from '../../components/input/Dropdown';
 import TextButton from '../../components/button/TextButton';
 import ClassInput from '../../components/ClassInput';
 import ExtraTeachers from '../../components/ExtraTeachers';
-import SwitchField from '../../components/input/Switch';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import HeaderSafearea from '../../components/header/HeaderSafearea';
+import { Block, Teacher } from '../../api/APITypes';
+import { useSettings } from '../../state/SettingsContext';
+import { EmptySchedule } from '../../Utils';
 
 function TeacherSettings({ navigation }: { navigation: any }) {
     const insets = useSafeAreaInsets();
@@ -29,7 +27,7 @@ function TeacherSettings({ navigation }: { navigation: any }) {
                         navigation.goBack();
                     }}
                     isLeft
-                    text={'Teachers'}
+                    text="Teachers"
                 />
                 <View style={styles.content}>
                     <Text style={styles.note}>

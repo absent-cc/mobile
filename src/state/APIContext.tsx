@@ -3,6 +3,7 @@ import * as SecureStore from 'expo-secure-store';
 import { useSettings } from './SettingsContext';
 import { useAppState } from './AppStateContext';
 import * as APIMethods from '../api/APIMethods';
+import { Block, Teacher } from '../api/APITypes';
 
 export interface APIDataType {
     token: string | null;
@@ -13,28 +14,130 @@ export interface APIContextType {
     fetchAbsences: () => Promise<void>;
     fetchSettings: () => Promise<void>;
     logout: () => Promise<void>;
+    login: () => Promise<void>;
+    searchTeachers: (searchString: string) => Promise<Teacher[]>;
+    getClassesToday: () => Promise<Block[]>;
 }
 
 const APIContext = React.createContext<APIContextType>({
     ready: false,
-    fetchAbsences: async () => {},
-    fetchSettings: async () => {},
-    logout: async () => {},
+    fetchAbsences: async () => {
+        // default empty
+    },
+    fetchSettings: async () => {
+        // default empty
+    },
+    logout: async () => {
+        // default empty
+    },
+    login: async () => {
+        // default empty
+    },
+    searchTeachers: async () => {
+        return [];
+    },
+    getClassesToday: async () => {
+        return [];
+    },
 });
 
 const defaultState: APIDataType = {
     token: null,
 };
 
-export function APIProvider(props: any) {
+export function APIProvider({ children }: { children: React.ReactNode }) {
     const [apiSettings, setAPISettings] =
         React.useState<APIDataType>(defaultState);
     const [ready, setReady] = React.useState(false);
 
-    const settings = useSettings();
-    const appState = useAppState();
+    const { setSettings, resetSettings } = useSettings();
+    const { setAppState } = useAppState();
 
-    // Save and read state
+    const fetchAbsences = React.useMemo(
+        () => async () => {
+            if (apiSettings.token === null) return;
+
+            const response = await APIMethods.fetchAbsences(apiSettings.token);
+
+            setAppState((oldState) => {
+                return {
+                    ...oldState,
+                    absences: response,
+                };
+            });
+        },
+        [setAppState, apiSettings.token],
+    );
+
+    const fetchSettings = React.useMemo(
+        () => async () => {
+            if (apiSettings.token === null) return;
+
+            const response = await APIMethods.fetchSettings(apiSettings.token);
+
+            setSettings((oldSettings) => {
+                return {
+                    ...oldSettings,
+                    user: response,
+                };
+            });
+        },
+        [apiSettings.token, setSettings],
+    );
+
+    const logout = React.useMemo(
+        () => async () => {
+            if (apiSettings.token !== null) {
+                await APIMethods.logout(apiSettings.token);
+            }
+
+            resetSettings();
+            setAppState((oldState) => {
+                return {
+                    ...oldState,
+                    isLoggedIn: false,
+                };
+            });
+        },
+        [apiSettings.token, resetSettings, setAppState],
+    );
+
+    const searchTeachers = React.useMemo(
+        () =>
+            async (searchString: string): Promise<Teacher[]> => {
+                if (apiSettings.token === null) return [];
+
+                return APIMethods.searchTeachers(
+                    searchString,
+                    apiSettings.token,
+                );
+            },
+        [apiSettings.token],
+    );
+
+    const getClassesToday = React.useMemo(
+        () => async (): Promise<Block[]> => {
+            if (apiSettings.token === null) return [];
+
+            return APIMethods.getClassesToday(apiSettings.token);
+        },
+        [apiSettings.token],
+    );
+
+    const login = React.useMemo(
+        () => async () => {
+            const token = await APIMethods.login();
+            setAPISettings((oldState) => {
+                return {
+                    ...oldState,
+                    token,
+                };
+            });
+        },
+        [],
+    );
+
+    // Save and read token
     React.useEffect(() => {
         const run = async () => {
             if (!ready) {
@@ -75,60 +178,34 @@ export function APIProvider(props: any) {
         };
 
         run();
-    }, [apiSettings]);
+    }, [apiSettings, ready, fetchAbsences, fetchSettings]);
 
-    const fetchAbsences = async () => {
-        // sample api return
-        const response = {};
+    const settingsProp: APIContextType = React.useMemo(
+        () => ({
+            ready,
+            fetchAbsences,
+            fetchSettings,
+            logout,
+            login,
+            searchTeachers,
+            getClassesToday,
+        }),
+        [
+            ready,
+            fetchAbsences,
+            fetchSettings,
+            logout,
+            login,
+            searchTeachers,
+            getClassesToday,
+        ],
+    );
 
-        appState.setAppState((oldState) => {
-            return {
-                ...oldState,
-                absences: response,
-            };
-        });
-    };
-
-    const fetchSettings = async () => {
-        if (apiSettings.token === null) return;
-
-        const response = await APIMethods.fetchSettings(apiSettings.token);
-
-        settings.setSettings((oldSettings) => {
-            return {
-                ...oldSettings,
-                user: response,
-            };
-        });
-    };
-    const logout = async () => {
-        if (apiSettings.token !== null) {
-            await APIMethods.logout(apiSettings.token);
-        }
-
-        settings.resetSettings();
-        appState.setAppState((oldState) => {
-            return {
-                ...oldState,
-                isLoggedIn: false,
-            };
-        });
-    };
-
-    const searchTeachers = async (searchString: string) => {
-        if (apiSettings.token === null) return;
-
-        return await APIMethods.searchTeachers(searchString, apiSettings.token);
-    };
-
-    const settingsProp = {
-        ready,
-        fetchAbsences,
-        fetchSettings,
-        logout,
-    };
-
-    return <APIContext.Provider {...props} value={settingsProp} />;
+    return (
+        <APIContext.Provider value={settingsProp}>
+            {children}
+        </APIContext.Provider>
+    );
 }
 
 export function useAPI() {
