@@ -12,7 +12,6 @@ import Theme from '../Theme';
 import { Teacher } from '../api/APITypes';
 import { useAPI } from '../state/APIContext';
 import IconButton from './button/IconButton';
-import { joinName } from '../Utils';
 
 function TeacherField({
     defaultValue = '',
