@@ -62,7 +62,7 @@ function Settings({ navigation }: { navigation: any }) {
                     </TextButton>
                     <Text style={styles.attribution}>
                         Thanks for using abSENT!{'\n\n'}
-                        abSENT was created by{' '}
+                        Created by{' '}
                         <Anchor
                             href="https://rkarim.xyz"
                             style={styles.attribution}

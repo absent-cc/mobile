@@ -40,17 +40,17 @@ function WaveHeader({
 const styles = StyleSheet.create({
     container: {
         width: '100%',
-        height: 300,
+        height: 250,
     },
     wave: {
         width: '100%',
-        height: 300,
+        height: 250,
         position: 'absolute',
     },
     header: {
         fontFamily: Theme.strongFont,
         color: Theme.foregroundAlternate,
-        fontSize: 35,
+        fontSize: 38,
         position: 'absolute',
         left: 30,
         right: 30,

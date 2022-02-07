@@ -10,7 +10,6 @@ import WaveHeader from '../../components/header/WaveHeader';
 import WaveHeaderSafearea from '../../components/header/WaveHeaderSafearea';
 import { useSettings } from '../../state/SettingsContext';
 import {
-    EmptyUser,
     gradeIndexer,
     GradeList,
     schoolIndexer,

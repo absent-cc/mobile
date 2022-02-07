@@ -177,8 +177,7 @@ function TeacherSettings({ navigation }: { navigation: any }) {
 
                     <Text style={styles.header}>Extra Teachers</Text>
                     <Text style={styles.note}>
-                        Extra teachers allows you to keep track of attendance
-                        for other teachers at school.
+                        Add extra teachers who you want to be notified for.
                     </Text>
                     {validationList.extra ? (
                         <ErrorCard style={[styles.validation]}>

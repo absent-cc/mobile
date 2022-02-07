@@ -31,7 +31,12 @@ function TeacherCard({
             <View style={styles.blockBox}>{boxContent}</View>
             <View style={styles.content}>
                 {isFree || !teacher ? (
-                    <Text style={[styles.free]}>Free!</Text>
+                    <>
+                        <Text style={[styles.free]}>Free!</Text>
+                        <Text style={[styles.freeNote]}>
+                            Enjoy your free block!
+                        </Text>
+                    </>
                 ) : (
                     <>
                         <Text style={[styles.name]}>{teacher.name}</Text>
@@ -88,11 +93,17 @@ const styles = StyleSheet.create({
     },
     note: {
         fontFamily: Theme.regularFont,
-        marginTop: 10,
+        // marginTop: 10,
         fontSize: 20,
     },
     free: {
         fontFamily: Theme.strongFont,
+        fontSize: 20,
+    },
+    freeNote: {
+        color: Theme.darkForeground,
+        fontFamily: Theme.regularFont,
+        marginTop: 0,
         fontSize: 20,
     },
 });

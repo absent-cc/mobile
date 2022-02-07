@@ -8,7 +8,7 @@ import Theme from '../../Theme';
 function WaveHeaderSafearea({ style }: { style?: any }) {
     const insets = useSafeAreaInsets();
 
-    const totalHeight = 300 + insets.top;
+    const totalHeight = 280 + insets.top;
 
     return (
         <LinearGradient

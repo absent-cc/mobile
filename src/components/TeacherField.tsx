@@ -188,7 +188,7 @@ function TeacherField({
                             onPress={forceAdd}
                         >
                             <Text style={styles.badTeacherOptionText}>
-                                Add “{textValue}” to the list
+                                Add “{textValue}” to the schedule
                             </Text>
                         </Pressable>
                     </View>

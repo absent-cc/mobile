@@ -66,11 +66,13 @@ function Home({ navigation }: { navigation: any }) {
                 />
                 <View style={styles.content}>
                     <Text style={styles.hello}>
-                        Today is Sunday, January 16. ☀️
+                        Today is{' '}
+                        <Text style={styles.date}>Sunday, January 16</Text>. ☀️
                     </Text>
                     <Divider />
                     <Text style={styles.status}>
-                        You have three free blocks today!
+                        You have <Text style={styles.count}>three</Text> free
+                        blocks today!
                     </Text>
                     <TeacherCard
                         style={styles.card}
@@ -117,6 +119,12 @@ const styles = StyleSheet.create({
         color: Theme.foregroundColor,
         fontFamily: Theme.regularFont,
         fontSize: 20,
+    },
+    date: {
+        fontFamily: Theme.strongFont,
+    },
+    count: {
+        fontFamily: Theme.strongFont,
     },
     status: {
         color: Theme.foregroundColor,

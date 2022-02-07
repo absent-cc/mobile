@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     header: {
         fontFamily: Theme.strongFont,
         color: Theme.foregroundColor,
-        fontSize: 35,
+        fontSize: 38,
         position: 'absolute',
         left: 30,
         right: 30,
