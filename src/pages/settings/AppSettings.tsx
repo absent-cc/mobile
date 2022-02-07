@@ -5,9 +5,20 @@ import Theme from '../../Theme';
 import Header from '../../components/header/Header';
 import SwitchField from '../../components/input/Switch';
 import HeaderSafearea from '../../components/header/HeaderSafearea';
+import { useSettings } from '../../state/SettingsContext';
 
 function AppSettings({ navigation }: { navigation: any }) {
     const insets = useSafeAreaInsets();
+    const { value: settingsValue, setSettings } = useSettings();
+    const [appSettings, setAppSettings] = React.useState(settingsValue.app);
+
+    // autosave app settings
+    React.useEffect(() => {
+        setSettings((oldSettings) => ({
+            ...oldSettings,
+            app: appSettings,
+        }));
+    }, [appSettings, setSettings]);
 
     return (
         <View style={styles.pageView}>
@@ -29,24 +40,33 @@ function AppSettings({ navigation }: { navigation: any }) {
                     <SwitchField
                         style={styles.inputField}
                         label="Show free blocks as absent teachers"
-                        onChange={() => {
-                            // TODO
+                        onChange={(newValue: boolean) => {
+                            setAppSettings((oldSettings) => ({
+                                ...oldSettings,
+                                showFreeBlocks: newValue,
+                            }));
                         }}
                     />
 
                     <SwitchField
                         style={styles.inputField}
                         label="Send notifications"
-                        onChange={() => {
-                            // TODO
+                        onChange={(newValue: boolean) => {
+                            setAppSettings((oldSettings) => ({
+                                ...oldSettings,
+                                sendNotifications: newValue,
+                            }));
                         }}
                     />
 
                     <SwitchField
                         style={styles.inputField}
                         label="Send notification even if no teachers are absent"
-                        onChange={() => {
-                            // TODO
+                        onChange={(newValue: boolean) => {
+                            setAppSettings((oldSettings) => ({
+                                ...oldSettings,
+                                sendNoAbsenceNotification: newValue,
+                            }));
                         }}
                     />
                 </View>
@@ -69,7 +89,7 @@ const styles = StyleSheet.create({
     content: {
         paddingHorizontal: 30,
         paddingTop: 5,
-        paddingBottom: 200,
+        paddingBottom: 300,
     },
     note: {
         color: Theme.foregroundColor,

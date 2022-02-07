@@ -1,24 +1,54 @@
-import { StyleSheet, Text, ScrollView, View } from 'react-native';
+import {
+    StyleSheet,
+    Text,
+    ScrollView,
+    View,
+    RefreshControl,
+} from 'react-native';
 import React from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Theme from '../Theme';
 import WaveHeader from '../components/header/WaveHeader';
 import TeacherCard from '../components/card/TeacherCard';
 import Divider from '../components/Divider';
-import FreeCard from '../components/card/FreeCard';
 import WaveHeaderSafearea from '../components/header/WaveHeaderSafearea';
 import { useSettings } from '../state/SettingsContext';
 import { Block } from '../api/APITypes';
+import { splitName } from '../Utils';
+import { useAPI } from '../state/APIContext';
 
 function Home({ navigation }: { navigation: any }) {
     const insets = useSafeAreaInsets();
     const settings = useSettings();
+    const api = useAPI();
+
+    const [refreshing, setRefreshing] = React.useState(false);
+
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+    }, []);
+
+    React.useEffect(() => {
+        if (refreshing) {
+            Promise.all([api.fetchSettings(), api.fetchAbsences()]).then(() => {
+                setRefreshing(false);
+            });
+        }
+    }, [refreshing, api]);
 
     return (
         <View style={styles.pageView}>
             <WaveHeaderSafearea />
             <ScrollView
                 style={[styles.container, { marginTop: insets.top }]}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                        tintColor={Theme.lightForeground}
+                        colors={[Theme.primaryColor, Theme.secondaryColor]}
+                    />
+                }
                 // bounces={false}
             >
                 <WaveHeader
@@ -27,8 +57,10 @@ function Home({ navigation }: { navigation: any }) {
                         navigation.navigate('Settings');
                     }}
                     text={
-                        settings.value.user
-                            ? `Good morning, ${settings.value.user?.profile.first}! ☀️`
+                        settings.value.user.name.length > 0
+                            ? `Good morning, ${
+                                  splitName(settings.value.user.name)[0]
+                              }! ☀️`
                             : 'Good morning! ☀️'
                     }
                 />
@@ -42,18 +74,22 @@ function Home({ navigation }: { navigation: any }) {
                     </Text>
                     <TeacherCard
                         style={styles.card}
-                        name="Kevin McFakehead"
-                        blockId={Block.A}
-                        time="All Day"
-                        note="All classes cancelled"
+                        teacher={{
+                            name: 'Kevin McFakehead',
+                            time: 'All Day',
+                            notes: 'All classes cancelled',
+                        }}
+                        block={Block.A}
                     />
-                    <FreeCard style={styles.card} blockId={Block.E} />
+                    <TeacherCard style={styles.card} block={Block.E} isFree />
                     <TeacherCard
                         style={styles.card}
-                        name="Margaret Moon"
-                        blockId={Block.ADV}
-                        time="Partial Day AM"
-                        note="All classes cancelled"
+                        teacher={{
+                            name: 'Margaret Moon',
+                            time: 'Partial Day AM',
+                            notes: 'All classes cancelled',
+                        }}
+                        block={Block.ADV}
                     />
                 </View>
             </ScrollView>

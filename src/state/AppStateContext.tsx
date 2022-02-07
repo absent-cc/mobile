@@ -1,8 +1,9 @@
 import React from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AbsenceList } from '../api/APITypes';
 
 export interface AppStateType {
-    isLoggedIn: boolean;
+    absences: AbsenceList;
 }
 
 export interface AppStateContextType {
@@ -14,7 +15,7 @@ export interface AppStateContextType {
 
 // Default settings
 export const defaultState: AppStateType = {
-    isLoggedIn: false,
+    absences: [],
 };
 
 const AppStateContext = React.createContext<AppStateContextType>({
@@ -69,12 +70,10 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     }, [appState, ready]);
 
     // Memoized just in case
-    const resetAppState = React.useMemo(() => {
-        return () => {
-            setAppState({
-                ...defaultState,
-            });
-        };
+    const resetAppState = React.useCallback(() => {
+        setAppState({
+            ...defaultState,
+        });
     }, [setAppState]);
 
     const appStateProp: AppStateContextType = React.useMemo(

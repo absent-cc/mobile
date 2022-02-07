@@ -1,6 +1,7 @@
 import React from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Schedule, UserSettings } from '../api/APITypes';
+import { DefaultAppSettings, EmptySchedule, EmptyUser } from '../Utils';
 
 export type AppSettings = {
     showFreeBlocks: boolean;
@@ -9,9 +10,10 @@ export type AppSettings = {
 };
 
 export type SettingsType = {
+    userOnboarded: boolean;
     app: AppSettings;
-    user?: UserSettings;
-    schedule?: Schedule;
+    user: UserSettings;
+    schedule: Schedule;
 };
 
 export type SettingsContextType = {
@@ -23,11 +25,10 @@ export type SettingsContextType = {
 
 // Default settings
 export const defaultState: SettingsType = {
-    app: {
-        showFreeBlocks: true,
-        sendNotifications: true,
-        sendNoAbsenceNotification: true,
-    },
+    userOnboarded: false,
+    app: DefaultAppSettings,
+    user: EmptyUser,
+    schedule: EmptySchedule,
 };
 
 // Transform to new settings schema
@@ -91,12 +92,10 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     }, [settings, ready]);
 
     // Memoized just in case
-    const resetSettings = React.useMemo(() => {
-        return () => {
-            setSettings({
-                ...defaultState,
-            });
-        };
+    const resetSettings = React.useCallback(() => {
+        setSettings({
+            ...defaultState,
+        });
     }, [setSettings]);
 
     const settingsProp: SettingsContextType = React.useMemo(

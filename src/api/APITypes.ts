@@ -1,9 +1,11 @@
 export enum SchoolName {
+    NONE = '',
     NSHS = 'NSHS',
     NNHS = 'NNHS',
 }
 
 export enum Grade {
+    NONE = -1,
     G9 = 9,
     G10 = 10,
     G11 = 11,
@@ -22,17 +24,9 @@ export enum Block {
     EXTRA = 'EXTRA',
 }
 
-export type ProfileInfo = {
-    first: string;
-    last: string;
-    school: SchoolName;
-    grade: Grade;
-};
-
 export type Teacher = {
     tid: string;
-    first: string;
-    last: string;
+    name: string;
     school: SchoolName;
 };
 
@@ -40,15 +34,19 @@ export type Schedule = {
     [key in Block]: Teacher[];
 };
 
+export type EditingSchedule = {
+    [key in Block]: string[];
+};
+
 export type UserSettings = {
     uid: string;
-    profile: ProfileInfo;
-    schedule: Schedule;
+    name: string;
+    school: SchoolName;
+    grade: Grade;
 };
 
 export type AbsentTeacher = {
-    first: string;
-    last: string;
+    name: string;
     time: string;
     notes: string;
 };

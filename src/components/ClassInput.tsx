@@ -3,30 +3,70 @@ import { StyleSheet, Text, View, Pressable } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import Theme from '../Theme';
 import { BlockMapping } from '../Utils';
-import IconButton from './button/IconButton';
 import TextButton from './button/TextButton';
 import SwitchField from './input/Switch';
-import TextField from './input/TextField';
 import { Block } from '../api/APITypes';
+import TeacherField from './TeacherField';
+import ErrorCard from './card/ErrorCard';
 
-function ClassInput({ blockId, style }: { blockId: Block; style?: any }) {
+function ClassInput({
+    block,
+    style,
+    onChange,
+    isInvalid,
+    defaultValue,
+}: {
+    block: Block;
+    style?: any;
+    onChange: (block: Block, newSettings: string[]) => void;
+    isInvalid: boolean;
+    defaultValue: string[];
+}) {
+    const changeFunc = React.useRef(onChange);
+
     // foldable
     const [isOpen, setIsOpen] = React.useState(false);
     const toggleOpen = () => {
         setIsOpen(!isOpen);
     };
     // unique key for teacher list
-    const [teacherTotalNum, setTeacherTotalNum] = React.useState(0);
-    const [value, setValue] = React.useState({
-        isFree: false,
-        teachers: [{ id: 0, name: '' }],
+    const teacherTotalNum = React.useRef(0);
+
+    const [value, setValue] = React.useState<{
+        isFree: boolean;
+        teachers: {
+            id: number;
+            teacher: string;
+        }[];
+    }>({
+        isFree: defaultValue.length === 0,
+        teachers:
+            defaultValue.length === 0
+                ? [{ id: teacherTotalNum.current, teacher: '' }]
+                : defaultValue.map((teacher) => {
+                      // this means the first one will be 1 but that doesn't matter
+                      teacherTotalNum.current += 1;
+                      return { id: teacherTotalNum.current, teacher };
+                  }),
     });
+
     const setFree = (isFree: boolean) => {
         setValue({
             ...value,
             isFree,
         });
     };
+
+    // bubble up on update
+    React.useEffect(() => {
+        changeFunc.current(
+            block,
+            value.isFree
+                ? []
+                : value.teachers.map((teacherObj) => teacherObj.teacher),
+        );
+    }, [value, block]);
+
     const removeTeacher = (index: number) => {
         // delete nth teacher
         const teachers = [...value.teachers];
@@ -42,14 +82,14 @@ function ClassInput({ blockId, style }: { blockId: Block; style?: any }) {
             ...value,
             teachers: [
                 ...value.teachers,
-                { id: teacherTotalNum + 1, name: '' },
+                { id: teacherTotalNum.current + 1, teacher: '' },
             ],
         });
-        setTeacherTotalNum(teacherTotalNum + 1);
+        teacherTotalNum.current += 1;
     };
-    const setTeacher = (index: number, name: string) => {
+    const setTeacher = (index: number, teacher: string) => {
         const teachers = [...value.teachers];
-        teachers[index].name = name;
+        teachers[index].teacher = teacher;
 
         setValue({
             ...value,
@@ -59,25 +99,23 @@ function ClassInput({ blockId, style }: { blockId: Block; style?: any }) {
 
     const teachersList = value.teachers.map((teacher, index) => {
         return (
-            <View style={styles.teacherInput} key={teacher.id}>
-                <TextField
-                    onChange={(name) => {
-                        setTeacher(index, name);
+            <View
+                style={[
+                    styles.teacherInput,
+                    { zIndex: value.teachers.length - index },
+                ]}
+                key={teacher.id}
+            >
+                <TeacherField
+                    onChange={(newTeacher) => {
+                        setTeacher(index, newTeacher);
                     }}
-                    placeholder="e.g. Rebecca Realson"
-                    style={styles.teacherInputText}
-                    defaultValue={teacher.name}
+                    defaultValue={teacher.teacher}
+                    deletable={index > 0}
+                    onDelete={() => {
+                        removeTeacher(index);
+                    }}
                 />
-                {index > 0 ? (
-                    <IconButton
-                        style={styles.teacherInputDelete}
-                        onPress={() => {
-                            removeTeacher(index);
-                        }}
-                        iconName="trash-2"
-                        isFilled
-                    />
-                ) : null}
             </View>
         );
     });
@@ -90,41 +128,77 @@ function ClassInput({ blockId, style }: { blockId: Block; style?: any }) {
                     name={isOpen ? 'chevron-down' : 'chevron-right'}
                     size={30}
                 />
-                <Text style={styles.title}>{BlockMapping[blockId]}</Text>
+                <Text
+                    style={[
+                        styles.title,
+                        isInvalid ? styles.invalidTitle : null,
+                    ]}
+                >
+                    {BlockMapping[block]}
+                </Text>
+                {isInvalid ? (
+                    <Feather
+                        style={[styles.invalidIcon]}
+                        name="alert-octagon"
+                        size={30}
+                    />
+                ) : null}
             </Pressable>
 
             {isOpen ? (
-                <View style={styles.content}>
-                    <SwitchField
-                        label="Free block?"
-                        defaultValue={value.isFree}
-                        onChange={setFree}
-                    />
-                    {value.isFree ? null : (
-                        <>
-                            <Text style={styles.teachers}>Teachers</Text>
+                <>
+                    {isInvalid ? (
+                        <ErrorCard>
+                            Please make sure you've entered all your teachers
+                            correctly or mark this as a free block.
+                        </ErrorCard>
+                    ) : null}
 
-                            {teachersList}
+                    <View style={styles.content}>
+                        <SwitchField
+                            label="Free block?"
+                            defaultValue={value.isFree}
+                            onChange={setFree}
+                        />
+                        {value.isFree ? null : (
+                            <>
+                                <Text style={styles.teachers}>Teachers</Text>
 
-                            <TextButton
-                                style={styles.inputField}
-                                iconName="plus"
-                                onPress={addTeacher}
-                            >
-                                Add Teacher
-                            </TextButton>
-                        </>
-                    )}
-                </View>
+                                {teachersList}
+
+                                <TextButton
+                                    style={styles.inputField}
+                                    iconName="plus"
+                                    onPress={addTeacher}
+                                >
+                                    Add Teacher
+                                </TextButton>
+                            </>
+                        )}
+                    </View>
+                </>
             ) : null}
         </View>
     );
 }
 
 const styles = StyleSheet.create({
+    closeIcon: {
+        color: Theme.lightForeground,
+        marginRight: 3,
+    },
     title: {
         fontFamily: Theme.strongFont,
         fontSize: 24,
+        flex: 1,
+        color: Theme.foregroundColor,
+    },
+    invalidTitle: {
+        color: Theme.primaryColor,
+    },
+    invalidIcon: {
+        color: Theme.primaryColor,
+        marginRight: 3,
     },
     content: {
         width: '90%',
@@ -139,27 +213,13 @@ const styles = StyleSheet.create({
     inputField: {
         marginTop: 10,
     },
-    teacherInput: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 10,
-    },
-    teacherInputText: {
-        flex: 1,
-    },
-    teacherInputDelete: {
-        flex: 0,
-        marginLeft: 10,
-    },
     header: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-start',
     },
-    closeIcon: {
-        color: Theme.lightForeground,
-        marginRight: 3,
+    teacherInput: {
+        marginTop: 10,
     },
 });
 

@@ -8,9 +8,12 @@ import TextButton from '../components/button/TextButton';
 import RowButton from '../components/RowButton';
 import Anchor from '../components/Anchor';
 import HeaderSafearea from '../components/header/HeaderSafearea';
+import { useAPI } from '../state/APIContext';
 
 function Settings({ navigation }: { navigation: any }) {
     const insets = useSafeAreaInsets();
+
+    const api = useAPI();
 
     return (
         <View style={styles.pageView}>
@@ -51,10 +54,7 @@ function Settings({ navigation }: { navigation: any }) {
                         style={styles.inputField}
                         iconName="log-out"
                         onPress={() => {
-                            navigation.reset({
-                                index: 0,
-                                routes: [{ name: 'Welcome' }],
-                            });
+                            api.logout();
                         }}
                         isFilled
                     >
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontFamily: Theme.regularFont,
         marginTop: 50,
-        color: Theme.darkerForeground,
+        color: Theme.darkForeground,
     },
 });
 

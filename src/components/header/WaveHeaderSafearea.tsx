@@ -12,7 +12,12 @@ function WaveHeaderSafearea({ style }: { style?: any }) {
 
     return (
         <LinearGradient
-            colors={[Theme.secondaryColor, Theme.primaryColor]}
+            colors={[
+                Theme.secondaryColor,
+                Theme.primaryColor,
+                Theme.tertiaryColor,
+            ]}
+            locations={[0, 0.5, 1]}
             start={{ x: 0.0, y: insets.top / totalHeight }}
             end={{ x: 1.0, y: 1.0 }}
             style={[

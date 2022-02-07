@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Pressable } from 'react-native';
+import { StyleSheet, Text, View, Pressable, ScrollView } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import Theme from '../../Theme';
 
@@ -33,10 +33,11 @@ function Dropdown({
     options.forEach((option, index) => {
         elements.push(
             <Pressable
-                style={[
+                style={({ pressed }) => [
                     styles.option,
                     index === value ? styles.optionSelected : null,
                     index === options.length - 1 ? null : styles.withBorder,
+                    pressed ? styles.optionPressed : undefined,
                 ]}
                 onPress={() => {
                     optionPress(index);
@@ -64,7 +65,9 @@ function Dropdown({
                 size={30}
                 style={styles.button}
             />
-            {isOpen ? <View style={styles.optionsList}>{elements}</View> : null}
+            {isOpen ? (
+                <ScrollView style={styles.optionsList}>{elements}</ScrollView>
+            ) : null}
         </View>
     );
 }
@@ -77,7 +80,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         borderRadius: 50,
         width: '100%',
-        zIndex: 9,
     },
     inputText: {
         fontSize: 20,
@@ -106,15 +108,17 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: Theme.lightForeground,
         position: 'absolute',
-        top: 70,
-        overflow: 'hidden',
+        top: 75,
         width: '100%',
-        zIndex: 10,
+        overflow: 'scroll',
+        maxHeight: 200,
+        backgroundColor: Theme.backgroundColor,
     },
     option: {
         paddingVertical: 8,
         paddingHorizontal: 20,
         backgroundColor: Theme.backgroundColor,
+        position: 'relative',
     },
     optionSelected: {
         backgroundColor: Theme.lightForeground,
@@ -127,6 +131,9 @@ const styles = StyleSheet.create({
     withBorder: {
         borderBottomColor: Theme.lightForeground,
         borderBottomWidth: 2,
+    },
+    optionPressed: {
+        backgroundColor: Theme.lightForeground,
     },
 });
 

@@ -2,26 +2,26 @@ import React from 'react';
 import { StyleSheet, Text, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Theme from '../../Theme';
-import Header from '../../components/header/Header';
+import Divider from '../../components/Divider';
 import TextButton from '../../components/button/TextButton';
-import ClassInput from '../../components/ClassInput';
-import ExtraTeachers from '../../components/ExtraTeachers';
-import HeaderSafearea from '../../components/header/HeaderSafearea';
+import WaveHeader from '../../components/header/WaveHeader';
+import WaveHeaderSafearea from '../../components/header/WaveHeaderSafearea';
 import { Block } from '../../api/APITypes';
 import { useSettings } from '../../state/SettingsContext';
-import { useAPI } from '../../state/APIContext';
 import { EmptyEditingSchedule } from '../../Utils';
 import ErrorCard from '../../components/card/ErrorCard';
-import Divider from '../../components/Divider';
+import ClassInput from '../../components/ClassInput';
+import ExtraTeachers from '../../components/ExtraTeachers';
+import { useAPI } from '../../state/APIContext';
 import LoadingCard from '../../components/card/LoadingCard';
 
-function TeacherSettings({ navigation }: { navigation: any }) {
+function ScheduleOnboarding({ navigation }: { navigation: any }) {
     const insets = useSafeAreaInsets();
 
     const api = useAPI();
     const settings = useSettings();
 
-    const defaultValue = { ...EmptyEditingSchedule };
+    const defaultValue = EmptyEditingSchedule;
 
     Object.keys(Block).forEach((block: string) => {
         const teachers = settings.value.schedule[block as Block];
@@ -78,44 +78,50 @@ function TeacherSettings({ navigation }: { navigation: any }) {
         teacherSettings.current[block] = newSettings;
     };
 
-    // reset screen on exit
-    React.useEffect(() => {
-        return () => {
-            teacherSettings.current = defaultValue;
-        };
-    });
-
     // save stuff to server
     React.useEffect(() => {
         if (saving) {
-            api.saveSchedule(teacherSettings.current)
+            api.saveSettings({
+                user: settings.value.user,
+                schedule: teacherSettings.current,
+            })
                 .then(() => {
-                    navigation.navigate('Settings');
+                    settings.setSettings((oldSettings) => ({
+                        ...oldSettings,
+                        userOnboarded: true,
+                    }));
                 })
                 .catch(() => {
                     setSaveError(true);
                 });
         }
-    }, [saving, api, settings, navigation]);
+    }, [saving, api, settings]);
 
     return (
         <View style={styles.pageView}>
-            <HeaderSafearea />
+            <WaveHeaderSafearea />
             <ScrollView
                 style={[styles.container, { marginTop: insets.top }]}
                 // bounces={false}
+                keyboardShouldPersistTaps="handled"
             >
-                <Header
+                <WaveHeader
+                    text="Your Schedule"
                     iconName="chevron-left"
+                    isLeft
                     iconClick={() => {
                         navigation.goBack();
                     }}
-                    isLeft
-                    text="Teachers"
                 />
                 <View style={styles.content}>
+                    <Text style={styles.text}>
+                        You're almost done, just a few more steps!
+                    </Text>
+                    <Divider />
+
+                    <Text style={styles.header}>Classes</Text>
                     <Text style={styles.note}>
-                        Tap on each block to edit up your classes.
+                        Tap on each block to set up your classes.
                     </Text>
 
                     <ClassInput
@@ -214,7 +220,7 @@ function TeacherSettings({ navigation }: { navigation: any }) {
                     ) : null}
                     <TextButton
                         style={[{ zIndex: 1 }]}
-                        iconName="save"
+                        iconName="check-circle"
                         onPress={() => {
                             if (validate()) {
                                 setSaving(true);
@@ -222,7 +228,7 @@ function TeacherSettings({ navigation }: { navigation: any }) {
                         }}
                         isFilled
                     >
-                        Save
+                        Get Started
                     </TextButton>
                 </View>
             </ScrollView>
@@ -246,6 +252,11 @@ const styles = StyleSheet.create({
         paddingTop: 5,
         paddingBottom: 300,
     },
+    text: {
+        color: Theme.foregroundColor,
+        fontFamily: Theme.regularFont,
+        fontSize: 20,
+    },
     note: {
         color: Theme.foregroundColor,
         fontFamily: Theme.regularFont,
@@ -258,16 +269,13 @@ const styles = StyleSheet.create({
         fontSize: 30,
         marginBottom: 3,
     },
-    inputField: {
-        marginTop: 10,
-        zIndex: 6,
-    },
     classInput: {
-        marginBottom: 30,
+        marginTop: 10,
+        marginBottom: 20,
     },
     validation: {
         marginBottom: 20,
     },
 });
 
-export default TeacherSettings;
+export default ScheduleOnboarding;

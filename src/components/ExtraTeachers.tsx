@@ -1,18 +1,39 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import IconButton from './button/IconButton';
 import TextButton from './button/TextButton';
-import TextField from './input/TextField';
+import TeacherField from './TeacherField';
 
-interface Teacher {
-    id: number;
-    name: string;
-}
+function ExtraTeachers({
+    onChange,
+    style,
+    defaultValue,
+}: {
+    onChange: (newSettings: string[]) => void;
+    style?: any;
+    defaultValue: string[];
+}) {
+    const changeFunc = React.useRef(onChange);
 
-function ExtraTeachers({ style }: { style?: any }) {
     // unique key for teacher list
-    const [teacherTotalNum, setTeacherTotalNum] = React.useState(0);
-    const [value, setValue] = React.useState<Teacher[]>([]);
+    const teacherTotalNum = React.useRef(0);
+
+    const [value, setValue] = React.useState<
+        {
+            id: number;
+            teacher: string;
+        }[]
+    >(
+        defaultValue.map((teacher) => {
+            // this means the first one will be 1 but that doesn't matter
+            teacherTotalNum.current += 1;
+            return { id: teacherTotalNum.current, teacher };
+        }),
+    );
+
+    // bubble up on update
+    React.useEffect(() => {
+        changeFunc.current(value.map((teacherObj) => teacherObj.teacher));
+    }, [value]);
 
     const removeTeacher = (index: number) => {
         // delete nth teacher
@@ -22,34 +43,32 @@ function ExtraTeachers({ style }: { style?: any }) {
         setValue(teachers);
     };
     const addTeacher = () => {
-        setValue([...value, { id: teacherTotalNum + 1, name: '' }]);
-        setTeacherTotalNum(teacherTotalNum + 1);
+        setValue([...value, { id: teacherTotalNum.current + 1, teacher: '' }]);
+        teacherTotalNum.current += 1;
     };
-    const setTeacher = (index: number, name: string) => {
+    const setTeacher = (index: number, newTeacher: string) => {
         const teachers = [...value];
-        teachers[index].name = name;
+        teachers[index].teacher = newTeacher;
 
         setValue(teachers);
     };
 
     const teachersList = value.map((teacher, index) => {
         return (
-            <View style={styles.teacherInput} key={teacher.id}>
-                <TextField
-                    onChange={(name) => {
-                        setTeacher(index, name);
+            <View
+                style={[styles.teacherInput, { zIndex: value.length - index }]}
+                key={teacher.id}
+            >
+                <TeacherField
+                    onChange={(newTeacher) => {
+                        setTeacher(index, newTeacher);
                     }}
-                    placeholder="e.g. Rebecca Realson"
                     style={styles.teacherInputText}
-                    defaultValue={teacher.name}
-                />
-                <IconButton
-                    style={styles.teacherInputDelete}
-                    onPress={() => {
+                    defaultValue={teacher.teacher}
+                    deletable
+                    onDelete={() => {
                         removeTeacher(index);
                     }}
-                    iconName="trash-2"
-                    isFilled
                 />
             </View>
         );

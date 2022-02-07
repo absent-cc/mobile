@@ -2,13 +2,9 @@ import React from 'react';
 import { Defs, LinearGradient, Path, Stop, Svg } from 'react-native-svg';
 import Theme from '../../Theme';
 
-function Wave(props: any) {
+function Wave({ style }: { style: any }) {
     return (
-        <Svg
-            style={props.style}
-            viewBox="0 0 100 60"
-            preserveAspectRatio="none"
-        >
+        <Svg style={style} viewBox="0 0 100 60" preserveAspectRatio="none">
             <Defs>
                 <LinearGradient id="waveGrad" x1="0" y1="0" x2="1" y2="1">
                     <Stop
@@ -17,8 +13,13 @@ function Wave(props: any) {
                         stopOpacity="1"
                     />
                     <Stop
-                        offset="1"
+                        offset="0.5"
                         stopColor={Theme.primaryColor}
+                        stopOpacity="1"
+                    />
+                    <Stop
+                        offset="1"
+                        stopColor={Theme.tertiaryColor}
                         stopOpacity="1"
                     />
                 </LinearGradient>

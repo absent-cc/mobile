@@ -1,13 +1,15 @@
 {
     "expo": {
         "name": "abSENT-mobile",
-        "slug": "abSENT",
+        "owner": "absent",
+        "slug": "absent-mobile",
         "entryPoint": "./src/App.tsx",
         "version": "1.0.0",
+        "scheme": "absent",
         "orientation": "portrait",
-        "icon": "./assets/icon_logo.png",
+        "icon": "./src/assets/icon_logo.png",
         "splash": {
-            "image": "./assets/splash.png",
+            "image": "./src/assets/splash.png",
             "resizeMode": "cover",
             "backgroundColor": "#ffffff"
         },
@@ -16,16 +18,18 @@
         },
         "assetBundlePatterns": ["**/*"],
         "ios": {
-            "supportsTablet": true
+            "supportsTablet": true,
+            "bundleIdentifier": "cc.absent.client"
         },
         "android": {
             "adaptiveIcon": {
-                "foregroundImage": "./assets/icon_logo.png",
+                "foregroundImage": "./src/assets/icon_logo.png",
                 "backgroundColor": "#FFFFFF"
-            }
+            },
+            "package": "cc.absent.absent"
         },
         "web": {
-            "favicon": "./assets/icon_logo.png"
+            "favicon": "./src/assets/icon_logo.png"
         }
     }
 }

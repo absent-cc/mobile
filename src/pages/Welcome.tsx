@@ -1,17 +1,40 @@
 import React from 'react';
 import { StyleSheet, Image, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as Google from 'expo-auth-session/providers/google';
 import Theme from '../Theme';
-import TextButton from '../components/button/TextButton';
+import GoogleSignIn from '../components/button/GoogleSignIn';
 import { useAPI } from '../state/APIContext';
 
-function Welcome({ navigation }: { navigation: any }) {
+function Welcome() {
+    const [request, response, promptAsync] = Google.useAuthRequest({
+        expoClientId:
+            '349911558418-rusr95n8ttq00iujmk3je4q5fmkiib5t.apps.googleusercontent.com',
+        iosClientId:
+            '349911558418-9tm5hh1jgk7k7obhcor3k9l3l2ejt3ue.apps.googleusercontent.com',
+        androidClientId:
+            '349911558418-tbkntqmdvhb1j71e52ptl4kagp3q23pi.apps.googleusercontent.com',
+    });
     const api = useAPI();
+
+    React.useEffect(() => {
+        if (response?.type === 'success') {
+            const { authentication } = response;
+            if (authentication) {
+                api.login(authentication.accessToken);
+            }
+        }
+    }, [response, api]);
 
     return (
         <View style={styles.container}>
             <LinearGradient
-                colors={[Theme.secondaryColor, Theme.primaryColor]}
+                colors={[
+                    Theme.secondaryColor,
+                    Theme.primaryColor,
+                    Theme.tertiaryColor,
+                ]}
+                locations={[0, 0.5, 1]}
                 start={{ x: 0.0, y: 0.0 }}
                 end={{ x: 1.0, y: 1.0 }}
                 style={styles.gradientBg}
@@ -27,16 +50,14 @@ function Welcome({ navigation }: { navigation: any }) {
                     </Text>
                 </View>
                 <View style={[styles.subarea, styles.ctaSubarea]}>
-                    <Text style={styles.subtitle}>Sign in to get started.</Text>
-                    <TextButton
+                    <Text style={styles.subtitle}>Let's get started.</Text>
+                    <GoogleSignIn
+                        disabled={!request}
                         onPress={() => {
-                            api.login();
-                            navigation.navigate('Onboarding');
+                            promptAsync();
                         }}
                         style={{ marginTop: 10 }}
-                    >
-                        Sign In
-                    </TextButton>
+                    />
                 </View>
             </LinearGradient>
         </View>

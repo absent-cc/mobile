@@ -1,14 +1,16 @@
-import { StyleSheet, Text, ScrollView, View, Alert } from 'react-native';
 import React from 'react';
+import { StyleSheet, Text, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Theme from '../../Theme';
-import Header from '../../components/header/Header';
+import Divider from '../../components/Divider';
 import TextField from '../../components/input/TextField';
 import Dropdown from '../../components/input/Dropdown';
 import TextButton from '../../components/button/TextButton';
-import HeaderSafearea from '../../components/header/HeaderSafearea';
+import WaveHeader from '../../components/header/WaveHeader';
+import WaveHeaderSafearea from '../../components/header/WaveHeaderSafearea';
 import { useSettings } from '../../state/SettingsContext';
 import {
+    EmptyUser,
     gradeIndexer,
     GradeList,
     schoolIndexer,
@@ -16,20 +18,15 @@ import {
 } from '../../Utils';
 import ErrorCard from '../../components/card/ErrorCard';
 import { useAPI } from '../../state/APIContext';
-import Divider from '../../components/Divider';
-import LoadingCard from '../../components/card/LoadingCard';
 
-function GeneralSettings({ navigation }: { navigation: any }) {
+function ProfileOnboarding({ navigation }: { navigation: any }) {
     const insets = useSafeAreaInsets();
 
     const api = useAPI();
     const settings = useSettings();
 
-    const defaultValue = { ...settings.value.user };
+    const defaultValue = settings.value.user;
     const userSettings = React.useRef(defaultValue);
-
-    const [saving, setSaving] = React.useState(false);
-    const [saveError, setSaveError] = React.useState(false);
 
     // validation
     const [validationList, setValidationList] = React.useState({
@@ -56,42 +53,39 @@ function GeneralSettings({ navigation }: { navigation: any }) {
         return !newValidationList.existsInvalid;
     };
 
-    React.useEffect(() => {
-        if (saving) {
-            api.saveUserSettings(userSettings.current)
-                .then(() => {
-                    navigation.navigate('Settings');
-                })
-                .catch(() => {
-                    setSaveError(true);
-                });
+    const save = (): boolean => {
+        if (validate()) {
+            settings.setSettings((oldSettings) => ({
+                ...oldSettings,
+                user: userSettings.current,
+            }));
+            return true;
         }
-    }, [saving, api, settings, navigation]);
-
-    // reset screen on exit
-    React.useEffect(() => {
-        return () => {
-            userSettings.current = defaultValue;
-        };
-    });
+        return false;
+    };
 
     return (
         <View style={styles.pageView}>
-            <HeaderSafearea />
+            <WaveHeaderSafearea />
             <ScrollView
                 style={[styles.container, { marginTop: insets.top }]}
                 // bounces={false}
+                keyboardShouldPersistTaps="handled"
             >
-                <Header
-                    iconName="chevron-left"
+                <WaveHeader
+                    text="Welcome! 👋"
+                    iconName="x"
                     iconClick={() => {
-                        navigation.goBack();
+                        api.logout();
                     }}
-                    isLeft
-                    text="General Settings"
                 />
                 <View style={styles.content}>
-                    <Text style={styles.note}>Edit your account details.</Text>
+                    <Text style={styles.text}>Let's set up your account.</Text>
+                    <Divider />
+
+                    <Text style={styles.header}>Your Profile</Text>
+                    <Text style={styles.note}>Let's get to know you.</Text>
+
                     <TextField
                         label="What's your name?"
                         onChange={(newValue: string) => {
@@ -145,28 +139,17 @@ function GeneralSettings({ navigation }: { navigation: any }) {
                             Please check the info you entered and try again.
                         </ErrorCard>
                     ) : null}
-                    {saving ? (
-                        <LoadingCard style={[styles.validation]}>
-                            Saving...
-                        </LoadingCard>
-                    ) : null}
-                    {saveError ? (
-                        <ErrorCard style={[styles.validation]}>
-                            There was a problem while saving your information.
-                            Please try again.
-                        </ErrorCard>
-                    ) : null}
                     <TextButton
-                        style={[{ zIndex: 1 }, styles.save]}
-                        iconName="save"
+                        style={[{ zIndex: 1 }]}
+                        iconName="chevron-right"
                         onPress={() => {
-                            if (validate()) {
-                                setSaving(true);
+                            if (save()) {
+                                navigation.navigate('ScheduleOnboarding');
                             }
                         }}
                         isFilled
                     >
-                        Save
+                        Next
                     </TextButton>
                 </View>
             </ScrollView>
@@ -190,21 +173,29 @@ const styles = StyleSheet.create({
         paddingTop: 5,
         paddingBottom: 300,
     },
+    text: {
+        color: Theme.foregroundColor,
+        fontFamily: Theme.regularFont,
+        fontSize: 20,
+    },
     note: {
         color: Theme.foregroundColor,
         fontFamily: Theme.regularFont,
         fontSize: 16,
         marginBottom: 16,
     },
-    inputField: {
-        marginTop: 10,
+    header: {
+        color: Theme.foregroundColor,
+        fontFamily: Theme.strongFont,
+        fontSize: 30,
+        marginBottom: 3,
     },
-    save: {
-        marginTop: 20,
+    inputField: {
+        marginVertical: 5,
     },
     validation: {
         marginBottom: 20,
     },
 });
 
-export default GeneralSettings;
+export default ProfileOnboarding;
