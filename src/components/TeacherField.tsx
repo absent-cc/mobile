@@ -275,7 +275,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 2,
     },
     optionPressed: {
-        backgroundColor: Theme.lightForeground,
+        backgroundColor: Theme.lighterForeground,
     },
     // bad teacher
     badTeacher: {
@@ -318,7 +318,7 @@ const styles = StyleSheet.create({
         borderWidth: 2,
     },
     badTeacherCustomPressed: {
-        backgroundColor: Theme.lightForeground,
+        backgroundColor: Theme.lighterForeground,
     },
 });
 

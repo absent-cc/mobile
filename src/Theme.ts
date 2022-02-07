@@ -11,7 +11,6 @@ export default {
     lighterForeground: '#EEEEEE',
     lightForeground: '#CCCCCC',
     darkForeground: '#666',
-    teacherBg: '#fff',
-    freeBg: '#00000011',
     warning: '#F9AF40',
+    darkerPrimary: '#bc1010',
 };

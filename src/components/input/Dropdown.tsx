@@ -52,7 +52,13 @@ function Dropdown({
     return (
         <View style={style}>
             {label ? <Text style={styles.label}>{label}</Text> : null}
-            <Pressable style={[styles.input]} onPress={toggleMenu}>
+            <Pressable
+                style={({ pressed }) => [
+                    styles.input,
+                    pressed ? styles.inputPressed : null,
+                ]}
+                onPress={toggleMenu}
+            >
                 {value === -1 ? (
                     <Text style={styles.placeholder}>{placeholder || ' '}</Text>
                 ) : (
@@ -80,6 +86,10 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         borderRadius: 50,
         width: '100%',
+        backgroundColor: Theme.backgroundColor,
+    },
+    inputPressed: {
+        backgroundColor: Theme.lighterForeground,
     },
     inputText: {
         fontSize: 20,
@@ -133,7 +143,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 2,
     },
     optionPressed: {
-        backgroundColor: Theme.lightForeground,
+        backgroundColor: Theme.lighterForeground,
     },
 });
 

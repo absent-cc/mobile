@@ -16,10 +16,16 @@ function IconButton({
 }) {
     return (
         <Pressable
-            style={[
+            style={({ pressed }) => [
                 style,
                 styles.base,
                 isFilled ? styles.filled : styles.outline,
+                // eslint-disable-next-line no-nested-ternary
+                pressed
+                    ? isFilled
+                        ? styles.pressedFilled
+                        : styles.pressedOutline
+                    : null,
             ]}
             onPress={onPress}
         >
@@ -48,6 +54,11 @@ const styles = StyleSheet.create({
         backgroundColor: Theme.primaryColor,
     },
     outline: {},
+    pressedFilled: {
+        backgroundColor: Theme.darkerPrimary,
+        borderColor: Theme.darkerPrimary,
+    },
+    pressedOutline: {},
 
     icon: {},
     filledIcon: {
