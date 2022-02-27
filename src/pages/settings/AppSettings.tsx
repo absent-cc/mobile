@@ -46,6 +46,7 @@ function AppSettings({ navigation }: { navigation: any }) {
                                 showFreeBlocks: newValue,
                             }));
                         }}
+                        defaultValue={appSettings.showFreeBlocks}
                     />
 
                     <SwitchField
@@ -57,6 +58,7 @@ function AppSettings({ navigation }: { navigation: any }) {
                                 sendNotifications: newValue,
                             }));
                         }}
+                        defaultValue={appSettings.sendNotifications}
                     />
 
                     <SwitchField
@@ -68,6 +70,7 @@ function AppSettings({ navigation }: { navigation: any }) {
                                 sendNoAbsenceNotification: newValue,
                             }));
                         }}
+                        defaultValue={appSettings.sendNoAbsenceNotification}
                     />
                 </View>
             </ScrollView>

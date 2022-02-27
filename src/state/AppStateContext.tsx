@@ -1,13 +1,16 @@
 import React from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AbsenceList } from '../api/APITypes';
+import { AbsenceList, Block } from '../api/APITypes';
+import { isSameDay } from '../DateWordUtils';
 
 export interface AppStateType {
+    serverLoaded: boolean;
     absences: AbsenceList;
+    blocksToday: Block[];
+    lastUpdateTime: number;
+    // needsUpdate: boolean;
 }
 
 export interface AppStateContextType {
-    ready: boolean;
     value: AppStateType;
     resetAppState: () => void;
     setAppState: React.Dispatch<React.SetStateAction<AppStateType>>;
@@ -15,59 +18,52 @@ export interface AppStateContextType {
 
 // Default settings
 export const defaultState: AppStateType = {
+    serverLoaded: false,
     absences: [],
+    blocksToday: [],
+    lastUpdateTime: 0,
+    // needsUpdate: false,
 };
 
 const AppStateContext = React.createContext<AppStateContextType>({
-    ready: false,
     value: defaultState,
-    resetAppState: () => {
-        // default empty function
-    },
-    setAppState: () => {
-        // default empty function
-    },
+    resetAppState: () => undefined,
+    setAppState: () => undefined,
 });
 
 export function AppStateProvider({ children }: { children: React.ReactNode }) {
     const [appState, setAppState] = React.useState<AppStateType>(defaultState);
-    const [ready, setReady] = React.useState(false);
 
-    // Save and read state
+    // state updater
     React.useEffect(() => {
-        const run = async () => {
-            if (!ready) {
-                // Read state
-                const savedString = await AsyncStorage.getItem('appstate');
+        const update = () => {
+            setAppState((oldAppState) => {
+                const lastStateUpdate = oldAppState.lastUpdateTime;
+                const now = Date.now();
 
-                if (savedString) {
-                    let savedState;
+                const stateChanges: AppStateType = {
+                    ...oldAppState,
+                    lastUpdateTime: now,
+                    // needsUpdate: true,
+                };
 
-                    try {
-                        savedState = JSON.parse(savedString);
-                    } catch (e) {
-                        savedState = {};
-                    }
-
-                    setAppState({
-                        ...defaultState,
-                        ...savedState,
-                    });
-                } else {
-                    setAppState({
-                        ...defaultState,
-                    });
+                // reset day
+                if (!isSameDay(new Date(lastStateUpdate), new Date(now))) {
+                    stateChanges.absences = [];
+                    stateChanges.blocksToday = [];
                 }
-                setReady(true);
-            } else {
-                // Save state
-                const stateString = JSON.stringify(appState);
-                await AsyncStorage.setItem('appstate', stateString);
-            }
+
+                return stateChanges;
+            });
         };
 
-        run();
-    }, [appState, ready]);
+        // Initial update on load
+        update();
+
+        const interval = setInterval(update, 5 * 1000);
+
+        return () => clearInterval(interval);
+    }, []);
 
     // Memoized just in case
     const resetAppState = React.useCallback(() => {
@@ -79,11 +75,10 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     const appStateProp: AppStateContextType = React.useMemo(
         () => ({
             value: appState,
-            ready,
             resetAppState,
             setAppState,
         }),
-        [ready, appState, resetAppState],
+        [appState, resetAppState],
     );
 
     return (

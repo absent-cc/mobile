@@ -1,36 +1,37 @@
 import { Feather } from '@expo/vector-icons';
 import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
+import { AbsenceItem } from '../../AbsenceCalculator';
 import { AbsentTeacher, Block } from '../../api/APITypes';
 import Theme from '../../Theme';
 import { ShortBlocks } from '../../Utils';
 
 function TeacherCard({
-    block,
     style,
-    isFree = false,
-    teacher,
+    absenceItem,
 }: {
-    block: Block;
-    isFree?: boolean;
-    teacher?: AbsentTeacher;
+    absenceItem: AbsenceItem;
     style?: any;
 }) {
     let boxContent;
 
-    if (block === Block.ADV) {
-        boxContent = <Text style={styles.adv}>{ShortBlocks[Block.ADV]}</Text>;
-    } else if (block === Block.EXTRA) {
+    if (absenceItem.block === Block.ADVISORY) {
+        boxContent = (
+            <Text style={styles.adv}>{ShortBlocks[Block.ADVISORY]}</Text>
+        );
+    } else if (absenceItem.block === Block.EXTRA) {
         boxContent = <Feather name="plus" style={styles.icon} size={40} />;
     } else {
-        boxContent = <Text style={styles.block}>{ShortBlocks[block]}</Text>;
+        boxContent = (
+            <Text style={styles.block}>{ShortBlocks[absenceItem.block]}</Text>
+        );
     }
 
     return (
         <View style={[style, styles.container]}>
             <View style={styles.blockBox}>{boxContent}</View>
             <View style={styles.content}>
-                {isFree || !teacher ? (
+                {absenceItem.isFree || !absenceItem.teacher ? (
                     <>
                         <Text style={[styles.free]}>Free!</Text>
                         <Text style={[styles.freeNote]}>
@@ -39,9 +40,15 @@ function TeacherCard({
                     </>
                 ) : (
                     <>
-                        <Text style={[styles.name]}>{teacher.name}</Text>
-                        <Text style={[styles.time]}>{teacher.time}</Text>
-                        <Text style={[styles.note]}>{teacher.notes}</Text>
+                        <Text style={[styles.name]}>
+                            {absenceItem.teacher.name}
+                        </Text>
+                        <Text style={[styles.time]}>
+                            {absenceItem.teacher.time}
+                        </Text>
+                        <Text style={[styles.note]}>
+                            {absenceItem.teacher.notes}
+                        </Text>
                     </>
                 )}
             </View>

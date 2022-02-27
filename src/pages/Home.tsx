@@ -13,13 +13,16 @@ import TeacherCard from '../components/card/TeacherCard';
 import Divider from '../components/Divider';
 import WaveHeaderSafearea from '../components/header/WaveHeaderSafearea';
 import { useSettings } from '../state/SettingsContext';
-import { Block } from '../api/APITypes';
 import { splitName } from '../Utils';
 import { useAPI } from '../state/APIContext';
+import absenceCalculator from '../AbsenceCalculator';
+import { useAppState } from '../state/AppStateContext';
+import { dateFormatter, timeOfDay, toWords } from '../DateWordUtils';
 
 function Home({ navigation }: { navigation: any }) {
     const insets = useSafeAreaInsets();
-    const settings = useSettings();
+    const { value: settings, setSettings } = useSettings();
+    const { value: appState, setAppState } = useAppState();
     const api = useAPI();
 
     const [refreshing, setRefreshing] = React.useState(false);
@@ -28,13 +31,118 @@ function Home({ navigation }: { navigation: any }) {
         setRefreshing(true);
     }, []);
 
+    // refresh
     React.useEffect(() => {
         if (refreshing) {
-            Promise.all([api.fetchSettings(), api.fetchAbsences()]).then(() => {
+            Promise.all([
+                api.fetchSettings(),
+                api.fetchAbsences(),
+                api.getClassesToday(),
+            ]).then(([newSettings, absences, classesToday]) => {
                 setRefreshing(false);
+                setAppState((oldAppState) => {
+                    const stateChanges = {
+                        ...oldAppState,
+                        // needsUpdate: false,
+                    };
+                    if (absences !== null) stateChanges.absences = absences;
+                    if (classesToday !== null)
+                        stateChanges.blocksToday = classesToday;
+                    return stateChanges;
+                });
+                setSettings((oldSettings) => {
+                    const stateChanges = {
+                        ...oldSettings,
+                    };
+                    if (newSettings !== null) {
+                        stateChanges.user = newSettings.user;
+                        stateChanges.schedule = newSettings.schedule;
+                    }
+                    return stateChanges;
+                });
             });
         }
-    }, [refreshing, api]);
+    }, [refreshing, api, setAppState, setSettings]);
+
+    const now = new Date(appState.lastUpdateTime);
+    const [timeWords, timeEmoji] = timeOfDay(now);
+
+    let body;
+
+    if (appState.blocksToday.length === 0) {
+        body = (
+            <Text style={styles.status}>
+                No school today! Have a great day!
+            </Text>
+        );
+    } else if (appState.absences.length === 0) {
+        body = (
+            <Text style={styles.status}>
+                The absence list hasn't been posted yet, check back later!
+            </Text>
+        );
+    } else {
+        const { teachersAbsent, extraAbsent } = absenceCalculator(
+            settings.schedule,
+            appState.blocksToday,
+            appState.absences,
+            settings.app.showFreeBlocks,
+        );
+        const numTeachersAbsent = teachersAbsent.length + extraAbsent.length;
+
+        const teacherCards = teachersAbsent.map((absenceItem) => (
+            <TeacherCard
+                style={styles.card}
+                absenceItem={absenceItem}
+                key={`${absenceItem.block}-${
+                    absenceItem.teacher?.name || 'free'
+                }`}
+            />
+        ));
+
+        const extraCards = extraAbsent.map((absenceItem) => (
+            <TeacherCard
+                style={styles.card}
+                absenceItem={absenceItem}
+                key={`${absenceItem.block}-${
+                    absenceItem.teacher?.name || 'free'
+                }`}
+            />
+        ));
+
+        body = (
+            <>
+                {numTeachersAbsent ? (
+                    <Text style={styles.status}>
+                        You have{' '}
+                        <Text style={styles.count}>
+                            {toWords(numTeachersAbsent)}
+                        </Text>
+                        absent teacher{numTeachersAbsent !== 1 ? 's' : ''}{' '}
+                        today!
+                    </Text>
+                ) : (
+                    <Text style={styles.status}>
+                        You have no absent teachers today. Check back tomorrow!
+                    </Text>
+                )}
+
+                {teacherCards.length > 0 && (
+                    <>
+                        <Text style={styles.header}>Classes</Text>
+                        {teacherCards}
+                    </>
+                )}
+
+                {extraCards.length > 0 && (
+                    <>
+                        <Text style={styles.header}>Extra Teachers</Text>
+                        {extraCards}
+                    </>
+                )}
+            </>
+        );
+    }
 
     return (
         <View style={styles.pageView}>
@@ -57,42 +165,21 @@ function Home({ navigation }: { navigation: any }) {
                         navigation.navigate('Settings');
                     }}
                     text={
-                        settings.value.user.name.length > 0
-                            ? `Good morning, ${
-                                  splitName(settings.value.user.name)[0]
-                              }! ☀️`
-                            : 'Good morning! ☀️'
+                        settings.user.name.length > 0
+                            ? `Good ${timeWords}, ${
+                                  splitName(settings.user.name)[0]
+                              }! ${timeEmoji}`
+                            : `Good ${timeWords}! ${timeEmoji}`
                     }
                 />
                 <View style={styles.content}>
                     <Text style={styles.hello}>
                         Today is{' '}
-                        <Text style={styles.date}>Sunday, January 16</Text>. ☀️
+                        <Text style={styles.date}>{dateFormatter(now)}</Text>.{' '}
+                        {timeEmoji}
                     </Text>
                     <Divider />
-                    <Text style={styles.status}>
-                        You have <Text style={styles.count}>three</Text> free
-                        blocks today!
-                    </Text>
-                    <TeacherCard
-                        style={styles.card}
-                        teacher={{
-                            name: 'Kevin McFakehead',
-                            time: 'All Day',
-                            notes: 'All classes cancelled',
-                        }}
-                        block={Block.A}
-                    />
-                    <TeacherCard style={styles.card} block={Block.E} isFree />
-                    <TeacherCard
-                        style={styles.card}
-                        teacher={{
-                            name: 'Margaret Moon',
-                            time: 'Partial Day AM',
-                            notes: 'All classes cancelled',
-                        }}
-                        block={Block.ADV}
-                    />
+                    {body}
                 </View>
             </ScrollView>
         </View>
@@ -112,7 +199,7 @@ const styles = StyleSheet.create({
     },
     content: {
         paddingHorizontal: 30,
-        paddingTop: 5,
+        paddingTop: 15,
         paddingBottom: 80,
     },
     hello: {
@@ -133,6 +220,11 @@ const styles = StyleSheet.create({
     },
     card: {
         marginTop: 20,
+    },
+    header: {
+        color: Theme.foregroundColor,
+        fontFamily: Theme.headerFont,
+        fontSize: 30,
     },
 });
 

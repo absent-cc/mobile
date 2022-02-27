@@ -7,7 +7,7 @@ import GoogleSignIn from '../components/button/GoogleSignIn';
 import { useAPI } from '../state/APIContext';
 
 function Welcome() {
-    const [request, response, promptAsync] = Google.useAuthRequest({
+    const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
         expoClientId:
             '349911558418-rusr95n8ttq00iujmk3je4q5fmkiib5t.apps.googleusercontent.com',
         iosClientId:
@@ -18,11 +18,8 @@ function Welcome() {
     const api = useAPI();
 
     React.useEffect(() => {
-        if (response?.type === 'success') {
-            const { authentication } = response;
-            if (authentication) {
-                api.login(authentication.accessToken);
-            }
+        if (response?.type === 'success' && response.params.id_token) {
+            api.login(response.params.id_token);
         }
     }, [response, api]);
 
@@ -43,20 +40,22 @@ function Welcome() {
                     <Image
                         style={styles.logo}
                         // eslint-disable-next-line global-require, import/extensions
-                        source={require('../assets/text_logo.png')}
+                        source={require('../../assets/images/text_logo.png')}
                     />
                     <Text style={styles.subtitle}>
                         Cancelled classes at your fingertips.
                     </Text>
                 </View>
                 <View style={[styles.subarea, styles.ctaSubarea]}>
-                    <Text style={styles.subtitle}>Let's get started.</Text>
+                    <Text style={styles.nps}>
+                        Use your NPS Google account to get started.
+                    </Text>
                     <GoogleSignIn
                         disabled={!request}
                         onPress={() => {
                             promptAsync();
                         }}
-                        style={{ marginTop: 10 }}
+                        style={styles.button}
                     />
                 </View>
             </LinearGradient>
@@ -91,6 +90,15 @@ const styles = StyleSheet.create({
     subtitle: {
         color: Theme.foregroundAlternate,
         fontFamily: Theme.strongFont,
+        fontSize: 20,
+        textAlign: 'center',
+    },
+    button: {
+        marginTop: 15,
+    },
+    nps: {
+        color: Theme.foregroundAlternate,
+        fontFamily: Theme.regularFont,
         fontSize: 20,
         textAlign: 'center',
     },

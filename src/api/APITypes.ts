@@ -1,5 +1,5 @@
 export enum SchoolName {
-    NONE = '',
+    NONE = 'NONE',
     NSHS = 'NSHS',
     NNHS = 'NNHS',
 }
@@ -20,7 +20,7 @@ export enum Block {
     E = 'E',
     F = 'F',
     G = 'G',
-    ADV = 'ADV',
+    ADVISORY = 'ADVISORY',
     EXTRA = 'EXTRA',
 }
 
@@ -39,7 +39,6 @@ export type EditingSchedule = {
 };
 
 export type UserSettings = {
-    uid: string;
     name: string;
     school: SchoolName;
     grade: Grade;

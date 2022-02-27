@@ -18,7 +18,19 @@ function Header({
 }) {
     return (
         <View style={[style, styles.container]}>
-            <Text style={styles.header}>{text}</Text>
+            <Text
+                style={[
+                    styles.header,
+                    // eslint-disable-next-line no-nested-ternary
+                    iconName
+                        ? isLeft
+                            ? styles.headerWithLeftIcon
+                            : styles.headerWithRightIcon
+                        : null,
+                ]}
+            >
+                {text}
+            </Text>
             {iconName && iconClick ? (
                 <Feather
                     style={[
@@ -40,13 +52,19 @@ const styles = StyleSheet.create({
         height: 200,
     },
     header: {
-        fontFamily: Theme.strongFont,
+        fontFamily: Theme.headerFont,
         color: Theme.foregroundColor,
         fontSize: 38,
         position: 'absolute',
         left: 30,
         right: 30,
         bottom: 20,
+    },
+    headerWithRightIcon: {
+        paddingRight: 30,
+    },
+    headerWithLeftIcon: {
+        paddingRight: 30,
     },
     icon: {
         position: 'absolute',

@@ -24,8 +24,7 @@ function ProfileOnboarding({ navigation }: { navigation: any }) {
     const api = useAPI();
     const settings = useSettings();
 
-    const defaultValue = settings.value.user;
-    const userSettings = React.useRef(defaultValue);
+    const userSettings = React.useRef(settings.value.user);
 
     // validation
     const [validationList, setValidationList] = React.useState({
@@ -89,6 +88,9 @@ function ProfileOnboarding({ navigation }: { navigation: any }) {
                         label="What's your name?"
                         onChange={(newValue: string) => {
                             userSettings.current.name = newValue;
+
+                            // once it has already been validated once, redo on subsequent inputs
+                            if (validationList.existsInvalid) validate();
                         }}
                         placeholder="e.g. Kevin McFakehead"
                         style={[styles.inputField, { zIndex: 4 }]}
@@ -103,6 +105,9 @@ function ProfileOnboarding({ navigation }: { navigation: any }) {
                         label="What grade are you in?"
                         onChange={(newValue: number) => {
                             userSettings.current.grade = GradeList[newValue];
+
+                            // once it has already been validated once, redo on subsequent inputs
+                            if (validationList.existsInvalid) validate();
                         }}
                         style={[styles.inputField, { zIndex: 3 }]}
                         placeholder="Select a grade"
@@ -118,6 +123,9 @@ function ProfileOnboarding({ navigation }: { navigation: any }) {
                         label="Which school do you go to?"
                         onChange={(newValue: number) => {
                             userSettings.current.school = SchoolList[newValue];
+
+                            // once it has already been validated once, redo on subsequent inputs
+                            if (validationList.existsInvalid) validate();
                         }}
                         style={[styles.inputField, { zIndex: 2 }]}
                         placeholder="Select a school"
@@ -169,7 +177,7 @@ const styles = StyleSheet.create({
     },
     content: {
         paddingHorizontal: 30,
-        paddingTop: 5,
+        paddingTop: 15,
         paddingBottom: 300,
     },
     text: {
@@ -185,7 +193,7 @@ const styles = StyleSheet.create({
     },
     header: {
         color: Theme.foregroundColor,
-        fontFamily: Theme.strongFont,
+        fontFamily: Theme.headerFont,
         fontSize: 30,
         marginBottom: 3,
     },

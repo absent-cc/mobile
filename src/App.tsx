@@ -6,6 +6,7 @@ import {
     useFonts,
     Inter_700Bold,
     Inter_400Regular,
+    Inter_600SemiBold,
 } from '@expo-google-fonts/inter';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -21,6 +22,7 @@ import { SettingsProvider, useSettings } from './state/SettingsContext';
 import { APIProvider, useAPI } from './state/APIContext';
 import ScheduleOnboarding from './pages/onboarding/ScheduleOnboarding';
 import ProfileOnboarding from './pages/onboarding/ProfileOnboarding';
+import Loading from './pages/Loading';
 
 const Stack = createNativeStackNavigator();
 
@@ -28,13 +30,25 @@ function App() {
     const [fontsLoaded] = useFonts({
         Inter_400Regular,
         Inter_700Bold,
+        Inter_600SemiBold,
+        // eslint-disable-next-line global-require, import/extensions
+        Inter_Display_600SemiBold: require('../assets/fonts/InterDisplay-SemiBold.otf'),
     });
     const appState = useAppState();
     const settings = useSettings();
     const api = useAPI();
 
-    if (!(fontsLoaded && appState.ready && settings.ready && api.ready)) {
+    // first, wait for everything to load from local
+    if (!fontsLoaded || !api.ready) {
         return <AppLoading />;
+    }
+
+    // then, if we are logged in, wait for a server update
+    if (
+        api.isLoggedIn &&
+        (!appState.value.serverLoaded || !settings.value.serverLoaded)
+    ) {
+        return <Loading />;
     }
 
     return (

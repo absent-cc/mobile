@@ -8,6 +8,18 @@ import {
 } from './api/APITypes';
 import { AppSettings } from './state/SettingsContext';
 
+export const BlockIterator: Block[] = [
+    Block.A,
+    Block.B,
+    Block.C,
+    Block.D,
+    Block.E,
+    Block.F,
+    Block.G,
+    Block.ADVISORY,
+    Block.EXTRA,
+];
+
 export const BlockMapping: Record<Block, string> = {
     A: 'A Block',
     B: 'B Block',
@@ -16,7 +28,7 @@ export const BlockMapping: Record<Block, string> = {
     E: 'E Block',
     F: 'F Block',
     G: 'G Block',
-    ADV: 'Advisory',
+    ADVISORY: 'Advisory',
     EXTRA: 'Extra Teachers',
 };
 
@@ -28,7 +40,7 @@ export const ShortBlocks: Record<Block, string> = {
     E: 'E',
     F: 'F',
     G: 'G',
-    ADV: 'ADV',
+    ADVISORY: 'ADVISORY',
     EXTRA: 'EXTRA',
 };
 
@@ -40,7 +52,7 @@ export const EmptySchedule: Schedule = {
     E: [],
     F: [],
     G: [],
-    ADV: [],
+    ADVISORY: [],
     EXTRA: [],
 };
 
@@ -52,12 +64,11 @@ export const EmptyEditingSchedule: EditingSchedule = {
     E: [],
     F: [],
     G: [],
-    ADV: [],
+    ADVISORY: [],
     EXTRA: [],
 };
 
 export const EmptyUser: UserSettings = {
-    uid: '',
     name: '',
     school: SchoolName.NONE,
     grade: Grade.NONE,
@@ -89,8 +100,55 @@ export const gradeIndexer = (grade: Grade): number => {
     return GradeList.indexOf(grade);
 };
 
+export const numToGrade = (num: number): Grade => {
+    switch (num) {
+        case 9:
+            return Grade.G9;
+        case 10:
+            return Grade.G10;
+        case 11:
+            return Grade.G11;
+        case 12:
+            return Grade.G12;
+        default:
+            return Grade.NONE;
+    }
+};
+
 export const SchoolList = [SchoolName.NSHS, SchoolName.NNHS];
 
 export const schoolIndexer = (school: SchoolName): number => {
     return SchoolList.indexOf(school);
+};
+
+export const strToSchool = (str: string): SchoolName => {
+    switch (str) {
+        case 'NSHS':
+            return SchoolName.NSHS;
+        case 'NNHS':
+            return SchoolName.NNHS;
+        default:
+            return SchoolName.NONE;
+    }
+};
+
+export const apiResponseToSchedule = (
+    response: Record<Block, any[] | null>,
+): Schedule => {
+    const schedule: Partial<Schedule> = {};
+    console.log(response);
+    BlockIterator.forEach((block) => {
+        const responseObj = response[block];
+        if (responseObj !== null) {
+            schedule[block] = responseObj.map((teacher: any) => ({
+                tid: teacher.tid,
+                name: joinName(teacher.first, teacher.last),
+                school: strToSchool(teacher.school),
+            }));
+        } else {
+            schedule[block] = [];
+        }
+    });
+
+    return schedule as Schedule;
 };

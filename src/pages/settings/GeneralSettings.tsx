@@ -25,6 +25,7 @@ function GeneralSettings({ navigation }: { navigation: any }) {
     const api = useAPI();
     const settings = useSettings();
 
+    // TODO: change this to be a deep copy someday for safety
     const defaultValue = { ...settings.value.user };
     const userSettings = React.useRef(defaultValue);
 
@@ -96,6 +97,9 @@ function GeneralSettings({ navigation }: { navigation: any }) {
                         label="What's your name?"
                         onChange={(newValue: string) => {
                             userSettings.current.name = newValue;
+
+                            // once it has already been validated once, redo on subsequent inputs
+                            if (validationList.existsInvalid) validate();
                         }}
                         placeholder="e.g. Kevin McFakehead"
                         style={[styles.inputField, { zIndex: 4 }]}
@@ -110,6 +114,9 @@ function GeneralSettings({ navigation }: { navigation: any }) {
                         label="What grade are you in?"
                         onChange={(newValue: number) => {
                             userSettings.current.grade = GradeList[newValue];
+
+                            // once it has already been validated once, redo on subsequent inputs
+                            if (validationList.existsInvalid) validate();
                         }}
                         style={[styles.inputField, { zIndex: 3 }]}
                         placeholder="Select a grade"
@@ -125,6 +132,9 @@ function GeneralSettings({ navigation }: { navigation: any }) {
                         label="Which school do you go to?"
                         onChange={(newValue: number) => {
                             userSettings.current.school = SchoolList[newValue];
+
+                            // once it has already been validated once, redo on subsequent inputs
+                            if (validationList.existsInvalid) validate();
                         }}
                         style={[styles.inputField, { zIndex: 2 }]}
                         placeholder="Select a school"

@@ -1,5 +1,4 @@
 import React from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Schedule, UserSettings } from '../api/APITypes';
 import { DefaultAppSettings, EmptySchedule, EmptyUser } from '../Utils';
 
@@ -10,14 +9,15 @@ export type AppSettings = {
 };
 
 export type SettingsType = {
+    serverLoaded: boolean;
     userOnboarded: boolean;
+    uid: string;
     app: AppSettings;
     user: UserSettings;
     schedule: Schedule;
 };
 
 export type SettingsContextType = {
-    ready: boolean;
     value: SettingsType;
     resetSettings: () => void;
     setSettings: React.Dispatch<React.SetStateAction<SettingsType>>;
@@ -25,7 +25,9 @@ export type SettingsContextType = {
 
 // Default settings
 export const defaultState: SettingsType = {
+    serverLoaded: false,
     userOnboarded: false,
+    uid: '',
     app: DefaultAppSettings,
     user: EmptyUser,
     schedule: EmptySchedule,
@@ -37,59 +39,13 @@ export function settingsTransformer(oldSettings: any): SettingsType {
 }
 
 const SettingsContext = React.createContext<SettingsContextType>({
-    ready: false,
     value: defaultState,
-    resetSettings: () => {
-        // default empty function
-    },
-    setSettings: () => {
-        // default empty function
-    },
+    resetSettings: () => undefined,
+    setSettings: () => undefined,
 });
 
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
     const [settings, setSettings] = React.useState<SettingsType>(defaultState);
-    const [ready, setReady] = React.useState(false);
-
-    // Save and read state
-    React.useEffect(() => {
-        const run = async () => {
-            if (!ready) {
-                // Read state
-                const savedSettingsString = await AsyncStorage.getItem(
-                    'settings',
-                );
-                if (savedSettingsString) {
-                    let savedSettings;
-
-                    try {
-                        savedSettings = JSON.parse(savedSettingsString);
-
-                        savedSettings = settingsTransformer(savedSettings);
-                    } catch (e) {
-                        savedSettings = {};
-                    }
-
-                    setSettings({
-                        ...defaultState,
-                        ...savedSettings,
-                    });
-                } else {
-                    setSettings({
-                        ...defaultState,
-                    });
-                }
-
-                setReady(true);
-            } else {
-                // Save state
-                const settingsString = JSON.stringify(settings);
-                await AsyncStorage.setItem('settings', settingsString);
-            }
-        };
-
-        run();
-    }, [settings, ready]);
 
     // Memoized just in case
     const resetSettings = React.useCallback(() => {
@@ -101,11 +57,10 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     const settingsProp: SettingsContextType = React.useMemo(
         () => ({
             value: settings,
-            ready,
             resetSettings,
             setSettings,
         }),
-        [ready, settings, resetSettings],
+        [settings, resetSettings],
     );
 
     return (

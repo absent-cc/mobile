@@ -51,6 +51,7 @@
             }
         ],
         "react/style-prop-object": 0,
-        "react/no-unescaped-entities": 0
+        "react/no-unescaped-entities": 0,
+        "react/no-unused-prop-types": 0
     }
 }

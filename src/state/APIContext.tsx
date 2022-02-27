@@ -3,26 +3,47 @@ import * as SecureStore from 'expo-secure-store';
 import { useSettings } from './SettingsContext';
 import { useAppState } from './AppStateContext';
 import * as APIMethods from '../api/APIMethods';
-import { Block, EditingSchedule, Teacher, UserSettings } from '../api/APITypes';
+import {
+    AbsenceList,
+    Block,
+    EditingSchedule,
+    Schedule,
+    UserSettings,
+} from '../api/APITypes';
+import { formatISODate } from '../DateWordUtils';
+import {
+    APIError,
+    AuthenticationError,
+    BadTokenError,
+    NetworkError,
+    ServerError,
+    ValidationError,
+} from '../api/APIErrors';
 
 export interface APIDataType {
+    ready: boolean;
     isLoggedIn: boolean;
+    lastTokenUpdate: number;
     token: string | null;
+    refresh: string | null;
 }
 
 export interface APIContextType {
     ready: boolean;
     isLoggedIn: boolean;
-    fetchAbsences: () => Promise<void>;
-    fetchSettings: () => Promise<void>;
+    fetchAbsences: () => Promise<AbsenceList | null>;
+    fetchSettings: () => Promise<{
+        user: UserSettings;
+        schedule: Schedule;
+    } | null>;
     logout: () => Promise<void>;
     login: (accessToken: string) => Promise<void>;
-    searchTeachers: (searchString: string) => Promise<Teacher[]>;
-    getClassesToday: () => Promise<Block[]>;
+    searchTeachers: (searchString: string) => Promise<string[] | null>;
+    getClassesToday: () => Promise<Block[] | null>;
     isRealTeacher: (partialName: string) => Promise<{
         isReal: boolean;
         similar: string[];
-    }>;
+    } | null>;
     saveSettings: (newSettings: {
         user: UserSettings;
         schedule: EditingSchedule;
@@ -34,146 +55,38 @@ export interface APIContextType {
 const APIContext = React.createContext<APIContextType>({
     ready: false,
     isLoggedIn: false,
-    fetchAbsences: async () => {
-        // default empty
-    },
-    fetchSettings: async () => {
-        // default empty
-    },
-    logout: async () => {
-        // default empty
-    },
-    login: async () => {
-        // default empty
-    },
-    searchTeachers: async () => {
-        return [];
-    },
-    getClassesToday: async () => {
-        return [];
-    },
-    isRealTeacher: async () => {
-        return {
-            isReal: false,
-            similar: [],
-        };
-    },
-    saveSettings: async () => {
-        // default empty
-    },
-    saveSchedule: async () => {
-        // default empty
-    },
-    saveUserSettings: async () => {
-        // default empty
-    },
+    fetchAbsences: async () => null,
+    fetchSettings: async () => null,
+    logout: async () => undefined,
+    login: async () => undefined,
+    searchTeachers: async () => null,
+    getClassesToday: async () => null,
+    isRealTeacher: async () => null,
+    saveSettings: async () => undefined,
+    saveSchedule: async () => undefined,
+    saveUserSettings: async () => undefined,
 });
 
 const defaultState: APIDataType = {
+    ready: false,
     isLoggedIn: false,
+    lastTokenUpdate: 0,
     token: null,
+    refresh: null,
 };
 
 export function APIProvider({ children }: { children: React.ReactNode }) {
     const [apiSettings, setAPISettings] =
         React.useState<APIDataType>(defaultState);
-    const [ready, setReady] = React.useState(false);
+    const [serverLoaded, setServerLoaded] = React.useState(false);
 
-    const { setSettings, resetSettings } = useSettings();
-    const { setAppState } = useAppState();
-
-    const fetchAbsences = React.useCallback(async () => {
-        if (apiSettings.token === null) return;
-
-        const response = await APIMethods.fetchAbsences(apiSettings.token);
-
-        setAppState((oldState) => {
-            return {
-                ...oldState,
-                absences: response,
-            };
-        });
-    }, [setAppState, apiSettings.token]);
-
-    const fetchSettings = React.useCallback(async () => {
-        if (apiSettings.token === null) return;
-
-        const response = await APIMethods.fetchSettings(apiSettings.token);
-
-        setSettings((oldSettings) => {
-            return {
-                ...oldSettings,
-                user: response.user,
-                schedule: response.schedule,
-            };
-        });
-    }, [apiSettings.token, setSettings]);
-
-    const saveSettings = React.useCallback(
-        async (newSettings: {
-            user: UserSettings;
-            schedule: EditingSchedule;
-        }) => {
-            if (apiSettings.token === null) return;
-
-            const response = await APIMethods.saveSettings(
-                newSettings,
-                apiSettings.token,
-            );
-
-            setSettings((oldSettings) => {
-                return {
-                    ...oldSettings,
-                    user: response.user,
-                    schedule: response.schedule,
-                };
-            });
-        },
-        [apiSettings.token, setSettings],
-    );
-
-    const saveSchedule = React.useCallback(
-        async (newSettings: EditingSchedule) => {
-            if (apiSettings.token === null) return;
-
-            const response = await APIMethods.saveSchedule(
-                newSettings,
-                apiSettings.token,
-            );
-
-            setSettings((oldSettings) => {
-                return {
-                    ...oldSettings,
-                    schedule: response,
-                };
-            });
-        },
-        [apiSettings.token, setSettings],
-    );
-
-    const saveUserSettings = React.useCallback(
-        async (newSettings: UserSettings) => {
-            if (apiSettings.token === null) return;
-
-            const response = await APIMethods.saveUserSettings(
-                newSettings,
-                apiSettings.token,
-            );
-
-            setSettings((oldSettings) => {
-                return {
-                    ...oldSettings,
-                    user: response,
-                };
-            });
-        },
-        [apiSettings.token, setSettings],
-    );
+    const { value: settings, setSettings, resetSettings } = useSettings();
+    const { value: appState, setAppState } = useAppState();
 
     const logout = React.useCallback(async () => {
-        if (apiSettings.token !== null) {
-            await APIMethods.logout(apiSettings.token);
-        }
+        // if (apiSettings.token !== null) {
+        //     await APIMethods.logout(apiSettings.token);
+        // }
 
         resetSettings();
         setAPISettings((oldState) => {
@@ -183,118 +96,491 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 isLoggedIn: false,
             };
         });
-    }, [apiSettings.token, resetSettings]);
+        setServerLoaded(false);
+    }, [resetSettings]);
+
+    const parseError = React.useCallback(
+        (error: any, hasRetried: boolean): boolean => {
+            if (error instanceof Error && error instanceof APIError) {
+                if (error instanceof BadTokenError) {
+                    // retry once
+                    if (hasRetried) {
+                        console.error(
+                            'Unexpected failure to verify token in',
+                            error.caller,
+                        );
+                        return false;
+                    }
+                    return true;
+                }
+                if (error instanceof ValidationError) {
+                    console.error(
+                        'Validation error in',
+                        error.caller,
+                        error.message,
+                        error.description,
+                    );
+                    return false;
+                }
+                if (error instanceof AuthenticationError) {
+                    console.error(
+                        'Unknown error in',
+                        error.caller,
+                        error.description,
+                    );
+                    logout();
+                    return false;
+                }
+                if (error instanceof ServerError) {
+                    console.error('Server error in', error.caller);
+                    return false;
+                }
+                if (error instanceof NetworkError) {
+                    // retry once
+                    if (hasRetried) {
+                        console.error('Network error in', error.caller);
+                        return false;
+                    }
+                    return true;
+                }
+
+                console.error(
+                    'Unknown error in',
+                    error.caller,
+                    error.description,
+                );
+                return false;
+            }
+            console.error('An unknown error occurred', error);
+            return false;
+        },
+        [logout],
+    );
+
+    const verifyToken = React.useCallback(
+        async (forceRefresh = false): Promise<string | null> => {
+            if (apiSettings.token === null || apiSettings.refresh === null) {
+                return null;
+            }
+
+            const now = Date.now();
+            // check if token is valid, 10 mins
+            if (!forceRefresh && now - apiSettings.lastTokenUpdate < 600000) {
+                return apiSettings.token;
+            }
+
+            // send refresh token
+            try {
+                const { token } = await APIMethods.refresh(apiSettings.refresh);
+
+                // update settings
+                setAPISettings((oldState) => ({
+                    ...oldState,
+                    lastTokenUpdate: now,
+                    token,
+                }));
+
+                return token;
+            } catch (err: any) {
+                // never retry verifyToken
+                parseError(err, true);
+                return null;
+            }
+        },
+        [
+            apiSettings.lastTokenUpdate,
+            apiSettings.refresh,
+            apiSettings.token,
+            parseError,
+        ],
+    );
+
+    const fetchAbsences = React.useCallback(
+        async (hasRetried = false): Promise<AbsenceList | null> => {
+            const token = await verifyToken(hasRetried);
+            if (token === null) return null;
+
+            try {
+                const response = await APIMethods.fetchAbsences(token);
+
+                return response;
+            } catch (err: any) {
+                const shouldRetry = parseError(err, hasRetried);
+                if (shouldRetry) {
+                    return fetchAbsences(true);
+                }
+                return null;
+            }
+        },
+        [parseError, verifyToken],
+    );
+
+    const fetchSettings = React.useCallback(
+        async (
+            hasRetried = false,
+        ): Promise<{
+            uid: string;
+            user: UserSettings;
+            schedule: Schedule;
+        } | null> => {
+            const token = await verifyToken(hasRetried);
+            if (token === null) return null;
+
+            try {
+                const response = await APIMethods.fetchSettings(token);
+
+                return {
+                    uid: response.uid,
+                    user: response.user,
+                    schedule: response.schedule,
+                };
+            } catch (err: any) {
+                const shouldRetry = parseError(err, hasRetried);
+                if (shouldRetry) {
+                    return fetchSettings(true);
+                }
+                return null;
+            }
+        },
+        [parseError, verifyToken],
+    );
+
+    const saveSettings = React.useCallback(
+        async (
+            newSettings: {
+                user: UserSettings;
+                schedule: EditingSchedule;
+            },
+            hasRetried = false,
+        ) => {
+            const token = await verifyToken(hasRetried);
+            if (token === null) return;
+
+            try {
+                const response = await APIMethods.saveSettings(
+                    newSettings,
+                    token,
+                );
+
+                setSettings((oldSettings) => {
+                    return {
+                        ...oldSettings,
+                        user: response.user,
+                        schedule: response.schedule,
+                    };
+                });
+            } catch (err: any) {
+                const shouldRetry = parseError(err, hasRetried);
+                if (shouldRetry) {
+                    saveSettings(newSettings, true);
+                }
+            }
+        },
+        [parseError, setSettings, verifyToken],
+    );
+
+    const saveSchedule = React.useCallback(
+        async (newSettings: EditingSchedule, hasRetried = false) => {
+            const token = await verifyToken(hasRetried);
+            if (token === null) return;
+
+            try {
+                const response = await APIMethods.saveSchedule(
+                    newSettings,
+                    token,
+                );
+
+                setSettings((oldSettings) => {
+                    return {
+                        ...oldSettings,
+                        schedule: response,
+                    };
+                });
+            } catch (err: any) {
+                const shouldRetry = parseError(err, hasRetried);
+                if (shouldRetry) {
+                    saveSchedule(newSettings, true);
+                }
+            }
+        },
+        [parseError, setSettings, verifyToken],
+    );
+
+    const saveUserSettings = React.useCallback(
+        async (newSettings: UserSettings, hasRetried = false) => {
+            const token = await verifyToken(hasRetried);
+            if (token === null) return;
+
+            try {
+                await APIMethods.saveUserSettings(newSettings, token);
+
+                // even though the api doesn't return it, we still need to set the new settings
+                setSettings((oldSettings) => {
+                    return {
+                        ...oldSettings,
+                        user: newSettings,
+                    };
+                });
+            } catch (err: any) {
+                const shouldRetry = parseError(err, hasRetried);
+                if (shouldRetry) {
+                    saveUserSettings(newSettings, true);
+                }
+            }
+        },
+        [parseError, verifyToken, setSettings],
+    );
 
     const searchTeachers = React.useCallback(
-        async (searchString: string): Promise<Teacher[]> => {
-            if (apiSettings.token === null) return [];
+        async (
+            searchString: string,
+            hasRetried = false,
+        ): Promise<string[] | null> => {
+            const token = await verifyToken(hasRetried);
+            if (token === null) return null;
 
-            return APIMethods.searchTeachers(searchString, apiSettings.token);
+            try {
+                return APIMethods.searchTeachers(
+                    searchString,
+                    settings.user.school,
+                    token,
+                );
+            } catch (err: any) {
+                const shouldRetry = parseError(err, hasRetried);
+                if (shouldRetry) {
+                    return searchTeachers(searchString, true);
+                }
+                return null;
+            }
         },
-        [apiSettings.token],
+        [verifyToken, settings.user.school, parseError],
     );
 
     const isRealTeacher = React.useCallback(
         async (
             partialName: string,
+            hasRetried = false,
         ): Promise<{
             isReal: boolean;
             similar: string[];
-        }> => {
-            if (apiSettings.token === null)
-                return {
-                    isReal: false,
-                    similar: [],
-                };
+        } | null> => {
+            const token = await verifyToken(hasRetried);
+            if (token === null) return null;
 
-            return APIMethods.isRealTeacher(partialName, apiSettings.token);
+            try {
+                return APIMethods.isRealTeacher(
+                    partialName,
+                    settings.user.school,
+                    token,
+                );
+            } catch (err: any) {
+                const shouldRetry = parseError(err, hasRetried);
+                if (shouldRetry) {
+                    return isRealTeacher(partialName, true);
+                }
+                return null;
+            }
         },
-        [apiSettings.token],
+        [verifyToken, settings.user.school, parseError],
     );
 
-    const getClassesToday = React.useCallback(async (): Promise<Block[]> => {
-        if (apiSettings.token === null) return [];
+    // since the get classes endpoint takes a date, we'll just regenerate this function once per day
+    const dateStr = formatISODate(new Date(appState.lastUpdateTime));
+    const getClassesToday = React.useCallback(
+        async (hasRetried = false): Promise<Block[] | null> => {
+            const token = await verifyToken(hasRetried);
+            if (token === null) return null;
 
-        return APIMethods.getClassesToday(apiSettings.token);
-    }, [apiSettings.token]);
+            try {
+                return APIMethods.getClassesToday(dateStr, token);
+            } catch (err: any) {
+                const shouldRetry = parseError(err, hasRetried);
+                if (shouldRetry) {
+                    return getClassesToday(true);
+                }
+                return null;
+            }
+        },
+        [verifyToken, dateStr, parseError],
+    );
 
-    const login = React.useCallback(async (accessToken: string) => {
-        const token = await APIMethods.login(accessToken);
-        setAPISettings((oldState) => {
-            return {
-                ...oldState,
-                token,
-            };
-        });
+    const login = React.useCallback(
+        async (accessToken: string) => {
+            try {
+                const { token, refresh, onboarded } = await APIMethods.login(
+                    accessToken,
+                );
+                const now = Date.now();
+
+                setSettings((oldState) => ({
+                    ...oldState,
+                    userOnboarded: onboarded,
+                }));
+                setAPISettings((oldState) => ({
+                    ...oldState,
+                    lastTokenUpdate: now,
+                    refresh,
+                    token,
+                    isLoggedIn: true,
+                }));
+            } catch (err: any) {
+                // don't retry login
+                parseError(err, true);
+            }
+        },
+        [parseError, setSettings],
+    );
+
+    // read token only once
+    React.useEffect(() => {
+        SecureStore.getItemAsync('apisettings')
+            .then((savedSettingsString) => {
+                return savedSettingsString
+                    ? JSON.parse(savedSettingsString)
+                    : {};
+            })
+            .then((savedSettings) => {
+                setAPISettings({
+                    ...defaultState,
+                    ...savedSettings,
+                    ready: true,
+                });
+            })
+            .catch((e) => {
+                setAPISettings({
+                    ...defaultState,
+                    ready: true,
+                });
+            });
+        // .finally(() => {
+        //     setReady(true);
+        // });
     }, []);
 
-    // Save and read token
+    // save token on change
     React.useEffect(() => {
-        const run = async () => {
-            if (!ready) {
-                // Read state
-                try {
-                    const savedSettingsString = await SecureStore.getItemAsync(
-                        'apisettings',
-                    );
-
-                    const savedSettings = savedSettingsString
-                        ? JSON.parse(savedSettingsString)
-                        : {};
-                    setAPISettings({
-                        ...defaultState,
-                        ...savedSettings,
-                    });
-                } catch (e) {
-                    setAPISettings({
-                        ...defaultState,
-                    });
-                }
-            } else {
-                // Save state
-                const settingsString = JSON.stringify(apiSettings);
-                try {
-                    await SecureStore.setItemAsync(
-                        'apisettings',
-                        settingsString,
-                    );
-                } catch (e) {
+        if (apiSettings.ready) {
+            const settingsString = JSON.stringify(apiSettings);
+            SecureStore.setItemAsync('apisettings', settingsString).catch(
+                (e) => {
                     console.error('failed to save token');
-                }
-            }
-        };
-
-        run();
-    }, [apiSettings, ready]);
+                },
+            );
+        }
+    }, [apiSettings]);
 
     // when we have a token, try to log in and verify it
+    // this runs when the app starts or a user just logged in
     React.useEffect(() => {
-        if (apiSettings.token && !apiSettings.isLoggedIn) {
-            // verify token here
-
-            // if correct, get data
-            Promise.all([fetchAbsences(), fetchSettings()])
-                .then(() => {
-                    setAPISettings((oldState) => {
-                        return {
-                            ...oldState,
-                            isLoggedIn: true,
-                        };
-                    });
-                    setReady(true);
-                })
-                .catch((e) => {
-                    console.error('error fetching data on startup', e);
-                });
-        } else {
-            // if there's no token, we're ready right away
-            setReady(true);
+        if (apiSettings.isLoggedIn && !serverLoaded) {
+            verifyToken().then((isValid) => {
+                if (!isValid) {
+                    logout();
+                } else {
+                    // this is a good token, so make sure that we fetch new data first
+                    Promise.all([
+                        fetchAbsences(),
+                        fetchSettings(),
+                        getClassesToday(),
+                    ])
+                        .then(([absences, newSettings, classesToday]) => {
+                            setAppState((oldAppState) => {
+                                const stateChanges = {
+                                    ...oldAppState,
+                                    // needsUpdate: false,
+                                    serverLoaded: true,
+                                };
+                                if (absences !== null)
+                                    stateChanges.absences = absences;
+                                if (classesToday !== null)
+                                    stateChanges.blocksToday = classesToday;
+                                return stateChanges;
+                            });
+                            setSettings((oldSettings) => {
+                                const stateChanges = {
+                                    ...oldSettings,
+                                    serverLoaded: true,
+                                };
+                                if (newSettings !== null) {
+                                    stateChanges.user = newSettings.user;
+                                    stateChanges.schedule =
+                                        newSettings.schedule;
+                                }
+                                return stateChanges;
+                            });
+                            setServerLoaded(true);
+                        })
+                        .catch((e: any) => {
+                            // don't retry this, it shouldn't error
+                            parseError(e, true);
+                        });
+                }
+            });
         }
-    }, [apiSettings, login, fetchAbsences, fetchSettings]);
+    }, [
+        logout,
+        apiSettings.isLoggedIn,
+        serverLoaded,
+        verifyToken,
+        fetchAbsences,
+        fetchSettings,
+        getClassesToday,
+        setAppState,
+        setSettings,
+        parseError,
+    ]);
+
+    // auto app state updating
+    // React.useEffect(() => {
+    //     if (
+    //         apiSettings.ready &&
+    //         apiSettings.token &&
+    //         apiSettings.isLoggedIn &&
+    //         appState.needsUpdate
+    //     ) {
+    //         Promise.all([fetchAbsences(), fetchSettings(), getClassesToday()])
+    //             .then(([absences, newSettings, classesToday]) => {
+    //                 setAppState((oldAppState) => {
+    //                     const stateChanges = {
+    //                         ...oldAppState,
+    //                         needsUpdate: false,
+    //                     };
+    //                     if (absences !== null) stateChanges.absences = absences;
+    //                     if (classesToday !== null)
+    //                         stateChanges.blocksToday = classesToday;
+    //                     return stateChanges;
+    //                 });
+    //                 setSettings((oldSettings) => {
+    //                     const stateChanges = {
+    //                         ...oldSettings,
+    //                     };
+    //                     if (newSettings !== null) {
+    //                         stateChanges.uid = newSettings.uid;
+    //                         stateChanges.user = newSettings.user;
+    //                         stateChanges.schedule = newSettings.schedule;
+    //                     }
+    //                     return stateChanges;
+    //                 });
+    //             })
+    //             .catch((e) => {
+    //                 console.error('error fetching data on auto update', e);
+    //             });
+    //     }
+    // }, [
+    //     appState,
+    //     apiSettings.ready,
+    //     apiSettings.isLoggedIn,
+    //     apiSettings.token,
+    //     setAppState,
+    //     fetchAbsences,
+    //     getClassesToday,
+    //     fetchSettings,
+    //     setSettings,
+    // ]);
 
     const settingsProp: APIContextType = React.useMemo(
         () => ({
-            ready,
+            ready: apiSettings.ready,
             isLoggedIn: apiSettings.isLoggedIn,
             fetchAbsences,
             fetchSettings,
@@ -308,7 +594,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             saveUserSettings,
         }),
         [
-            ready,
+            apiSettings.ready,
             apiSettings.isLoggedIn,
             fetchAbsences,
             fetchSettings,

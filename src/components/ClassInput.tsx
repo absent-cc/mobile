@@ -23,6 +23,9 @@ function ClassInput({
     defaultValue: string[];
 }) {
     const changeFunc = React.useRef(onChange);
+    React.useEffect(() => {
+        changeFunc.current = onChange;
+    }, [onChange]);
 
     // foldable
     const [isOpen, setIsOpen] = React.useState(false);
@@ -38,7 +41,8 @@ function ClassInput({
             id: number;
             teacher: string;
         }[];
-    }>({
+    }>(() => ({
+        // basically, if i get an empty array, it's free, otherwise there's a list
         isFree: defaultValue.length === 0,
         teachers:
             defaultValue.length === 0
@@ -46,9 +50,13 @@ function ClassInput({
                 : defaultValue.map((teacher) => {
                       // this means the first one will be 1 but that doesn't matter
                       teacherTotalNum.current += 1;
-                      return { id: teacherTotalNum.current, teacher };
+                      return {
+                          id: teacherTotalNum.current,
+                          teacher,
+                          //   teacher: teacher.toString(),
+                      };
                   }),
-    });
+    }));
 
     const setFree = (isFree: boolean) => {
         setValue({

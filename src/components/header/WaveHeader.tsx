@@ -20,7 +20,19 @@ function WaveHeader({
     return (
         <View style={[style, styles.container]}>
             <Wave style={styles.wave} />
-            <Text style={styles.header}>{text}</Text>
+            <Text
+                style={[
+                    styles.header,
+                    // eslint-disable-next-line no-nested-ternary
+                    iconName
+                        ? isLeft
+                            ? styles.headerWithLeftIcon
+                            : styles.headerWithRightIcon
+                        : null,
+                ]}
+            >
+                {text}
+            </Text>
 
             {iconName && iconClick ? (
                 <Feather
@@ -48,13 +60,19 @@ const styles = StyleSheet.create({
         position: 'absolute',
     },
     header: {
-        fontFamily: Theme.strongFont,
+        fontFamily: Theme.headerFont,
         color: Theme.foregroundAlternate,
         fontSize: 38,
         position: 'absolute',
         left: 30,
         right: 30,
         bottom: 100,
+    },
+    headerWithRightIcon: {
+        paddingRight: 30,
+    },
+    headerWithLeftIcon: {
+        paddingRight: 30,
     },
     icon: {
         position: 'absolute',

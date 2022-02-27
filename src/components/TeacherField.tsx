@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import Theme from '../Theme';
-import { Teacher } from '../api/APITypes';
 import { useAPI } from '../state/APIContext';
 import IconButton from './button/IconButton';
 
@@ -32,13 +31,18 @@ function TeacherField({
 
     // default text is teacher name or nothing
     const [currentTeacher, setCurrentTeacher] = React.useState(defaultValue);
-    const [textValue, setTextValue] = React.useState(currentTeacher);
+    const [{ rawTextValue, trimmedTextValue }, setTextValue] = React.useState(
+        () => ({
+            rawTextValue: currentTeacher,
+            trimmedTextValue: currentTeacher.trim(),
+        }),
+    );
 
     const [autocompleteIsOpen, setIsAutocompleteOpen] = React.useState(false);
 
     // teacher searching
     const { searchTeachers, isRealTeacher } = useAPI();
-    const [teacherList, setTeacherList] = React.useState<Teacher[]>([]);
+    const [teacherList, setTeacherList] = React.useState<string[]>([]);
 
     // make sure to only show suggestions after blur
     const [isActive, setIsActive] = React.useState(false);
@@ -47,25 +51,41 @@ function TeacherField({
         similar: string[];
     } | null>(null);
 
+    // debounced searching
+    const throttledSearchInterval = 500; // ms
+    const lastSearch = React.useRef(Date.now());
     React.useEffect(() => {
-        if (textValue.length > 0) {
-            searchTeachers(textValue).then((searchTeacherList) => {
-                setTeacherList(searchTeacherList);
-            });
+        if (trimmedTextValue.length > 2) {
+            const now = Date.now();
+            if (now - lastSearch.current >= throttledSearchInterval) {
+                searchTeachers(trimmedTextValue).then((searchTeacherList) => {
+                    if (searchTeacherList) setTeacherList(searchTeacherList);
+                });
+                lastSearch.current = now;
+            }
         }
-    }, [textValue, searchTeachers]);
+    }, [trimmedTextValue, searchTeachers]);
 
     React.useEffect(() => {
-        if (!isActive && textValue.length > 0 && currentTeacher.length === 0) {
-            isRealTeacher(textValue).then((result) => {
+        if (
+            !isActive &&
+            trimmedTextValue.length > 0 &&
+            currentTeacher.length === 0
+        ) {
+            isRealTeacher(trimmedTextValue).then((result) => {
+                if (!result) return;
+
                 setSuggestions(result);
                 if (result.isReal) {
                     setCurrentTeacher(result.similar[0]);
-                    setTextValue(result.similar[0]);
+                    setTextValue({
+                        rawTextValue: result.similar[0],
+                        trimmedTextValue: result.similar[0],
+                    });
                 }
             });
         }
-    }, [isActive, isRealTeacher, textValue, currentTeacher.length]);
+    }, [isActive, isRealTeacher, trimmedTextValue, currentTeacher.length]);
 
     // bubble up current teacher when it changes
     React.useEffect(() => {
@@ -74,7 +94,10 @@ function TeacherField({
 
     // functions
     const autocompleteOptionPress = (option: string) => {
-        setTextValue(option);
+        setTextValue({
+            rawTextValue: option,
+            trimmedTextValue: option,
+        });
         setCurrentTeacher(option);
         setIsAutocompleteOpen(false);
 
@@ -83,23 +106,27 @@ function TeacherField({
     };
 
     const onTextInput = (newValue: string) => {
-        // set text input value
-        setTextValue(newValue);
+        // set text input value, trimmed
+        setTextValue({
+            rawTextValue: newValue,
+            trimmedTextValue: newValue.trim(),
+        });
         // when text is input, it's like starting from scratch
         setCurrentTeacher('');
         setSuggestions(null);
 
         // open and close autocompleter
-        if (!autocompleteIsOpen && newValue.length > 0) {
+        if (!autocompleteIsOpen && newValue.length > 2) {
             setIsAutocompleteOpen(true);
-        } else if (newValue.length === 0) {
+        } else if (newValue.length <= 2) {
             setIsAutocompleteOpen(false);
+            setSuggestions(null);
         }
     };
 
     const onFocus = () => {
         setIsActive(true);
-        if (textValue.length > 0) {
+        if (trimmedTextValue.length > 2) {
             setIsAutocompleteOpen(true);
         }
     };
@@ -110,12 +137,15 @@ function TeacherField({
     };
 
     const forceAdd = () => {
-        setCurrentTeacher(textValue);
+        setCurrentTeacher(trimmedTextValue);
         setSuggestions(null);
     };
 
     const suggestionPress = (option: string) => {
-        setTextValue(option);
+        setTextValue({
+            rawTextValue: option,
+            trimmedTextValue: option,
+        });
         setCurrentTeacher(option);
         setSuggestions(null);
     };
@@ -127,7 +157,7 @@ function TeacherField({
                     onChangeText={onTextInput}
                     placeholder="e.g. Rebecca Realson"
                     style={styles.input}
-                    value={textValue}
+                    value={rawTextValue}
                     onBlur={onBlur}
                     onFocus={onFocus}
                 />
@@ -150,8 +180,8 @@ function TeacherField({
                     <View style={[styles.badTeacherContent]}>
                         <Text style={styles.badTeacherText}>
                             Please make sure that you entered your teacher’s
-                            name correctly. “{textValue}” is not a name in our
-                            system.
+                            name correctly. “{trimmedTextValue}” is not a name
+                            in our system.
                             {'\n'}
                             Did you mean:
                         </Text>
@@ -187,7 +217,7 @@ function TeacherField({
                             onPress={forceAdd}
                         >
                             <Text style={styles.badTeacherOptionText}>
-                                Add “{textValue}” to your schedule
+                                Add “{trimmedTextValue}” to your schedule
                             </Text>
                         </Pressable>
                     </View>
@@ -209,12 +239,12 @@ function TeacherField({
                                     pressed ? styles.optionPressed : undefined,
                                 ]}
                                 onPress={() => {
-                                    autocompleteOptionPress(option.name);
+                                    autocompleteOptionPress(option);
                                 }}
-                                key={option.tid}
+                                key={option}
                             >
                                 <Text style={[styles.optionText]}>
-                                    {option.name}
+                                    {option}
                                 </Text>
                             </Pressable>
                         ))
