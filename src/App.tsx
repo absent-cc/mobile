@@ -23,6 +23,8 @@ import { APIProvider, useAPI } from './state/APIContext';
 import ScheduleOnboarding from './pages/onboarding/ScheduleOnboarding';
 import ProfileOnboarding from './pages/onboarding/ProfileOnboarding';
 import Loading from './pages/Loading';
+import { Dialog, useDialog } from './components/dialog/Dialog';
+import ErrorBoundary from './components/ErrorBoundary';
 
 const Stack = createNativeStackNavigator();
 
@@ -37,6 +39,7 @@ function App() {
     const appState = useAppState();
     const settings = useSettings();
     const api = useAPI();
+    const dialog = useDialog();
 
     // first, wait for everything to load from local
     if (!fontsLoaded || !api.ready) {
@@ -52,65 +55,72 @@ function App() {
     }
 
     return (
-        <SafeAreaProvider>
-            <NavigationContainer>
-                <Stack.Navigator
-                    initialRouteName="Welcome"
-                    screenOptions={{
-                        headerShown: false,
-                    }}
-                >
-                    {api.isLoggedIn ? (
-                        settings.value.userOnboarded ? (
-                            <>
-                                <Stack.Screen name="Home" component={Home} />
-                                <Stack.Screen
-                                    name="Settings"
-                                    component={Settings}
-                                />
-                                <Stack.Screen
-                                    name="GeneralSettings"
-                                    component={GeneralSettings}
-                                />
-                                <Stack.Screen
-                                    name="AppSettings"
-                                    component={AppSettings}
-                                />
-                                <Stack.Screen
-                                    name="TeacherSettings"
-                                    component={TeacherSettings}
-                                />
-                            </>
-                        ) : (
-                            <>
-                                <Stack.Screen
-                                    name="ProfileOnboarding"
-                                    component={ProfileOnboarding}
-                                />
-                                <Stack.Screen
-                                    name="ScheduleOnboarding"
-                                    component={ScheduleOnboarding}
-                                />
-                            </>
-                        )
+        <>
+            <Stack.Navigator
+                initialRouteName="Welcome"
+                screenOptions={{
+                    headerShown: false,
+                }}
+            >
+                {api.isLoggedIn ? (
+                    settings.value.userOnboarded ? (
+                        <>
+                            <Stack.Screen name="Home" component={Home} />
+                            <Stack.Screen
+                                name="Settings"
+                                component={Settings}
+                            />
+                            <Stack.Screen
+                                name="GeneralSettings"
+                                component={GeneralSettings}
+                            />
+                            <Stack.Screen
+                                name="AppSettings"
+                                component={AppSettings}
+                            />
+                            <Stack.Screen
+                                name="TeacherSettings"
+                                component={TeacherSettings}
+                            />
+                        </>
                     ) : (
-                        <Stack.Screen name="Welcome" component={Welcome} />
-                    )}
-                </Stack.Navigator>
-            </NavigationContainer>
-        </SafeAreaProvider>
+                        <>
+                            <Stack.Screen
+                                name="ProfileOnboarding"
+                                component={ProfileOnboarding}
+                            />
+                            <Stack.Screen
+                                name="ScheduleOnboarding"
+                                component={ScheduleOnboarding}
+                            />
+                        </>
+                    )
+                ) : (
+                    <Stack.Screen name="Welcome" component={Welcome} />
+                )}
+            </Stack.Navigator>
+            {dialog.displayer}
+        </>
     );
 }
 
 function AppContexts() {
     return (
-        <SettingsProvider>
-            <AppStateProvider>
-                <APIProvider>
-                    <App />
-                </APIProvider>
-            </AppStateProvider>
-        </SettingsProvider>
+        <SafeAreaProvider>
+            <NavigationContainer>
+                <ErrorBoundary>
+                    <Dialog>
+                        <SettingsProvider>
+                            <AppStateProvider>
+                                <APIProvider>
+                                    <App />
+                                </APIProvider>
+                            </AppStateProvider>
+                        </SettingsProvider>
+                    </Dialog>
+                </ErrorBoundary>
+            </NavigationContainer>
+        </SafeAreaProvider>
     );
 }
 

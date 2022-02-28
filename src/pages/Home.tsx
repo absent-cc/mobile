@@ -18,18 +18,31 @@ import { useAPI } from '../state/APIContext';
 import absenceCalculator from '../AbsenceCalculator';
 import { useAppState } from '../state/AppStateContext';
 import { dateFormatter, timeOfDay, toWords } from '../DateWordUtils';
+import { useDialog } from '../components/dialog/Dialog';
+import ErrorDialog from '../components/dialog/ErrorDialog';
 
 function Home({ navigation }: { navigation: any }) {
     const insets = useSafeAreaInsets();
     const { value: settings, setSettings } = useSettings();
     const { value: appState, setAppState } = useAppState();
     const api = useAPI();
+    const { open, close } = useDialog();
 
     const [refreshing, setRefreshing] = React.useState(false);
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
-    }, []);
+        open(
+            <ErrorDialog
+                message="Test"
+                description="Rfreshing"
+                caller="refresher"
+                close={close}
+            />,
+        );
+    }, [open, close]);
+
+    throw new Error('hey!');
 
     // refresh
     React.useEffect(() => {

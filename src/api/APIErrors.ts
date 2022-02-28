@@ -15,7 +15,11 @@ export class APIError extends Error {
 
 export class BadTokenError extends APIError {
     constructor(caller: string) {
-        super('Sorry, your token has expired.', caller);
+        super(
+            'Sorry, your token has expired.',
+            caller,
+            'Unexpected failure to verify token.',
+        );
     }
 }
 

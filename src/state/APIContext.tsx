@@ -19,6 +19,8 @@ import {
     ServerError,
     ValidationError,
 } from '../api/APIErrors';
+import { useDialog } from '../components/dialog/Dialog';
+import ErrorDialog from '../components/dialog/ErrorDialog';
 
 export interface APIDataType {
     ready: boolean;
@@ -99,62 +101,99 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
         setServerLoaded(false);
     }, [resetSettings]);
 
+    const { open: openDialog, close: closeDialog } = useDialog();
+
     const parseError = React.useCallback(
         (error: any, hasRetried: boolean, caller: string): boolean => {
             if (error instanceof Error && error instanceof APIError) {
                 if (error instanceof BadTokenError) {
                     // retry once
                     if (hasRetried) {
-                        console.error(
-                            'Unexpected failure to verify token in',
-                            error.caller,
+                        openDialog(
+                            <ErrorDialog
+                                message={error.message}
+                                description={error.description || ''}
+                                caller={error.caller}
+                                close={closeDialog}
+                            />,
                         );
+                        logout();
                         return false;
                     }
                     return true;
                 }
                 if (error instanceof ValidationError) {
-                    console.error(
-                        'Validation error in',
-                        error.caller,
-                        error.message,
-                        error.description,
+                    openDialog(
+                        <ErrorDialog
+                            message={error.message}
+                            description={error.description || ''}
+                            caller={error.caller}
+                            close={closeDialog}
+                        />,
                     );
                     return false;
                 }
                 if (error instanceof AuthenticationError) {
-                    console.error(
-                        'Unknown error in',
-                        error.caller,
-                        error.description,
+                    openDialog(
+                        <ErrorDialog
+                            message={error.message}
+                            description={error.description || ''}
+                            caller={error.caller}
+                            close={closeDialog}
+                        />,
                     );
                     logout();
                     return false;
                 }
                 if (error instanceof ServerError) {
-                    console.error('Server error in', error.caller);
+                    openDialog(
+                        <ErrorDialog
+                            message={error.message}
+                            description={error.description || ''}
+                            caller={error.caller}
+                            close={closeDialog}
+                        />,
+                    );
                     return false;
                 }
                 if (error instanceof NetworkError) {
                     // retry once
                     if (hasRetried) {
-                        console.error('Network error in', error.caller);
+                        openDialog(
+                            <ErrorDialog
+                                message={error.message}
+                                description={error.description || ''}
+                                caller={error.caller}
+                                close={closeDialog}
+                            />,
+                        );
                         return false;
                     }
                     return true;
                 }
 
-                console.error(
-                    'Unknown error in',
-                    error.caller,
-                    error.description,
+                openDialog(
+                    <ErrorDialog
+                        message={error.message}
+                        description={error.description || ''}
+                        caller={error.caller}
+                        close={closeDialog}
+                    />,
                 );
                 return false;
             }
-            console.error('An unknown error occurred', error, 'in', caller);
+
+            openDialog(
+                <ErrorDialog
+                    message="An unknown error occurred while connecting to the server."
+                    description={error.message}
+                    caller={caller}
+                    close={closeDialog}
+                />,
+            );
             return false;
         },
-        [logout],
+        [logout, closeDialog, openDialog],
     );
 
     const verifyToken = React.useCallback(

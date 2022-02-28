@@ -10,7 +10,7 @@ import HeaderSafearea from '../../components/header/HeaderSafearea';
 import { Block, EditingSchedule } from '../../api/APITypes';
 import { useSettings } from '../../state/SettingsContext';
 import { useAPI } from '../../state/APIContext';
-import { BlockIterator, EmptyEditingSchedule } from '../../Utils';
+import { BlockIterator } from '../../Utils';
 import ErrorCard from '../../components/card/ErrorCard';
 import Divider from '../../components/Divider';
 import LoadingCard from '../../components/card/LoadingCard';
