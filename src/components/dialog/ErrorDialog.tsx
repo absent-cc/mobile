@@ -20,6 +20,10 @@ function ErrorDialog({
     const insets = useSafeAreaInsets();
 
     React.useEffect(() => {
+        console.error(`${caller}: ${message}\n${description}`);
+    }, [caller, description, message]);
+
+    React.useEffect(() => {
         const timeout = setTimeout(close, 8000);
 
         return () => clearTimeout(timeout);
