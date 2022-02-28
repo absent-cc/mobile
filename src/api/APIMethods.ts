@@ -55,7 +55,7 @@ const getFromAPI = async (
 ): Promise<any> => {
     // give response a 3s timeout, since fetch doesn't do this automatically
     const responseTimeout = setTimeout(() => {
-        throw new NetworkError(caller);
+        throw new NetworkError(caller, true);
     }, 3000);
 
     let response: Response;
@@ -64,8 +64,11 @@ const getFromAPI = async (
             method,
             headers: token ? getHeaders(token) : headers,
             body: body ? JSON.stringify(body) : undefined,
+        }).then((res) => {
+            clearTimeout(responseTimeout);
+
+            return res;
         });
-        clearTimeout(responseTimeout);
     } catch (e: any) {
         // json error
         if (e instanceof TypeError) {
@@ -81,14 +84,25 @@ const getFromAPI = async (
         throw new ServerError(caller);
     }
 
+    let responseText: string;
+    try {
+        responseText = await response.text();
+    } catch (e: any) {
+        if (e instanceof Error) {
+            throw new UnknownError(caller, e.message);
+        } else {
+            throw new UnknownError(caller);
+        }
+    }
+
     let responseJSON: any;
     try {
-        responseJSON = await response.json();
+        responseJSON = JSON.parse(responseText);
     } catch (e: any) {
         if (e instanceof SyntaxError) {
             throw new UnknownError(
                 caller,
-                `Error while JSON parsing server response. Response from server was: ${await response.text()}`,
+                `Error while JSON parsing server response. Response from server was: ${responseText}`,
             );
         } else if (e instanceof Error) {
             throw new UnknownError(caller, e.message);
@@ -103,12 +117,12 @@ const getFromAPI = async (
             'Authentication Error - Signature has expired'
         ) {
             throw new BadTokenError(caller);
-        } else if (responseJSON.detail === 'Not authenticated') {
+        } else if (responseJSON?.detail === 'Not authenticated') {
             throw new AuthenticationError(caller, 'Not authenticated');
-        } else if (responseJSON.detail?.startsWith('Authentication Error')) {
+        } else if (responseJSON?.detail?.startsWith('Authentication Error')) {
             throw new AuthenticationError(
                 caller,
-                responseJSON.detail?.substring(
+                responseJSON?.detail?.substring(
                     'Authentication Error - '.length,
                 ),
             );
@@ -126,6 +140,7 @@ const getFromAPI = async (
 };
 
 export async function fetchAbsences(token: string): Promise<AbsenceList> {
+    // TODO: make this actually reflect the api
     return getFromAPI(
         {
             method: 'GET',
@@ -213,13 +228,14 @@ export async function getClassesToday(
     // const response = await responseStr.json();
 
     // return response.classes;
-
     const response = await getFromAPI(
         {
             method: 'GET',
-            path: `/teachers/classes?${new URLSearchParams({
-                date: dateStr,
-            }).toString()}`,
+            path: `/teachers/classes?${encodeURIComponent(
+                new URLSearchParams({
+                    date: dateStr,
+                }).toString(),
+            )}`,
             token,
         },
         'Fetch Classes Today',

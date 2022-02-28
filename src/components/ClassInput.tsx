@@ -110,7 +110,7 @@ function ClassInput({
             <View
                 style={[
                     styles.teacherInput,
-                    { zIndex: value.teachers.length - index },
+                    { zIndex: value.teachers.length - index + 1 },
                 ]}
                 key={teacher.id}
             >
@@ -175,7 +175,7 @@ function ClassInput({
                                 {teachersList}
 
                                 <TextButton
-                                    style={styles.inputField}
+                                    style={[styles.inputField, { zIndex: 1 }]}
                                     iconName="plus"
                                     onPress={addTeacher}
                                 >

@@ -30,14 +30,21 @@ function TextField({
     return (
         <View style={style}>
             {label ? <Text style={styles.label}>{label}</Text> : null}
-            <TextInput
-                style={[styles.input]}
-                onChangeText={changeFunc}
-                value={value}
-                placeholder={placeholder}
-                keyboardType={isNumber ? 'numeric' : 'default'}
-            />
-            <Feather onPress={clear} name="x" size={30} style={styles.clear} />
+            <View style={styles.inputFieldContainer}>
+                <TextInput
+                    style={[styles.input]}
+                    onChangeText={changeFunc}
+                    value={value}
+                    placeholder={placeholder}
+                    keyboardType={isNumber ? 'numeric' : 'default'}
+                />
+                <Feather
+                    onPress={clear}
+                    name="x"
+                    size={30}
+                    style={styles.clear}
+                />
+            </View>
         </View>
     );
 }
@@ -51,6 +58,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontFamily: Theme.regularFont,
         borderRadius: 50,
+        width: '100%',
     },
     label: {
         fontFamily: Theme.strongFont,
@@ -60,9 +68,11 @@ const styles = StyleSheet.create({
     },
     clear: {
         color: Theme.lightForeground,
-        position: 'absolute',
-        right: 12,
-        bottom: 7,
+        marginLeft: -42,
+    },
+    inputFieldContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
     },
 });
 

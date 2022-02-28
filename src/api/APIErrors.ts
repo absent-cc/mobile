@@ -39,9 +39,13 @@ export class ServerError extends APIError {
 }
 
 export class NetworkError extends APIError {
-    constructor(caller: string) {
+    constructor(caller: string, wasTimeout = false) {
         super(
-            "Sorry, there was a network error. Please make sure you're connected to the internet.",
+            `Sorry, there was a network error. ${
+                wasTimeout
+                    ? 'Your request took too long to complete.'
+                    : "Please make sure you're connected to the internet."
+            }`,
             caller,
         );
     }

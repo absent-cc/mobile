@@ -136,7 +136,6 @@ export const apiResponseToSchedule = (
     response: Record<Block, any[] | null>,
 ): Schedule => {
     const schedule: Partial<Schedule> = {};
-    console.log(response);
     BlockIterator.forEach((block) => {
         const responseObj = response[block];
         if (responseObj !== null) {

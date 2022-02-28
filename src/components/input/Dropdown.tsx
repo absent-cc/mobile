@@ -1,5 +1,12 @@
 import React from 'react';
-import { StyleSheet, Text, View, Pressable, ScrollView } from 'react-native';
+import {
+    StyleSheet,
+    Text,
+    View,
+    Pressable,
+    ScrollView,
+    Platform,
+} from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import Theme from '../../Theme';
 
@@ -29,6 +36,11 @@ function Dropdown({
         setIsOpen(false);
     };
 
+    const [inputHeight, setInputHeight] = React.useState(0);
+    const onInputLayout = (event: any) => {
+        setInputHeight(event.nativeEvent.layout.height);
+    };
+
     const elements: any[] = [];
     options.forEach((option, index) => {
         elements.push(
@@ -50,29 +62,44 @@ function Dropdown({
     });
 
     return (
-        <View style={style}>
+        <View style={[style]} onLayout={onInputLayout}>
             {label ? <Text style={styles.label}>{label}</Text> : null}
-            <Pressable
-                style={({ pressed }) => [
-                    styles.input,
-                    pressed ? styles.inputPressed : null,
-                ]}
-                onPress={toggleMenu}
-            >
-                {value === -1 ? (
-                    <Text style={styles.placeholder}>{placeholder || ' '}</Text>
-                ) : (
-                    <Text style={styles.inputText}>{options[value]}</Text>
-                )}
-            </Pressable>
-            <Feather
-                onPress={toggleMenu}
-                name="chevron-down"
-                size={30}
-                style={styles.button}
-            />
+            <View style={styles.inputFieldContainer}>
+                <Pressable
+                    style={({ pressed }) => [
+                        styles.input,
+                        pressed ? styles.inputPressed : null,
+                    ]}
+                    onPress={toggleMenu}
+                >
+                    {value === -1 ? (
+                        <Text style={styles.placeholder}>
+                            {placeholder || ' '}
+                        </Text>
+                    ) : (
+                        <Text style={styles.inputText}>{options[value]}</Text>
+                    )}
+                </Pressable>
+                <Feather
+                    onPress={toggleMenu}
+                    name="chevron-down"
+                    size={30}
+                    style={styles.button}
+                />
+            </View>
             {isOpen ? (
-                <ScrollView style={styles.optionsList}>{elements}</ScrollView>
+                <View
+                    style={[
+                        styles.optionsListContainer,
+                        {
+                            // offset IOS by 5 from input
+                            top:
+                                Platform.OS !== 'android' ? inputHeight + 5 : 0,
+                        },
+                    ]}
+                >
+                    <ScrollView>{elements}</ScrollView>
+                </View>
             ) : null}
         </View>
     );
@@ -109,19 +136,32 @@ const styles = StyleSheet.create({
     },
     button: {
         color: Theme.lightForeground,
-        position: 'absolute',
-        right: 12,
-        bottom: 7,
+        position: 'relative',
+        marginLeft: -42,
+        marginTop: 2,
     },
-    optionsList: {
+    inputFieldContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    optionsListContainer: {
         borderRadius: 20,
+        overflow: 'hidden',
         borderWidth: 2,
         borderColor: Theme.lightForeground,
-        position: 'absolute',
-        top: 75,
-        width: '100%',
-        overflow: 'scroll',
         maxHeight: 200,
+        ...Platform.select({
+            ios: {
+                position: 'absolute',
+                // borderWidth: 2,
+                // borderColor: Theme.lightForeground,
+            },
+            android: {
+                position: 'relative',
+                marginTop: 5,
+            },
+        }),
+        width: '100%',
         backgroundColor: Theme.backgroundColor,
     },
     option: {
@@ -129,6 +169,9 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         backgroundColor: Theme.backgroundColor,
         position: 'relative',
+    },
+    optionPressed: {
+        backgroundColor: Theme.lighterForeground,
     },
     optionSelected: {
         backgroundColor: Theme.lightForeground,
@@ -141,9 +184,6 @@ const styles = StyleSheet.create({
     withBorder: {
         borderBottomColor: Theme.lightForeground,
         borderBottomWidth: 2,
-    },
-    optionPressed: {
-        backgroundColor: Theme.lighterForeground,
     },
 });
 

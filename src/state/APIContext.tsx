@@ -100,7 +100,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
     }, [resetSettings]);
 
     const parseError = React.useCallback(
-        (error: any, hasRetried: boolean): boolean => {
+        (error: any, hasRetried: boolean, caller: string): boolean => {
             if (error instanceof Error && error instanceof APIError) {
                 if (error instanceof BadTokenError) {
                     // retry once
@@ -151,7 +151,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 );
                 return false;
             }
-            console.error('An unknown error occurred', error);
+            console.error('An unknown error occurred', error, 'in', caller);
             return false;
         },
         [logout],
@@ -183,7 +183,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 return token;
             } catch (err: any) {
                 // never retry verifyToken
-                parseError(err, true);
+                parseError(err, true, 'Verify Token');
                 return null;
             }
         },
@@ -205,7 +205,11 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
 
                 return response;
             } catch (err: any) {
-                const shouldRetry = parseError(err, hasRetried);
+                const shouldRetry = parseError(
+                    err,
+                    hasRetried,
+                    'Fetch Absences',
+                );
                 if (shouldRetry) {
                     return fetchAbsences(true);
                 }
@@ -235,7 +239,11 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                     schedule: response.schedule,
                 };
             } catch (err: any) {
-                const shouldRetry = parseError(err, hasRetried);
+                const shouldRetry = parseError(
+                    err,
+                    hasRetried,
+                    'Fetch Settings',
+                );
                 if (shouldRetry) {
                     return fetchSettings(true);
                 }
@@ -270,7 +278,11 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                     };
                 });
             } catch (err: any) {
-                const shouldRetry = parseError(err, hasRetried);
+                const shouldRetry = parseError(
+                    err,
+                    hasRetried,
+                    'Save Settings',
+                );
                 if (shouldRetry) {
                     saveSettings(newSettings, true);
                 }
@@ -297,7 +309,11 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                     };
                 });
             } catch (err: any) {
-                const shouldRetry = parseError(err, hasRetried);
+                const shouldRetry = parseError(
+                    err,
+                    hasRetried,
+                    'Save Schedule',
+                );
                 if (shouldRetry) {
                     saveSchedule(newSettings, true);
                 }
@@ -322,7 +338,11 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                     };
                 });
             } catch (err: any) {
-                const shouldRetry = parseError(err, hasRetried);
+                const shouldRetry = parseError(
+                    err,
+                    hasRetried,
+                    'Save User Settings',
+                );
                 if (shouldRetry) {
                     saveUserSettings(newSettings, true);
                 }
@@ -346,7 +366,11 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                     token,
                 );
             } catch (err: any) {
-                const shouldRetry = parseError(err, hasRetried);
+                const shouldRetry = parseError(
+                    err,
+                    hasRetried,
+                    'Search Teachers',
+                );
                 if (shouldRetry) {
                     return searchTeachers(searchString, true);
                 }
@@ -374,7 +398,11 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                     token,
                 );
             } catch (err: any) {
-                const shouldRetry = parseError(err, hasRetried);
+                const shouldRetry = parseError(
+                    err,
+                    hasRetried,
+                    'Is Real Teacher Check',
+                );
                 if (shouldRetry) {
                     return isRealTeacher(partialName, true);
                 }
@@ -394,7 +422,11 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             try {
                 return APIMethods.getClassesToday(dateStr, token);
             } catch (err: any) {
-                const shouldRetry = parseError(err, hasRetried);
+                const shouldRetry = parseError(
+                    err,
+                    hasRetried,
+                    'Get Classes Today',
+                );
                 if (shouldRetry) {
                     return getClassesToday(true);
                 }
@@ -425,7 +457,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 }));
             } catch (err: any) {
                 // don't retry login
-                parseError(err, true);
+                parseError(err, true, 'Login');
             }
         },
         [parseError, setSettings],
@@ -512,7 +544,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                         })
                         .catch((e: any) => {
                             // don't retry this, it shouldn't error
-                            parseError(e, true);
+                            parseError(e, true, 'Startup load');
                         });
                 }
             });

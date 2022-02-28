@@ -6,6 +6,8 @@ import {
     Pressable,
     TextInput,
     ScrollView,
+    Keyboard,
+    Platform,
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import Theme from '../Theme';
@@ -38,9 +40,8 @@ function TeacherField({
         }),
     );
 
-    const [autocompleteIsOpen, setIsAutocompleteOpen] = React.useState(false);
-
     // teacher searching
+    const [autocompleteIsOpen, setIsAutocompleteOpen] = React.useState(false);
     const { searchTeachers, isRealTeacher } = useAPI();
     const [teacherList, setTeacherList] = React.useState<string[]>([]);
 
@@ -53,17 +54,24 @@ function TeacherField({
 
     // debounced searching
     const throttledSearchInterval = 500; // ms
-    const lastSearch = React.useRef(Date.now());
+    const lastSearch = React.useRef(0);
     React.useEffect(() => {
+        let isMounted = true;
+
         if (trimmedTextValue.length > 2) {
             const now = Date.now();
             if (now - lastSearch.current >= throttledSearchInterval) {
                 searchTeachers(trimmedTextValue).then((searchTeacherList) => {
-                    if (searchTeacherList) setTeacherList(searchTeacherList);
+                    if (searchTeacherList && isMounted)
+                        setTeacherList(searchTeacherList);
                 });
                 lastSearch.current = now;
             }
         }
+
+        return () => {
+            isMounted = false;
+        };
     }, [trimmedTextValue, searchTeachers]);
 
     React.useEffect(() => {
@@ -103,6 +111,9 @@ function TeacherField({
 
         // assume autocomplete options are good
         setSuggestions(null);
+
+        // dismiss the keyboard
+        Keyboard.dismiss();
     };
 
     const onTextInput = (newValue: string) => {
@@ -148,11 +159,75 @@ function TeacherField({
         });
         setCurrentTeacher(option);
         setSuggestions(null);
+        setIsAutocompleteOpen(false);
+    };
+
+    // autocomplete list
+    const autocompleteResults = React.useMemo(() => {
+        const keylist: string[] = [];
+        return teacherList.map((option, index) => {
+            // avoid colliding teacher names
+            let key = option;
+            while (keylist.includes(key)) {
+                key += '0';
+            }
+            keylist.push(key);
+
+            return (
+                <Pressable
+                    style={({ pressed }) => [
+                        styles.option,
+                        // last element has no border
+                        index === teacherList.length - 1
+                            ? null
+                            : styles.withBorder,
+                        pressed ? styles.optionPressed : undefined,
+                    ]}
+                    onPress={() => {
+                        autocompleteOptionPress(option);
+                    }}
+                    key={key}
+                >
+                    <Text style={[styles.optionText]}>{option}</Text>
+                </Pressable>
+            );
+        });
+    }, [teacherList]);
+
+    // suggestions
+    const suggestionKeylist: string[] = [];
+    const suggestionsElements = suggestions?.similar.map((suggestion) => {
+        // avoid colliding teacher names
+        let key = suggestion;
+        while (suggestionKeylist.includes(key)) {
+            key += '0';
+        }
+        suggestionKeylist.push(key);
+        return (
+            <Pressable
+                style={({ pressed }) => [
+                    styles.badTeacherOption,
+                    styles.badTeacherKnown,
+                    pressed ? styles.badTeacherKnownPressed : null,
+                ]}
+                onPress={() => {
+                    suggestionPress(suggestion);
+                }}
+                key={key}
+            >
+                <Text style={styles.badTeacherOptionText}>{suggestion}</Text>
+            </Pressable>
+        );
+    });
+
+    const [inputHeight, setInputHeight] = React.useState(0);
+    const onInputLayout = (event: any) => {
+        setInputHeight(event.nativeEvent.layout.height);
     };
 
     return (
-        <View style={style}>
-            <View style={styles.inputContainer}>
+        <View style={[style]}>
+            <View style={styles.inputContainer} onLayout={onInputLayout}>
                 <TextInput
                     onChangeText={onTextInput}
                     placeholder="e.g. Rebecca Realson"
@@ -170,8 +245,31 @@ function TeacherField({
                     />
                 ) : null}
             </View>
+
+            {autocompleteIsOpen && teacherList.length > 0 ? (
+                <View
+                    style={[
+                        styles.optionsListContainer,
+                        { zIndex: 2 },
+                        {
+                            // offset IOS by 5 from input
+                            top:
+                                Platform.OS !== 'android' ? inputHeight + 5 : 0,
+                        },
+                    ]}
+                >
+                    <ScrollView
+                        keyboardShouldPersistTaps="handled"
+                        // for android
+                        nestedScrollEnabled
+                    >
+                        {autocompleteResults}
+                    </ScrollView>
+                </View>
+            ) : null}
+
             {suggestions && !suggestions.isReal ? (
-                <View style={styles.badTeacher}>
+                <View style={[styles.badTeacher, { zIndex: 1 }]}>
                     <Feather
                         name="alert-triangle"
                         style={styles.badTeacherIcon}
@@ -185,28 +283,7 @@ function TeacherField({
                             {'\n'}
                             Did you mean:
                         </Text>
-                        {
-                            // suggestions
-                            suggestions.similar.map((suggestion) => (
-                                <Pressable
-                                    style={({ pressed }) => [
-                                        styles.badTeacherOption,
-                                        styles.badTeacherKnown,
-                                        pressed
-                                            ? styles.badTeacherKnownPressed
-                                            : null,
-                                    ]}
-                                    onPress={() => {
-                                        suggestionPress(suggestion);
-                                    }}
-                                    key={suggestion}
-                                >
-                                    <Text style={styles.badTeacherOptionText}>
-                                        {suggestion}
-                                    </Text>
-                                </Pressable>
-                            ))
-                        }
+                        {suggestionsElements}
 
                         <Pressable
                             style={({ pressed }) => [
@@ -222,34 +299,6 @@ function TeacherField({
                         </Pressable>
                     </View>
                 </View>
-            ) : null}
-
-            {autocompleteIsOpen && teacherList.length > 0 ? (
-                <ScrollView style={styles.optionsList}>
-                    {
-                        // autocomplete list
-                        teacherList.map((option, index) => (
-                            <Pressable
-                                style={({ pressed }) => [
-                                    styles.option,
-                                    // last element has no border
-                                    index === teacherList.length - 1
-                                        ? null
-                                        : styles.withBorder,
-                                    pressed ? styles.optionPressed : undefined,
-                                ]}
-                                onPress={() => {
-                                    autocompleteOptionPress(option);
-                                }}
-                                key={option}
-                            >
-                                <Text style={[styles.optionText]}>
-                                    {option}
-                                </Text>
-                            </Pressable>
-                        ))
-                    }
-                </ScrollView>
             ) : null}
         </View>
     );
@@ -278,21 +327,34 @@ const styles = StyleSheet.create({
         marginLeft: 10,
     },
     // autocomplete
-    optionsList: {
+    optionsListContainer: {
         borderRadius: 20,
+        overflow: 'hidden',
         borderWidth: 2,
         borderColor: Theme.lightForeground,
-        position: 'absolute',
-        top: 50,
-        width: '100%',
-        overflow: 'scroll',
         maxHeight: 200,
+        ...Platform.select({
+            ios: {
+                position: 'absolute',
+                // borderWidth: 2,
+                // borderColor: Theme.lightForeground,
+            },
+            android: {
+                position: 'relative',
+                marginTop: 5,
+            },
+        }),
+        width: '100%',
         backgroundColor: Theme.backgroundColor,
     },
     option: {
         paddingVertical: 8,
         paddingHorizontal: 20,
         backgroundColor: Theme.backgroundColor,
+        position: 'relative',
+    },
+    optionPressed: {
+        backgroundColor: Theme.lighterForeground,
     },
     optionText: {
         fontSize: 20,
@@ -302,9 +364,6 @@ const styles = StyleSheet.create({
     withBorder: {
         borderBottomColor: Theme.lightForeground,
         borderBottomWidth: 2,
-    },
-    optionPressed: {
-        backgroundColor: Theme.lighterForeground,
     },
     // bad teacher
     badTeacher: {
