@@ -8,11 +8,7 @@ import WaveHeader from '../../components/header/WaveHeader';
 import WaveHeaderSafearea from '../../components/header/WaveHeaderSafearea';
 import { Block, EditingSchedule } from '../../api/APITypes';
 import { useSettings } from '../../state/SettingsContext';
-import {
-    BlockIterator,
-    EmptyEditingSchedule,
-    EmptySchedule,
-} from '../../Utils';
+import { BlockIterator } from '../../Utils';
 import ErrorCard from '../../components/card/ErrorCard';
 import ClassInput from '../../components/ClassInput';
 import ExtraTeachers from '../../components/ExtraTeachers';

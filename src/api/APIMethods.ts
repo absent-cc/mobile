@@ -156,7 +156,18 @@ export async function fetchAbsences(token: string): Promise<AbsenceList> {
         'Fetch Absences',
     );
 
-    return response.absences;
+    return response.absences.map((absence: any) => {
+        return {
+            time: absence.length,
+            note: absence.note,
+            teacher: {
+                tid: absence.teacher.tid,
+                school: absence.teacher.school,
+                name: joinName(absence.teacher.first, absence.teacher.last),
+            },
+        };
+    });
+
     // const responseStr = await fetch(url('/teachers/absences/'), {
     //     method: 'GET',
     //     headers: getHeaders(token),

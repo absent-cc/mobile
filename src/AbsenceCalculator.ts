@@ -33,7 +33,7 @@ export default (
             teachers.forEach((teacher) => {
                 // check if teacher is in list
                 const absentTeacher = absences.find(
-                    (teach) => teach.name === teacher.name,
+                    (teach) => teach.teacher.tid === teacher.tid,
                 );
                 if (absentTeacher) {
                     result.push({
@@ -51,7 +51,7 @@ export default (
         schedule.EXTRA.forEach((teacher) => {
             // check if teacher is in list
             const absentTeacher = absences.find(
-                (teach) => teach.name === teacher.name,
+                (teach) => teach.teacher.tid === teacher.tid,
             );
             if (absentTeacher) {
                 result.push({

@@ -45,9 +45,9 @@ export type UserSettings = {
 };
 
 export type AbsentTeacher = {
-    name: string;
     time: string;
-    notes: string;
+    note: string;
+    teacher: Teacher;
 };
 
 export type AbsenceList = AbsentTeacher[];

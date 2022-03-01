@@ -26,10 +26,6 @@ function TeacherSettings({ navigation }: { navigation: any }) {
             BlockIterator.map((block) => {
                 const teachers = settings.value.schedule[block];
 
-                // for the onboarding process, an empty list is NOT a free block
-                if (teachers.length === 0) {
-                    return [block, block === Block.EXTRA ? [] : ['']];
-                }
                 return [block, teachers.map((teacher) => teacher.name)];
             }),
         ) as EditingSchedule,

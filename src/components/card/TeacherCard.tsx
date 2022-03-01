@@ -41,13 +41,13 @@ function TeacherCard({
                 ) : (
                     <>
                         <Text style={[styles.name]}>
-                            {absenceItem.teacher.name}
+                            {absenceItem.teacher.teacher.name}
                         </Text>
                         <Text style={[styles.time]}>
                             {absenceItem.teacher.time}
                         </Text>
                         <Text style={[styles.note]}>
-                            {absenceItem.teacher.notes}
+                            {absenceItem.teacher.note}
                         </Text>
                     </>
                 )}

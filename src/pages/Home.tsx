@@ -18,6 +18,7 @@ import { useAPI } from '../state/APIContext';
 import absenceCalculator from '../AbsenceCalculator';
 import { useAppState } from '../state/AppStateContext';
 import { dateFormatter, timeOfDay, toWords } from '../DateWordUtils';
+import RowButton from '../components/RowButton';
 
 function Home({ navigation }: { navigation: any }) {
     const insets = useSafeAreaInsets();
@@ -69,13 +70,13 @@ function Home({ navigation }: { navigation: any }) {
 
     let body;
 
-    if (appState.blocksToday.length === 0) {
+    if (appState.blocksToday?.length === 0) {
         body = (
             <Text style={styles.status}>
                 No school today! Have a great day!
             </Text>
         );
-    } else if (appState.absences.length === 0) {
+    } else if (appState.absences?.length === 0) {
         body = (
             <Text style={styles.status}>
                 The absence list hasn't been posted yet, check back later!
@@ -95,7 +96,7 @@ function Home({ navigation }: { navigation: any }) {
                 style={styles.card}
                 absenceItem={absenceItem}
                 key={`${absenceItem.block}-${
-                    absenceItem.teacher?.name || 'free'
+                    absenceItem.teacher?.teacher.name || 'free'
                 }`}
             />
         ));
@@ -105,7 +106,7 @@ function Home({ navigation }: { navigation: any }) {
                 style={styles.card}
                 absenceItem={absenceItem}
                 key={`${absenceItem.block}-${
-                    absenceItem.teacher?.name || 'free'
+                    absenceItem.teacher?.teacher.name || 'free'
                 }`}
             />
         ));
@@ -126,6 +127,14 @@ function Home({ navigation }: { navigation: any }) {
                         You have no absent teachers today. Check back tomorrow!
                     </Text>
                 )}
+
+                <RowButton
+                    onPress={() => {
+                        navigation.navigate('FullList');
+                    }}
+                    label="See full absence list"
+                    style={{ marginTop: 10 }}
+                />
 
                 {teacherCards.length > 0 && (
                     <>

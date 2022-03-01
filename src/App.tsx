@@ -22,6 +22,7 @@ import { SettingsProvider, useSettings } from './state/SettingsContext';
 import { APIProvider, useAPI } from './state/APIContext';
 import ScheduleOnboarding from './pages/onboarding/ScheduleOnboarding';
 import ProfileOnboarding from './pages/onboarding/ProfileOnboarding';
+import FullList from './pages/FullList';
 import Loading from './pages/Loading';
 import { Dialog, useDialog } from './components/dialog/Dialog';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -66,6 +67,10 @@ function App() {
                     settings.value.userOnboarded ? (
                         <>
                             <Stack.Screen name="Home" component={Home} />
+                            <Stack.Screen
+                                name="FullList"
+                                component={FullList}
+                            />
                             <Stack.Screen
                                 name="Settings"
                                 component={Settings}
