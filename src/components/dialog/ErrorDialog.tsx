@@ -10,12 +10,14 @@ function ErrorDialog({
     message,
     caller,
     description,
+    lightVersion = false,
 }: {
     style?: any;
     close: () => void;
     message: string;
     caller: string;
     description: string;
+    lightVersion?: boolean;
 }) {
     const insets = useSafeAreaInsets();
 
@@ -38,6 +40,7 @@ function ErrorDialog({
         <View
             style={[
                 styles.container,
+                lightVersion && styles.containerLight,
                 { paddingBottom: insets.bottom + 40 },
                 style,
             ]}
@@ -46,19 +49,39 @@ function ErrorDialog({
                 style={({ pressed }) => [
                     styles.close,
                     pressed ? styles.closePressed : undefined,
+                    pressed && lightVersion && styles.closePressedLight,
                 ]}
                 onPress={close}
             >
-                <Feather style={[styles.icon]} name="x" size={24} />
+                <Feather
+                    style={[styles.icon, lightVersion && styles.iconLight]}
+                    name="x"
+                    size={24}
+                />
             </Pressable>
-            <Text style={styles.mainMessage}>{message}</Text>
+            <Text
+                style={[
+                    styles.mainMessage,
+                    lightVersion && styles.messageLight,
+                ]}
+            >
+                {message}
+            </Text>
             {showing ? (
-                <Text style={styles.moreDetails}>
+                <Text
+                    style={[
+                        styles.moreDetails,
+                        lightVersion && styles.detailsLight,
+                    ]}
+                >
                     Error occurred during {caller}.{'\n'}
                     {description}
                 </Text>
             ) : (
-                <Text style={styles.showMore} onPress={showMore}>
+                <Text
+                    style={[styles.showMore, lightVersion && styles.moreLight]}
+                    onPress={showMore}
+                >
                     Show more
                 </Text>
             )}
@@ -71,6 +94,10 @@ const styles = StyleSheet.create({
         width: '100%',
         backgroundColor: Theme.primaryColor,
         padding: 40,
+        paddingRight: 60,
+    },
+    containerLight: {
+        backgroundColor: Theme.lighterForeground,
     },
     close: {
         position: 'absolute',
@@ -85,13 +112,22 @@ const styles = StyleSheet.create({
     closePressed: {
         backgroundColor: Theme.darkerPrimary,
     },
+    closePressedLight: {
+        backgroundColor: Theme.lightForeground,
+    },
     icon: {
         color: Theme.foregroundAlternate,
+    },
+    iconLight: {
+        color: Theme.primaryColor,
     },
     mainMessage: {
         fontFamily: Theme.regularFont,
         color: Theme.foregroundAlternate,
         fontSize: 20,
+    },
+    messageLight: {
+        color: Theme.primaryColor,
     },
     showMore: {
         marginTop: 5,
@@ -100,11 +136,17 @@ const styles = StyleSheet.create({
         fontSize: 20,
         textDecorationLine: 'underline',
     },
+    moreLight: {
+        color: Theme.primaryColor,
+    },
     moreDetails: {
         marginTop: 20,
         fontFamily: Theme.regularFont,
         color: Theme.foregroundAlternate,
         fontSize: 20,
+    },
+    detailsLight: {
+        color: Theme.primaryColor,
     },
 });
 

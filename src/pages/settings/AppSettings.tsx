@@ -26,6 +26,7 @@ function AppSettings({ navigation }: { navigation: any }) {
             <ScrollView
                 style={[styles.container, { marginTop: insets.top }]}
                 // bounces={false}
+                keyboardShouldPersistTaps="handled"
             >
                 <Header
                     iconName="chevron-left"

@@ -16,6 +16,7 @@ import {
     AuthenticationError,
     BadTokenError,
     NetworkError,
+    NonNPSError,
     ServerError,
     ValidationError,
 } from '../api/APIErrors';
@@ -143,6 +144,18 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                         />,
                     );
                     logout();
+                    return false;
+                }
+                if (error instanceof NonNPSError) {
+                    openDialog(
+                        <ErrorDialog
+                            message={error.message}
+                            description={error.description || ''}
+                            caller={error.caller}
+                            close={closeDialog}
+                            lightVersion
+                        />,
+                    );
                     return false;
                 }
                 if (error instanceof ServerError) {

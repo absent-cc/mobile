@@ -9,6 +9,7 @@ import {
     AuthenticationError,
     BadTokenError,
     NetworkError,
+    NonNPSError,
     ServerError,
     UnknownError,
 } from './APIErrors';
@@ -119,6 +120,11 @@ const getFromAPI = async (
             throw new BadTokenError(caller);
         } else if (responseJSON?.detail === 'Not authenticated') {
             throw new AuthenticationError(caller, 'Not authenticated');
+        } else if (
+            responseJSON?.detail ===
+            'Authentication Error - Not an NPS issued account'
+        ) {
+            throw new NonNPSError(caller);
         } else if (responseJSON?.detail?.startsWith('Authentication Error')) {
             throw new AuthenticationError(
                 caller,
@@ -141,7 +147,7 @@ const getFromAPI = async (
 
 export async function fetchAbsences(token: string): Promise<AbsenceList> {
     // TODO: make this actually reflect the api
-    return getFromAPI(
+    const response = await getFromAPI(
         {
             method: 'GET',
             path: '/teachers/absences/',
@@ -149,6 +155,8 @@ export async function fetchAbsences(token: string): Promise<AbsenceList> {
         },
         'Fetch Absences',
     );
+
+    return response.absences;
     // const responseStr = await fetch(url('/teachers/absences/'), {
     //     method: 'GET',
     //     headers: getHeaders(token),

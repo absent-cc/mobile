@@ -33,6 +33,15 @@ export class AuthenticationError extends APIError {
     }
 }
 
+export class NonNPSError extends APIError {
+    constructor(caller: string) {
+        super(
+            'Sorry, this is not an NPS account. Please use your Newton Google account to sign in.',
+            caller,
+        );
+    }
+}
+
 export class ServerError extends APIError {
     constructor(caller: string) {
         super(
