@@ -18,6 +18,7 @@ import {
     NetworkError,
     NonNPSError,
     ServerError,
+    UnknownError,
     ValidationError,
 } from '../api/APIErrors';
 import { useDialog } from '../components/dialog/Dialog';
@@ -185,6 +186,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                     return true;
                 }
 
+                // unknown error
                 openDialog(
                     <ErrorDialog
                         message={error.message}
@@ -223,13 +225,19 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
 
             // send refresh token
             try {
-                const { token } = await APIMethods.refresh(apiSettings.refresh);
+                const { token, onboarded } = await APIMethods.refresh(
+                    apiSettings.refresh,
+                );
 
                 // update settings
                 setAPISettings((oldState) => ({
                     ...oldState,
                     lastTokenUpdate: now,
                     token,
+                }));
+                setSettings((oldSettings) => ({
+                    ...oldSettings,
+                    userOnboarded: onboarded,
                 }));
 
                 return token;
@@ -241,6 +249,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
         },
         [
             apiSettings.lastTokenUpdate,
+            setSettings,
             apiSettings.refresh,
             apiSettings.token,
             parseError,
@@ -530,15 +539,12 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                     ready: true,
                 });
             })
-            .catch((e) => {
+            .catch(() => {
                 setAPISettings({
                     ...defaultState,
                     ready: true,
                 });
             });
-        // .finally(() => {
-        //     setReady(true);
-        // });
     }, []);
 
     // save token on change
@@ -547,11 +553,15 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             const settingsString = JSON.stringify(apiSettings);
             SecureStore.setItemAsync('apisettings', settingsString).catch(
                 (e) => {
-                    console.error('failed to save token');
+                    parseError(
+                        new UnknownError('Saving token', e.message),
+                        true,
+                        'Saving token',
+                    );
                 },
             );
         }
-    }, [apiSettings]);
+    }, [apiSettings, parseError]);
 
     // when we have a token, try to log in and verify it
     // this runs when the app starts or a user just logged in
