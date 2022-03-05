@@ -19,7 +19,7 @@ import GeneralSettings from './pages/settings/GeneralSettings';
 import TeacherSettings from './pages/settings/TeacherSettings';
 import { AppStateProvider, useAppState } from './state/AppStateContext';
 import { SettingsProvider, useSettings } from './state/SettingsContext';
-import { APIProvider, useAPI } from './state/APIContext';
+import { APIProvider, useAPI } from './api/APIContext';
 import ScheduleOnboarding from './pages/onboarding/ScheduleOnboarding';
 import ProfileOnboarding from './pages/onboarding/ProfileOnboarding';
 import FullList from './pages/FullList';

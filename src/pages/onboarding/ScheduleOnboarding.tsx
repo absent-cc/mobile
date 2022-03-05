@@ -12,7 +12,7 @@ import { BlockIterator } from '../../Utils';
 import ErrorCard from '../../components/card/ErrorCard';
 import ClassInput from '../../components/ClassInput';
 import ExtraTeachers from '../../components/ExtraTeachers';
-import { useAPI } from '../../state/APIContext';
+import { useAPI } from '../../api/APIContext';
 import LoadingCard from '../../components/card/LoadingCard';
 
 function ScheduleOnboarding({ navigation }: { navigation: any }) {

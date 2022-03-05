@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import * as Google from 'expo-auth-session/providers/google';
 import Theme from '../Theme';
 import GoogleSignIn from '../components/button/GoogleSignIn';
-import { useAPI } from '../state/APIContext';
+import { useAPI } from '../api/APIContext';
 
 function Welcome() {
     const [request, response, promptAsync] = Google.useIdTokenAuthRequest({

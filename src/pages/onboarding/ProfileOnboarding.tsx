@@ -16,7 +16,7 @@ import {
     SchoolList,
 } from '../../Utils';
 import ErrorCard from '../../components/card/ErrorCard';
-import { useAPI } from '../../state/APIContext';
+import { useAPI } from '../../api/APIContext';
 
 function ProfileOnboarding({ navigation }: { navigation: any }) {
     const insets = useSafeAreaInsets();

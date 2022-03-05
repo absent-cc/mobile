@@ -15,7 +15,7 @@ import {
     SchoolList,
 } from '../../Utils';
 import ErrorCard from '../../components/card/ErrorCard';
-import { useAPI } from '../../state/APIContext';
+import { useAPI } from '../../api/APIContext';
 import Divider from '../../components/Divider';
 import LoadingCard from '../../components/card/LoadingCard';
 

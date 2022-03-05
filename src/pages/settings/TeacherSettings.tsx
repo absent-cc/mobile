@@ -9,7 +9,7 @@ import ExtraTeachers from '../../components/ExtraTeachers';
 import HeaderSafearea from '../../components/header/HeaderSafearea';
 import { Block, EditingSchedule } from '../../api/APITypes';
 import { useSettings } from '../../state/SettingsContext';
-import { useAPI } from '../../state/APIContext';
+import { useAPI } from '../../api/APIContext';
 import { BlockIterator } from '../../Utils';
 import ErrorCard from '../../components/card/ErrorCard';
 import Divider from '../../components/Divider';

@@ -8,7 +8,7 @@ import TextButton from '../components/button/TextButton';
 import RowButton from '../components/RowButton';
 import Anchor from '../components/Anchor';
 import HeaderSafearea from '../components/header/HeaderSafearea';
-import { useAPI } from '../state/APIContext';
+import { useAPI } from '../api/APIContext';
 
 function Settings({ navigation }: { navigation: any }) {
     const insets = useSafeAreaInsets();

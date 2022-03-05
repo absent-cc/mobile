@@ -1,15 +1,15 @@
 import React from 'react';
 import * as SecureStore from 'expo-secure-store';
-import { useSettings } from './SettingsContext';
-import { useAppState } from './AppStateContext';
-import * as APIMethods from '../api/APIMethods';
+import { useSettings } from '../state/SettingsContext';
+import { useAppState } from '../state/AppStateContext';
+import * as APIMethods from './APIMethods';
 import {
     AbsenceList,
     Block,
     EditingSchedule,
     Schedule,
     UserSettings,
-} from '../api/APITypes';
+} from './APITypes';
 import { formatISODate } from '../DateWordUtils';
 import {
     APIError,
@@ -20,7 +20,7 @@ import {
     ServerError,
     UnknownError,
     ValidationError,
-} from '../api/APIErrors';
+} from './APIErrors';
 import { useDialog } from '../components/dialog/Dialog';
 import ErrorDialog from '../components/dialog/ErrorDialog';
 

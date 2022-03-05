@@ -14,7 +14,7 @@ import Divider from '../components/Divider';
 import WaveHeaderSafearea from '../components/header/WaveHeaderSafearea';
 import { useSettings } from '../state/SettingsContext';
 import { splitName } from '../Utils';
-import { useAPI } from '../state/APIContext';
+import { useAPI } from '../api/APIContext';
 import absenceCalculator from '../AbsenceCalculator';
 import { useAppState } from '../state/AppStateContext';
 import { dateFormatter, timeOfDay, toWords } from '../DateWordUtils';
