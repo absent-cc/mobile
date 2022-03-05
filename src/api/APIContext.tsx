@@ -26,6 +26,7 @@ import ErrorDialog from '../components/dialog/ErrorDialog';
 
 export interface APIDataType {
     ready: boolean;
+    isVerified: boolean;
     isLoggedIn: boolean;
     lastTokenUpdate: number;
     token: string | null;
@@ -73,6 +74,7 @@ const APIContext = React.createContext<APIContextType>({
 
 const defaultState: APIDataType = {
     ready: false,
+    isVerified: false,
     isLoggedIn: false,
     lastTokenUpdate: 0,
     token: null,
@@ -229,9 +231,12 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                     apiSettings.refresh,
                 );
 
+                console.log(onboarded);
+
                 // update settings
                 setAPISettings((oldState) => ({
                     ...oldState,
+                    isVerified: true,
                     lastTokenUpdate: now,
                     token,
                 }));
@@ -536,6 +541,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 setAPISettings({
                     ...defaultState,
                     ...savedSettings,
+                    isVerified: false,
                     ready: true,
                 });
             })
@@ -566,62 +572,68 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
     // when we have a token, try to log in and verify it
     // this runs when the app starts or a user just logged in
     React.useEffect(() => {
-        if (apiSettings.isLoggedIn && !serverLoaded) {
-            verifyToken().then((isValid) => {
-                if (!isValid) {
+        if (
+            apiSettings.isLoggedIn &&
+            !apiSettings.isVerified &&
+            !serverLoaded
+        ) {
+            verifyToken(true).then((token) => {
+                if (!token) {
                     logout();
-                } else {
-                    // this is a good token, so make sure that we fetch new data first
-                    Promise.all([
-                        fetchAbsences(),
-                        fetchSettings(),
-                        getClassesToday(),
-                    ])
-                        .then(([absences, newSettings, classesToday]) => {
-                            setAppState((oldAppState) => {
-                                const stateChanges = {
-                                    ...oldAppState,
-                                    // needsUpdate: false,
-                                    serverLoaded: true,
-                                };
-                                if (absences !== null)
-                                    stateChanges.absences = absences;
-                                if (classesToday !== null)
-                                    stateChanges.blocksToday = classesToday;
-                                return stateChanges;
-                            });
-                            setSettings((oldSettings) => {
-                                const stateChanges = {
-                                    ...oldSettings,
-                                    serverLoaded: true,
-                                };
-                                if (newSettings !== null) {
-                                    stateChanges.user = newSettings.user;
-                                    stateChanges.schedule =
-                                        newSettings.schedule;
-                                }
-                                return stateChanges;
-                            });
-                            setServerLoaded(true);
-                        })
-                        .catch((e: any) => {
-                            // don't retry this, it shouldn't error
-                            parseError(e, true, 'Startup load');
-                        });
                 }
             });
         }
     }, [
-        logout,
         apiSettings.isLoggedIn,
+        apiSettings.isVerified,
         serverLoaded,
         verifyToken,
+        logout,
+    ]);
+
+    React.useEffect(() => {
+        if (apiSettings.isLoggedIn && !serverLoaded && apiSettings.isVerified) {
+            Promise.all([fetchAbsences(), fetchSettings(), getClassesToday()])
+                .then(([absences, newSettings, classesToday]) => {
+                    setAppState((oldAppState) => {
+                        const stateChanges = {
+                            ...oldAppState,
+                            // needsUpdate: false,
+                            serverLoaded: true,
+                        };
+                        if (absences !== null) stateChanges.absences = absences;
+                        if (classesToday !== null)
+                            stateChanges.blocksToday = classesToday;
+                        return stateChanges;
+                    });
+                    setSettings((oldSettings) => {
+                        const stateChanges = {
+                            ...oldSettings,
+                            serverLoaded: true,
+                        };
+                        if (newSettings !== null) {
+                            stateChanges.user = newSettings.user;
+                            stateChanges.schedule = newSettings.schedule;
+                        }
+                        return stateChanges;
+                    });
+                    setServerLoaded(true);
+                })
+                .catch((e: any) => {
+                    // don't retry this, it shouldn't error
+                    parseError(e, true, 'Startup load');
+                });
+        }
+    }, [
+        apiSettings.isLoggedIn,
+        apiSettings.isVerified,
         fetchAbsences,
         fetchSettings,
         getClassesToday,
+        parseError,
+        serverLoaded,
         setAppState,
         setSettings,
-        parseError,
     ]);
 
     // auto app state updating

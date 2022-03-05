@@ -1,6 +1,9 @@
 import React from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Schedule, UserSettings } from '../api/APITypes';
 import { DefaultAppSettings, EmptySchedule, EmptyUser } from '../Utils';
+import { useDialog } from '../components/dialog/Dialog';
+import ErrorDialog from '../components/dialog/ErrorDialog';
 
 export type AppSettings = {
     showFreeBlocks: boolean;
@@ -9,6 +12,7 @@ export type AppSettings = {
 };
 
 export type SettingsType = {
+    ready: boolean;
     serverLoaded: boolean;
     userOnboarded: boolean;
     uid: string;
@@ -25,6 +29,7 @@ export type SettingsContextType = {
 
 // Default settings
 export const defaultState: SettingsType = {
+    ready: false,
     serverLoaded: false,
     userOnboarded: false,
     uid: '',
@@ -46,8 +51,48 @@ const SettingsContext = React.createContext<SettingsContextType>({
 
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
     const [settings, setSettings] = React.useState<SettingsType>(defaultState);
+    const { open: openDialog, close: closeDialog } = useDialog();
 
-    // Memoized just in case
+    // read token only once
+    React.useEffect(() => {
+        AsyncStorage.getItem('appsettings')
+            .then((savedSettingsString) => {
+                return savedSettingsString
+                    ? JSON.parse(savedSettingsString)
+                    : {};
+            })
+            .then((savedSettings) => {
+                setSettings((oldSettings) => ({
+                    ...oldSettings,
+                    ready: true,
+                    app: savedSettings,
+                }));
+            })
+            .catch(() => {
+                setSettings((oldSettings) => ({
+                    ...oldSettings,
+                    ready: true,
+                }));
+            });
+    }, []);
+
+    // save token on change
+    React.useEffect(() => {
+        if (settings.ready) {
+            const settingsString = JSON.stringify(settings.app);
+            AsyncStorage.setItem('appsettings', settingsString).catch((e) => {
+                openDialog(
+                    <ErrorDialog
+                        message="An unknown error occurred while saving your app settings."
+                        description={e.message}
+                        caller="Saving app settings"
+                        close={closeDialog}
+                    />,
+                );
+            });
+        }
+    }, [settings, openDialog, closeDialog]);
+
     const resetSettings = React.useCallback(() => {
         setSettings({
             ...defaultState,

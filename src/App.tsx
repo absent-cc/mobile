@@ -43,7 +43,7 @@ function App() {
     const dialog = useDialog();
 
     // first, wait for everything to load from local
-    if (!fontsLoaded || !api.ready) {
+    if (!fontsLoaded || !api.ready || !settings.value.ready) {
         return <AppLoading />;
     }
 
