@@ -1,14 +1,14 @@
 {
     "expo": {
-        "name": "abSENT-mobile",
+        "name": "abSENT",
         "owner": "absent",
-        "slug": "absent-mobile",
+        "slug": "absent",
         "entryPoint": "./index.js",
         "version": "1.0.0",
         "scheme": "absent",
         "plugins": ["@notifee/react-native"],
         "orientation": "portrait",
-        "icon": "./assets/images/icon_logo.png",
+        "icon": "./assets/images/icon.png",
         "splash": {
             "image": "./assets/images/splash.png",
             "resizeMode": "cover",
@@ -20,17 +20,19 @@
         "assetBundlePatterns": ["**/*"],
         "ios": {
             "supportsTablet": true,
-            "bundleIdentifier": "cc.absent.client"
+            "bundleIdentifier": "cc.absent.client",
+            "icon": "./assets/images/icon.png"
         },
         "android": {
             "adaptiveIcon": {
-                "foregroundImage": "./assets/images/icon_logo.png",
+                "foregroundImage": "./assets/images/adaptive_icon.png",
                 "backgroundColor": "#FFFFFF"
             },
-            "package": "cc.absent.absent"
+            "icon": "./assets/images/icon.png",
+            "package": "cc.absent.client"
         },
         "web": {
-            "favicon": "./assets/images/icon_logo.png"
+            "favicon": "./assets/images/icon.png"
         }
     }
 }

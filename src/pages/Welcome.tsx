@@ -36,7 +36,15 @@ function Welcome() {
                 end={{ x: 1.0, y: 1.0 }}
                 style={styles.gradientBg}
             >
-                <View style={styles.subarea}>
+                <View
+                    style={[
+                        styles.subarea,
+                        {
+                            // position: 'absolute',
+                            // top: 300,
+                        },
+                    ]}
+                >
                     <Image
                         style={styles.logo}
                         // eslint-disable-next-line global-require, import/extensions
@@ -80,7 +88,7 @@ const styles = StyleSheet.create({
     },
     ctaSubarea: {
         position: 'absolute',
-        bottom: 150,
+        bottom: 120,
     },
     logo: {
         width: '100%',
