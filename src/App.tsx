@@ -1,6 +1,5 @@
 /* eslint-disable no-nested-ternary */
 import React from 'react';
-import { registerRootComponent } from 'expo';
 import AppLoading from 'expo-app-loading';
 import {
     useFonts,
@@ -109,7 +108,7 @@ function App() {
     );
 }
 
-function AppContexts() {
+export default function AppRoot() {
     return (
         <SafeAreaProvider>
             <NavigationContainer>
@@ -128,5 +127,3 @@ function AppContexts() {
         </SafeAreaProvider>
     );
 }
-
-export default registerRootComponent(AppContexts);

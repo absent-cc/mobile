@@ -231,8 +231,6 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                     apiSettings.refresh,
                 );
 
-                console.log(onboarded);
-
                 // update settings
                 setAPISettings((oldState) => ({
                     ...oldState,

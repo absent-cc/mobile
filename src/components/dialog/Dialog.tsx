@@ -30,7 +30,6 @@ export function Dialog({ children }: { children: React.ReactNode }) {
     );
 
     const open = React.useCallback((dialogChildren: React.ReactNode) => {
-        console.log('hello');
         setState({
             isOpen: true,
             children: dialogChildren,

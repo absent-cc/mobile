@@ -3,9 +3,10 @@
         "name": "abSENT-mobile",
         "owner": "absent",
         "slug": "absent-mobile",
-        "entryPoint": "./src/App.tsx",
+        "entryPoint": "./index.js",
         "version": "1.0.0",
         "scheme": "absent",
+        "plugins": ["@notifee/react-native"],
         "orientation": "portrait",
         "icon": "./assets/images/icon_logo.png",
         "splash": {
