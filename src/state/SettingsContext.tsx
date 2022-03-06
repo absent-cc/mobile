@@ -91,11 +91,12 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
                 );
             });
         }
-    }, [settings, openDialog, closeDialog]);
+    }, [settings.ready, settings.app, openDialog, closeDialog]);
 
     const resetSettings = React.useCallback(() => {
         setSettings({
             ...defaultState,
+            ready: true,
         });
     }, [setSettings]);
 
