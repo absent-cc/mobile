@@ -93,6 +93,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
         // if (apiSettings.token !== null) {
         //     await APIMethods.logout(apiSettings.token);
         // }
+        console.log('in logout');
 
         resetSettings();
         setAPISettings((oldState) => {

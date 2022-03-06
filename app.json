@@ -6,7 +6,12 @@
         "entryPoint": "./index.js",
         "version": "1.0.0",
         "scheme": "absent",
-        "plugins": ["@notifee/react-native"],
+        "plugins": [
+            "@notifee/react-native",
+            "expo-dev-client",
+            "expo-splash-screen",
+            "@react-native-firebase/app"
+        ],
         "orientation": "portrait",
         "icon": "./assets/images/icon.png",
         "splash": {
@@ -21,7 +26,11 @@
         "ios": {
             "supportsTablet": true,
             "bundleIdentifier": "cc.absent.client",
-            "icon": "./assets/images/icon.png"
+            "icon": "./assets/images/icon.png",
+            "infoPlist": {
+                "UIBackgroundModes": ["fetch", "remote-notification"]
+            },
+            "googleServicesFile": "./GoogleService-Info.plist"
         },
         "android": {
             "adaptiveIcon": {

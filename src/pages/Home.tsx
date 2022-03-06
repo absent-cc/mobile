@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import React from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import notifee from '@notifee/react-native';
 import Theme from '../Theme';
 import WaveHeader from '../components/header/WaveHeader';
 import TeacherCard from '../components/card/TeacherCard';
@@ -26,9 +27,36 @@ function Home({ navigation }: { navigation: any }) {
     const { value: appState, setAppState } = useAppState();
     const api = useAPI();
 
+    React.useEffect(() => {
+        // get notfication permission
+        notifee.requestPermission();
+    }, []);
+
     const [refreshing, setRefreshing] = React.useState(false);
 
-    const onRefresh = React.useCallback(() => {
+    const onRefresh = React.useCallback(async () => {
+        setTimeout(async () => {
+            await notifee.requestPermission();
+
+            console.log('test');
+            // Create a channel
+            const channelId = await notifee.createChannel({
+                id: 'default',
+                name: 'Default Channel',
+            });
+
+            // Display a notification
+
+            await notifee.displayNotification({
+                title: 'Notification Title',
+                body: 'Main body content of the notification',
+                android: {
+                    channelId,
+                    smallIcon: 'name-of-a-small-icon', // optional, defaults to 'ic_launcher'.
+                },
+            });
+        }, 1000);
+
         setRefreshing(true);
     }, []);
 
