@@ -15,7 +15,7 @@ import TeacherCard from '../components/card/TeacherCard';
 import Divider from '../components/Divider';
 import WaveHeaderSafearea from '../components/header/WaveHeaderSafearea';
 import { useSettings } from '../state/SettingsContext';
-import { splitName } from '../Utils';
+import { ShortBlockFullNames, splitName } from '../Utils';
 import { useAPI } from '../api/APIContext';
 import absenceCalculator from '../AbsenceCalculator';
 import { useAppState } from '../state/AppStateContext';
@@ -92,13 +92,13 @@ function Home({ navigation }: { navigation: any }) {
     if (appState.blocksToday?.length === 0) {
         body = (
             <Text style={styles.status}>
-                No school today! Have a great day!
+                No school today! Have a great day! 🎉
             </Text>
         );
     } else if (appState.absences?.length === 0) {
         body = (
             <Text style={styles.status}>
-                The absence list hasn't been posted yet, check back later!
+                The absence list hasn't been posted yet, check back later! 🥱
             </Text>
         );
     } else {
@@ -157,7 +157,7 @@ function Home({ navigation }: { navigation: any }) {
 
                 {teacherCards.length > 0 && (
                     <>
-                        <Text style={styles.header}>Classes</Text>
+                        <Text style={styles.header}>Cancelled Classes</Text>
                         {teacherCards}
                     </>
                 )}
@@ -203,9 +203,17 @@ function Home({ navigation }: { navigation: any }) {
                 <View style={styles.content}>
                     <Text style={styles.hello}>
                         Today is{' '}
-                        <Text style={styles.date}>{dateFormatter(now)}</Text>.{' '}
-                        {timeEmoji}
+                        <Text style={styles.date}>{dateFormatter(now)}</Text>.
                     </Text>
+                    {appState.blocksToday?.length > 0 && (
+                        <Text style={styles.blockList}>
+                            The blocks today are{' '}
+                            {appState.blocksToday
+                                .map((block) => ShortBlockFullNames[block])
+                                .join(', ')}
+                            .
+                        </Text>
+                    )}
                     <Divider />
                     {body}
                 </View>
@@ -231,6 +239,12 @@ const styles = StyleSheet.create({
         paddingBottom: 80,
     },
     hello: {
+        color: Theme.foregroundColor,
+        fontFamily: Theme.regularFont,
+        fontSize: 20,
+    },
+    blockList: {
+        marginTop: 20,
         color: Theme.foregroundColor,
         fontFamily: Theme.regularFont,
         fontSize: 20,

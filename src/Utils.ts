@@ -44,6 +44,18 @@ export const ShortBlocks: Record<Block, string> = {
     EXTRA: 'EXTRA',
 };
 
+export const ShortBlockFullNames: Record<Block, string> = {
+    A: 'A',
+    B: 'B',
+    C: 'C',
+    D: 'D',
+    E: 'E',
+    F: 'F',
+    G: 'G',
+    ADVISORY: 'Advisory',
+    EXTRA: 'Extra',
+};
+
 export const EmptySchedule: Schedule = {
     A: [],
     B: [],

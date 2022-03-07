@@ -28,7 +28,11 @@ function FullList({ navigation }: { navigation: any }) {
         )
         .map((absence) => {
             return (
-                <AllTeacherCard teacher={absence} key={absence.teacher.tid} />
+                <AllTeacherCard
+                    teacher={absence}
+                    key={absence.teacher.tid}
+                    style={styles.card}
+                />
             );
         });
 
@@ -66,7 +70,7 @@ const styles = StyleSheet.create({
     },
     content: {
         paddingHorizontal: 30,
-        paddingTop: 15,
+        paddingTop: 0,
         paddingBottom: 80,
     },
     hello: {
@@ -86,7 +90,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
     },
     card: {
-        marginTop: 20,
+        marginBottom: 20,
     },
     header: {
         color: Theme.foregroundColor,

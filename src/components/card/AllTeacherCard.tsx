@@ -24,9 +24,7 @@ function AllTeacherCard({
 }
 
 const styles = StyleSheet.create({
-    container: {
-        marginVertical: 10,
-    },
+    container: {},
     name: {
         fontFamily: Theme.strongFont,
         fontSize: 20,
