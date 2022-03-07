@@ -145,12 +145,17 @@ const getFromAPI = async (
     return responseJSON;
 };
 
-export async function fetchAbsences(token: string): Promise<AbsenceList> {
+export async function fetchAbsences(
+    token: string,
+    dateStr: string,
+): Promise<AbsenceList> {
     // TODO: make this actually reflect the api
     const response = await getFromAPI(
         {
             method: 'GET',
-            path: '/teachers/absences/',
+            path: `/teachers/absences?${new URLSearchParams({
+                date: dateStr,
+            }).toString()}`,
             token,
         },
         'Fetch Absences',
@@ -250,11 +255,9 @@ export async function getClassesToday(
     const response = await getFromAPI(
         {
             method: 'GET',
-            path: `/teachers/classes?${encodeURIComponent(
-                new URLSearchParams({
-                    date: dateStr,
-                }).toString(),
-            )}`,
+            path: `/teachers/classes?${new URLSearchParams({
+                date: dateStr,
+            }).toString()}`,
             token,
         },
         'Fetch Classes Today',

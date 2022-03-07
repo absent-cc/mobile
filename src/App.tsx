@@ -1,5 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import React from 'react';
+import { AppState } from 'react-native';
 import AppLoading from 'expo-app-loading';
 import {
     useFonts,
@@ -109,6 +110,16 @@ function App() {
 }
 
 export default function AppRoot() {
+    // app state will be null for a bit
+    if (AppState.currentState === null) {
+        return <AppLoading />;
+    }
+
+    // headless mode for firebase notifications in ios
+    if (AppState.currentState !== 'active') {
+        return null;
+    }
+
     return (
         <SafeAreaProvider>
             <NavigationContainer>

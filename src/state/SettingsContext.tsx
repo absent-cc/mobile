@@ -38,11 +38,6 @@ export const defaultState: SettingsType = {
     schedule: EmptySchedule,
 };
 
-// Transform to new settings schema
-export function settingsTransformer(oldSettings: any): SettingsType {
-    return oldSettings;
-}
-
 const SettingsContext = React.createContext<SettingsContextType>({
     value: defaultState,
     resetSettings: () => undefined,

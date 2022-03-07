@@ -8,6 +8,7 @@ import {
 import React from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import notifee from '@notifee/react-native';
+import messaging from '@react-native-firebase/messaging';
 import Theme from '../Theme';
 import WaveHeader from '../components/header/WaveHeader';
 import TeacherCard from '../components/card/TeacherCard';
@@ -32,31 +33,21 @@ function Home({ navigation }: { navigation: any }) {
         notifee.requestPermission();
     }, []);
 
+    React.useEffect(() => {
+        // test token
+        // messaging()
+        //     .getToken()
+        //     .then((token: string) => console.log(token));
+        const unsubscribe = messaging().onMessage(async () => {
+            setRefreshing(true);
+        });
+
+        return unsubscribe;
+    }, []);
+
     const [refreshing, setRefreshing] = React.useState(false);
 
     const onRefresh = React.useCallback(async () => {
-        setTimeout(async () => {
-            await notifee.requestPermission();
-
-            console.log('test');
-            // Create a channel
-            const channelId = await notifee.createChannel({
-                id: 'default',
-                name: 'Default Channel',
-            });
-
-            // Display a notification
-
-            await notifee.displayNotification({
-                title: 'Notification Title',
-                body: 'Main body content of the notification',
-                android: {
-                    channelId,
-                    smallIcon: 'name-of-a-small-icon', // optional, defaults to 'ic_launcher'.
-                },
-            });
-        }, 1000);
-
         setRefreshing(true);
     }, []);
 

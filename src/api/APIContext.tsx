@@ -89,6 +89,9 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
     const { value: settings, setSettings, resetSettings } = useSettings();
     const { value: appState, setAppState } = useAppState();
 
+    // since the get classes and get absences endpoint takes a date, we'll just regenerate this function once per day
+    const dateStr = formatISODate(new Date(appState.lastUpdateTime));
+
     const logout = React.useCallback(async () => {
         // if (apiSettings.token !== null) {
         //     await APIMethods.logout(apiSettings.token);
@@ -265,7 +268,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             if (token === null) return null;
 
             try {
-                const response = await APIMethods.fetchAbsences(token);
+                const response = await APIMethods.fetchAbsences(token, dateStr);
 
                 return response;
             } catch (err: any) {
@@ -280,7 +283,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 return null;
             }
         },
-        [parseError, verifyToken],
+        [dateStr, parseError, verifyToken],
     );
 
     const fetchSettings = React.useCallback(
@@ -476,8 +479,6 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
         [verifyToken, settings.user.school, parseError],
     );
 
-    // since the get classes endpoint takes a date, we'll just regenerate this function once per day
-    const dateStr = formatISODate(new Date(appState.lastUpdateTime));
     const getClassesToday = React.useCallback(
         async (hasRetried = false): Promise<Block[] | null> => {
             const token = await verifyToken(hasRetried);
