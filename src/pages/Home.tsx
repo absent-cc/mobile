@@ -34,10 +34,6 @@ function Home({ navigation }: { navigation: any }) {
     }, []);
 
     React.useEffect(() => {
-        // test token
-        // messaging()
-        //     .getToken()
-        //     .then((token: string) => console.log(token));
         const unsubscribe = messaging().onMessage(async () => {
             setRefreshing(true);
         });

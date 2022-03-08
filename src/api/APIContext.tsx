@@ -55,6 +55,7 @@ export interface APIContextType {
     }) => Promise<void>;
     saveSchedule: (newSettings: EditingSchedule) => Promise<void>;
     saveUserSettings: (newSettings: UserSettings) => Promise<void>;
+    saveFCMToken: (fcmToken: string) => Promise<void>;
 }
 
 const APIContext = React.createContext<APIContextType>({
@@ -70,6 +71,7 @@ const APIContext = React.createContext<APIContextType>({
     saveSettings: async () => undefined,
     saveSchedule: async () => undefined,
     saveUserSettings: async () => undefined,
+    saveFCMToken: async () => undefined,
 });
 
 const defaultState: APIDataType = {
@@ -528,6 +530,27 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
         [parseError, setSettings],
     );
 
+    const saveFCMToken = React.useCallback(
+        async (fcmToken: string, hasRetried = false): Promise<void> => {
+            const token = await verifyToken(hasRetried);
+            if (token === null) return;
+
+            try {
+                APIMethods.saveFCMToken(fcmToken, token);
+            } catch (err: any) {
+                const shouldRetry = parseError(
+                    err,
+                    hasRetried,
+                    'Save FCM Token',
+                );
+                if (shouldRetry) {
+                    saveFCMToken(fcmToken, true);
+                }
+            }
+        },
+        [verifyToken, parseError],
+    );
+
     // read token only once
     React.useEffect(() => {
         SecureStore.getItemAsync('apisettings')
@@ -697,6 +720,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             saveSettings,
             saveSchedule,
             saveUserSettings,
+            saveFCMToken,
         }),
         [
             apiSettings.ready,
@@ -711,6 +735,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             saveSettings,
             saveSchedule,
             saveUserSettings,
+            saveFCMToken,
         ],
     );
 

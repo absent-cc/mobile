@@ -581,3 +581,30 @@ export async function refresh(refreshToken: string): Promise<{
         'Refresh Token',
     );
 }
+
+export async function saveFCMToken(fcmToken: string, token: string) {
+    // const responseStr = await fetch(url('/users/me/update/profile'), {
+    //     method: 'PUT',
+    //     headers: getHeaders(token),
+    //     body: JSON.stringify(convertedUserSettings),
+    // });
+    // if (!responseStr.ok) {
+    //     throw new Error(
+    //         `saveUserSettings failed with error ${
+    //             responseStr.status
+    //         }: ${await responseStr.text()}`,
+    //     );
+    // }
+
+    getFromAPI(
+        {
+            method: 'PUT',
+            path: '/users/me/update/fcm/',
+            token,
+            body: {
+                token: fcmToken,
+            },
+        },
+        'Save FCM Token',
+    );
+}

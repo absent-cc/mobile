@@ -11,6 +11,7 @@ import {
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import messaging from '@react-native-firebase/messaging';
 import Welcome from './pages/Welcome';
 import Home from './pages/Home';
 import Settings from './pages/Settings';
@@ -38,19 +39,25 @@ function App() {
         Inter_Display_600SemiBold: require('../assets/fonts/InterDisplay-SemiBold.otf'),
     });
     const appState = useAppState();
-    const settings = useSettings();
-    const api = useAPI();
+    const { value: settings } = useSettings();
+    const { ready: apiReady, saveFCMToken, isLoggedIn } = useAPI();
     const dialog = useDialog();
 
+    React.useEffect(() => {
+        messaging()
+            .getToken()
+            .then((token: string) => saveFCMToken(token));
+    }, [saveFCMToken]);
+
     // first, wait for everything to load from local
-    if (!fontsLoaded || !api.ready || !settings.value.ready) {
+    if (!fontsLoaded || !apiReady || !settings.ready) {
         return <AppLoading />;
     }
 
     // then, if we are logged in, wait for a server update
     if (
-        api.isLoggedIn &&
-        (!appState.value.serverLoaded || !settings.value.serverLoaded)
+        isLoggedIn &&
+        (!appState.value.serverLoaded || !settings.serverLoaded)
     ) {
         return <Loading />;
     }
@@ -63,8 +70,8 @@ function App() {
                     headerShown: false,
                 }}
             >
-                {api.isLoggedIn ? (
-                    settings.value.userOnboarded ? (
+                {isLoggedIn ? (
+                    settings.userOnboarded ? (
                         <>
                             <Stack.Screen name="Home" component={Home} />
                             <Stack.Screen
