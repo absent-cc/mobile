@@ -1,10 +1,4 @@
-import {
-    StyleSheet,
-    Text,
-    ScrollView,
-    View,
-    RefreshControl,
-} from 'react-native';
+import { StyleSheet, ScrollView, View } from 'react-native';
 import React from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Theme from '../Theme';
