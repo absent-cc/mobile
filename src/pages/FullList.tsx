@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     },
     content: {
         paddingHorizontal: 30,
-        paddingTop: 0,
+        paddingTop: 10,
         paddingBottom: 80,
     },
     hello: {
