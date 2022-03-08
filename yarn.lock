@@ -2715,7 +2715,6 @@ __metadata:
     "@types/react-native": ~0.64.12
     "@typescript-eslint/eslint-plugin": ^5.9.0
     "@typescript-eslint/parser": ^5.9.0
-    dev: ^0.1.3
     eslint: ^8.8.0
     eslint-config-airbnb: ^19.0.4
     eslint-config-prettier: ^8.3.0
@@ -2736,6 +2735,7 @@ __metadata:
     expo-secure-store: ~11.1.0
     expo-splash-screen: ~0.14.1
     expo-status-bar: ~1.2.0
+    expo-updates: ~0.11.6
     husky: ^7.0.4
     lint-staged: ^12.1.7
     prettier: ^2.5.1
@@ -3330,15 +3330,6 @@ __metadata:
   version: 1.6.51
   resolution: "big-integer@npm:1.6.51"
   checksum: 3d444173d1b2e20747e2c175568bedeebd8315b0637ea95d75fd27830d3b8e8ba36c6af40374f36bdaea7b5de376dcada1b07587cb2a79a928fccdb6e6e3c518
-  languageName: node
-  linkType: hard
-
-"bindings@npm:^1.3.1":
-  version: 1.5.0
-  resolution: "bindings@npm:1.5.0"
-  dependencies:
-    file-uri-to-path: 1.0.0
-  checksum: 65b6b48095717c2e6105a021a7da4ea435aa8d3d3cd085cb9e85bcb6e5773cf318c4745c3f7c504412855940b585bdf9b918236612a1c7a7942491de176f1ae7
   languageName: node
   linkType: hard
 
@@ -4304,17 +4295,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dev@npm:^0.1.3":
-  version: 0.1.3
-  resolution: "dev@npm:0.1.3"
-  dependencies:
-    inotify: ">= 0.1.6"
-  bin:
-    node-dev: ./node-dev.sh
-  checksum: a28f822a98386e534828c8800b413bd6fa7cd307cf614d0967e96a515ec9dfa36e8a3b170bfa8bfa1341bf69e620c18dd56ad136fe6ca5a07c5dbb0637bbebcd
-  languageName: node
-  linkType: hard
-
 "dir-glob@npm:^3.0.1":
   version: 3.0.1
   resolution: "dir-glob@npm:3.0.1"
@@ -5211,12 +5191,38 @@ __metadata:
   languageName: node
   linkType: hard
 
+"expo-structured-headers@npm:~2.1.0":
+  version: 2.1.1
+  resolution: "expo-structured-headers@npm:2.1.1"
+  checksum: f67d06e489b331a8cc4ed92e600c75294ce1d61e21c2b69ca3a7f22190523db0fe787ba69f79d129430c0e209a427949c4b89b15b0aca700cf2609d049a383ce
+  languageName: node
+  linkType: hard
+
 "expo-updates-interface@npm:~0.5.0":
   version: 0.5.1
   resolution: "expo-updates-interface@npm:0.5.1"
   peerDependencies:
     expo: "*"
   checksum: 3474251e93a407a4bc5b91ce6bc39eb7a2bd0d3ba3ce52620ed57cfbb1ca8c3e407073e71713d232327b118ab9ac9743a29df91a954701673d56b3526e91fb2e
+  languageName: node
+  linkType: hard
+
+"expo-updates@npm:~0.11.6":
+  version: 0.11.7
+  resolution: "expo-updates@npm:0.11.7"
+  dependencies:
+    "@expo/config": ^6.0.6
+    "@expo/config-plugins": ^4.0.2
+    "@expo/metro-config": ~0.2.6
+    expo-manifests: ~0.2.2
+    expo-structured-headers: ~2.1.0
+    expo-updates-interface: ~0.5.0
+    fbemitter: ^2.1.1
+    resolve-from: ^5.0.0
+    uuid: ^3.4.0
+  peerDependencies:
+    expo: "*"
+  checksum: 6354efd619402a8575dc110bfd41b3596c16033a7ad8663437e4873929a717e66951980d9b477dfb69f6ab0a072102154bde0ad54c812cec3c9d2e3db891e5e8
   languageName: node
   linkType: hard
 
@@ -5409,13 +5415,6 @@ __metadata:
   dependencies:
     flat-cache: ^3.0.4
   checksum: f49701feaa6314c8127c3c2f6173cfefff17612f5ed2daaafc6da13b5c91fd43e3b2a58fd0d63f9f94478a501b167615931e7200e31485e320f74a33885a9c74
-  languageName: node
-  linkType: hard
-
-"file-uri-to-path@npm:1.0.0":
-  version: 1.0.0
-  resolution: "file-uri-to-path@npm:1.0.0"
-  checksum: b648580bdd893a008c92c7ecc96c3ee57a5e7b6c4c18a9a09b44fb5d36d79146f8e442578bc0e173dc027adf3987e254ba1dfd6e3ec998b7c282873010502144
   languageName: node
   linkType: hard
 
@@ -6173,18 +6172,6 @@ __metadata:
   dependencies:
     css-in-js-utils: ^2.0.0
   checksum: 0bfa6fa89faa21e425c71425910c37c7b35a16ea753586c408fcc9246c84937c1b8184e6ce792139cda5de5cce8e1bc9eb0ba9f30968bdc97e7a06ece21c0737
-  languageName: node
-  linkType: hard
-
-"inotify@npm:>= 0.1.6":
-  version: 1.4.6
-  resolution: "inotify@npm:1.4.6"
-  dependencies:
-    bindings: ^1.3.1
-    nan: ^2.12.1
-    node-gyp: latest
-  checksum: c210db40456c01abec84b4a0c239f7c833d8e20480c863d553b1456d1c251f67dab21f6ce00ca1c56c76214636a0506934cb8dcec8817619bda1f74db41a646a
-  conditions: os=linux
   languageName: node
   linkType: hard
 
@@ -7903,15 +7890,6 @@ __metadata:
     object-assign: ^4.0.1
     thenify-all: ^1.0.0
   checksum: 8427de0ece99a07e9faed3c0c6778820d7543e3776f9a84d22cf0ec0a8eb65f6e9aee9c9d353ff9a105ff62d33a9463c6ca638974cc652ee8140cd1e35951c87
-  languageName: node
-  linkType: hard
-
-"nan@npm:^2.12.1":
-  version: 2.15.0
-  resolution: "nan@npm:2.15.0"
-  dependencies:
-    node-gyp: latest
-  checksum: 33e1bb4dfca447fe37d4bb5889be55de154828632c8d38646db67293a21afd61ed9909cdf1b886214a64707d935926c4e60e2b09de9edfc2ad58de31d6ce8f39
   languageName: node
   linkType: hard
 

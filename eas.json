@@ -8,10 +8,20 @@
             "distribution": "internal",
             "ios": {
                 "cocoapods": "1.11.2"
+            },
+            "android": {
+                "image": "ubuntu-20.04-jdk-11-ndk-r21e"
             }
         },
         "preview": {
-            "distribution": "internal"
+            "distribution": "internal",
+            "releaseChannel": "preview",
+            "ios": {
+                "cocoapods": "1.11.2"
+            },
+            "android": {
+                "image": "ubuntu-20.04-jdk-11-ndk-r21e"
+            }
         },
         "production": {}
     },
