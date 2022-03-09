@@ -11,6 +11,7 @@ import {
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import * as Updates from 'expo-updates';
 import Welcome from './pages/Welcome';
 import Home from './pages/Home';
 import Settings from './pages/Settings';
@@ -26,6 +27,7 @@ import FullList from './pages/FullList';
 import Loading from './pages/Loading';
 import { Dialog, useDialog } from './components/dialog/Dialog';
 import ErrorBoundary from './components/ErrorBoundary';
+import UpdateDialog from './components/dialog/UpdateDialog';
 
 const Stack = createNativeStackNavigator();
 
@@ -40,7 +42,19 @@ function App() {
     const appState = useAppState();
     const { value: settings } = useSettings();
     const { ready: apiReady, isLoggedIn } = useAPI();
-    const dialog = useDialog();
+    const {
+        displayer: dialogDisplayer,
+        open: openDialog,
+        close: closeDialog,
+    } = useDialog();
+
+    React.useEffect(() => {
+        return Updates.addListener((e) => {
+            if (e.type === Updates.UpdateEventType.UPDATE_AVAILABLE) {
+                openDialog(<UpdateDialog close={closeDialog} />);
+            }
+        });
+    }, [openDialog, closeDialog]);
 
     // first, wait for everything to load from local
     if (!fontsLoaded || !apiReady || !settings.ready) {
@@ -104,7 +118,7 @@ function App() {
                     <Stack.Screen name="Welcome" component={Welcome} />
                 )}
             </Stack.Navigator>
-            {dialog.displayer}
+            {dialogDisplayer}
         </>
     );
 }

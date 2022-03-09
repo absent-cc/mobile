@@ -13,5 +13,6 @@ export default {
     lightForeground: '#CCCCCC',
     darkForeground: '#666',
     warning: '#F9AF40',
+    darkerWarning: '#f89c12',
     darkerPrimary: '#bc1010',
 };
