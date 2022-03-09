@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     },
     content: {
         paddingHorizontal: 30,
-        paddingTop: 10,
+        paddingTop: 15,
         paddingBottom: 80,
     },
     hello: {
