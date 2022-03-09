@@ -163,3 +163,21 @@ export const apiResponseToSchedule = (
 
     return schedule as Schedule;
 };
+
+export const joinListWithCommas = (list: any[]) => {
+    let result = '';
+    for (let i = 0; i < list.length; i += 1) {
+        let joiner;
+        if (i === list.length - 1) {
+            // last element
+            joiner = '';
+        } else if (i === list.length - 2) {
+            joiner = list.length === 2 ? ' and ' : ', and ';
+        } else {
+            joiner = ', ';
+        }
+        result += `${list[i]}${joiner}`;
+    }
+
+    return result;
+};

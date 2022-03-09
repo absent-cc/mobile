@@ -11,7 +11,6 @@ import {
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import messaging from '@react-native-firebase/messaging';
 import Welcome from './pages/Welcome';
 import Home from './pages/Home';
 import Settings from './pages/Settings';
@@ -40,14 +39,8 @@ function App() {
     });
     const appState = useAppState();
     const { value: settings } = useSettings();
-    const { ready: apiReady, saveFCMToken, isLoggedIn } = useAPI();
+    const { ready: apiReady, isLoggedIn } = useAPI();
     const dialog = useDialog();
-
-    React.useEffect(() => {
-        messaging()
-            .getToken()
-            .then((token: string) => saveFCMToken(token));
-    }, [saveFCMToken]);
 
     // first, wait for everything to load from local
     if (!fontsLoaded || !apiReady || !settings.ready) {

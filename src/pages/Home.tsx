@@ -15,7 +15,7 @@ import TeacherCard from '../components/card/TeacherCard';
 import Divider from '../components/Divider';
 import WaveHeaderSafearea from '../components/header/WaveHeaderSafearea';
 import { useSettings } from '../state/SettingsContext';
-import { ShortBlockFullNames, splitName } from '../Utils';
+import { joinListWithCommas, ShortBlockFullNames, splitName } from '../Utils';
 import { useAPI } from '../api/APIContext';
 import absenceCalculator from '../AbsenceCalculator';
 import { useAppState } from '../state/AppStateContext';
@@ -26,12 +26,23 @@ function Home({ navigation }: { navigation: any }) {
     const insets = useSafeAreaInsets();
     const { value: settings, setSettings } = useSettings();
     const { value: appState, setAppState } = useAppState();
-    const api = useAPI();
+    const { saveFCMToken, fetchAbsences, fetchSettings, getClassesToday } =
+        useAPI();
 
     React.useEffect(() => {
         // get notfication permission
         notifee.requestPermission();
     }, []);
+
+    React.useEffect(() => {
+        messaging()
+            .getToken()
+            .then((token: string) => saveFCMToken(token));
+
+        return messaging().onTokenRefresh((token) => {
+            saveFCMToken(token);
+        });
+    }, [saveFCMToken]);
 
     React.useEffect(() => {
         const unsubscribe = messaging().onMessage(async () => {
@@ -51,9 +62,9 @@ function Home({ navigation }: { navigation: any }) {
     React.useEffect(() => {
         if (refreshing) {
             Promise.all([
-                api.fetchSettings(),
-                api.fetchAbsences(),
-                api.getClassesToday(),
+                fetchSettings(),
+                fetchAbsences(),
+                getClassesToday(),
             ]).then(([newSettings, absences, classesToday]) => {
                 setRefreshing(false);
                 setAppState((oldAppState) => {
@@ -78,7 +89,14 @@ function Home({ navigation }: { navigation: any }) {
                 });
             });
         }
-    }, [refreshing, api, setAppState, setSettings]);
+    }, [
+        fetchAbsences,
+        fetchSettings,
+        getClassesToday,
+        refreshing,
+        setAppState,
+        setSettings,
+    ]);
 
     const now = new Date(appState.lastUpdateTime);
     const [timeWords, timeEmoji] = timeOfDay(now);
@@ -204,9 +222,11 @@ function Home({ navigation }: { navigation: any }) {
                     {appState.blocksToday?.length > 0 && (
                         <Text style={styles.blockList}>
                             The blocks today are{' '}
-                            {appState.blocksToday
-                                .map((block) => ShortBlockFullNames[block])
-                                .join(', ')}
+                            {joinListWithCommas(
+                                appState.blocksToday.map(
+                                    (block) => ShortBlockFullNames[block],
+                                ),
+                            )}
                             .
                         </Text>
                     )}
