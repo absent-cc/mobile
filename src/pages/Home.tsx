@@ -73,6 +73,7 @@ function Home({ navigation }: { navigation: any }) {
                     if (newSettings !== null) {
                         stateChanges.user = newSettings.user;
                         stateChanges.schedule = newSettings.schedule;
+                        stateChanges.app = newSettings.app;
                     }
                     return stateChanges;
                 });

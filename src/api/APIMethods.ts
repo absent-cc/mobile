@@ -1,5 +1,7 @@
+import { AppSettings } from '../state/SettingsContext';
 import {
     apiResponseToSchedule,
+    DefaultAppSettings,
     joinName,
     numToGrade,
     splitName,
@@ -189,9 +191,12 @@ export async function fetchAbsences(
     // return response;
 }
 
-export async function fetchSettings(
-    token: string,
-): Promise<{ uid: string; user: UserSettings; schedule: Schedule }> {
+export async function fetchSettings(token: string): Promise<{
+    uid: string;
+    user: UserSettings;
+    schedule: Schedule;
+    app: AppSettings;
+}> {
     const response = await getFromAPI(
         {
             method: 'GET',
@@ -216,13 +221,24 @@ export async function fetchSettings(
     // const response = await responseStr.json();
 
     return {
-        uid: response.uid,
+        uid: response.profile.uid,
         user: {
-            name: joinName(response.first, response.last),
-            school: strToSchool(response.school),
-            grade: numToGrade(response.grade),
+            name: joinName(response.profile.first, response.profile.last),
+            school: strToSchool(response.profile.school),
+            grade: numToGrade(response.profile.grade),
         },
         schedule: apiResponseToSchedule(response.schedule),
+        app: {
+            showFreeBlocks:
+                response.settings?.showFreeAsAbsent ??
+                DefaultAppSettings.showFreeBlocks,
+            sendNotifications:
+                response.settings?.notify ??
+                DefaultAppSettings.sendNotifications,
+            sendNoAbsenceNotification:
+                response.settings?.notifyWhenNone ??
+                DefaultAppSettings.sendNoAbsenceNotification,
+        },
     };
 }
 
@@ -267,9 +283,13 @@ export async function getClassesToday(
 }
 
 export async function saveSettings(
-    newSettings: { user: UserSettings; schedule: EditingSchedule },
+    newSettings: {
+        user: UserSettings;
+        schedule: EditingSchedule;
+        app: AppSettings;
+    },
     token: string,
-): Promise<{ user: UserSettings; schedule: Schedule }> {
+): Promise<{ user: UserSettings; schedule: Schedule; app: AppSettings }> {
     // map over each element of the schedule
     const convertedSchedule = Object.fromEntries(
         Object.entries(newSettings.schedule).map(([block, teachers]) => [
@@ -291,6 +311,11 @@ export async function saveSettings(
         grade: newSettings.user.grade,
         school: newSettings.user.school,
     };
+    const convertedAppSettings = {
+        showFreeAsAbsent: newSettings.app.showFreeBlocks,
+        notify: newSettings.app.sendNotifications,
+        notifyWhenNone: newSettings.app.sendNoAbsenceNotification,
+    };
 
     const response = await getFromAPI(
         {
@@ -300,6 +325,7 @@ export async function saveSettings(
             body: {
                 profile: convertedUserSettings,
                 schedule: convertedSchedule,
+                settings: convertedAppSettings,
                 fcm: {
                     token: '',
                 },
@@ -336,6 +362,17 @@ export async function saveSettings(
             grade: numToGrade(response.profile.grade),
         },
         schedule: apiResponseToSchedule(response.schedule),
+        app: {
+            showFreeBlocks:
+                response.settings?.showFreeAsAbsent ??
+                DefaultAppSettings.showFreeBlocks,
+            sendNotifications:
+                response.settings?.notify ??
+                DefaultAppSettings.sendNotifications,
+            sendNoAbsenceNotification:
+                response.settings?.notifyWhenNone ??
+                DefaultAppSettings.sendNoAbsenceNotification,
+        },
     };
 }
 
@@ -419,6 +456,37 @@ export async function saveUserSettings(
             body: convertedUserSettings,
         },
         'Save User Settings',
+    );
+}
+
+export async function saveAppSettings(newSettings: AppSettings, token: string) {
+    const convertedAppSettings = {
+        showFreeAsAbsent: newSettings.showFreeBlocks,
+        notify: newSettings.sendNotifications,
+        notifyWhenNone: newSettings.sendNoAbsenceNotification,
+    };
+
+    // const responseStr = await fetch(url('/users/me/update/profile'), {
+    //     method: 'PUT',
+    //     headers: getHeaders(token),
+    //     body: JSON.stringify(convertedUserSettings),
+    // });
+    // if (!responseStr.ok) {
+    //     throw new Error(
+    //         `saveUserSettings failed with error ${
+    //             responseStr.status
+    //         }: ${await responseStr.text()}`,
+    //     );
+    // }
+
+    getFromAPI(
+        {
+            method: 'PUT',
+            path: '/users/me/update/settings/',
+            token,
+            body: convertedAppSettings,
+        },
+        'Save App Settings',
     );
 }
 

@@ -57,24 +57,25 @@ function GeneralSettings({ navigation }: { navigation: any }) {
         return !newValidationList.existsInvalid;
     };
 
+    const { navigate } = navigation;
     React.useEffect(() => {
         if (saving) {
             api.saveUserSettings(userSettings.current)
                 .then(() => {
-                    navigation.navigate('Settings');
+                    navigate('Settings');
                 })
                 .catch(() => {
                     setSaveError(true);
                 });
         }
-    }, [saving, api, settings, navigation]);
+    }, [saving, api, navigate]);
 
     // reset screen on exit
-    React.useEffect(() => {
-        return () => {
-            userSettings.current = defaultValue;
-        };
-    });
+    // React.useEffect(() => {
+    //     return () => {
+    //         userSettings.current = defaultValue;
+    //     };
+    // });
 
     return (
         <View style={styles.pageView}>

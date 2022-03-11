@@ -56,6 +56,7 @@ function App() {
                 .then((token: string) => saveFCMToken(token));
 
             return messaging().onTokenRefresh((token) => {
+                console.log('Uploading messaging token from listener.');
                 saveFCMToken(token);
             });
         }

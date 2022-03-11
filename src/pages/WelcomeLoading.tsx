@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet, Image, Text, View, ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { StatusBar } from 'expo-status-bar';
 import Theme from '../Theme';
 
 function WelcomeLoading() {

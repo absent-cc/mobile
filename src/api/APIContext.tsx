@@ -1,6 +1,6 @@
 import React from 'react';
 import * as SecureStore from 'expo-secure-store';
-import { useSettings } from '../state/SettingsContext';
+import { AppSettings, useSettings } from '../state/SettingsContext';
 import { useAppState } from '../state/AppStateContext';
 import * as APIMethods from './APIMethods';
 import {
@@ -40,6 +40,7 @@ export interface APIContextType {
     fetchSettings: () => Promise<{
         user: UserSettings;
         schedule: Schedule;
+        app: AppSettings;
     } | null>;
     logout: () => Promise<void>;
     login: (accessToken: string) => Promise<void>;
@@ -52,9 +53,11 @@ export interface APIContextType {
     saveSettings: (newSettings: {
         user: UserSettings;
         schedule: EditingSchedule;
+        app: AppSettings;
     }) => Promise<void>;
     saveSchedule: (newSettings: EditingSchedule) => Promise<void>;
     saveUserSettings: (newSettings: UserSettings) => Promise<void>;
+    saveAppSettings: (newSettings: AppSettings) => Promise<void>;
     saveFCMToken: (fcmToken: string) => Promise<void>;
 }
 
@@ -71,6 +74,7 @@ const APIContext = React.createContext<APIContextType>({
     saveSettings: async () => undefined,
     saveSchedule: async () => undefined,
     saveUserSettings: async () => undefined,
+    saveAppSettings: async () => undefined,
     saveFCMToken: async () => undefined,
 });
 
@@ -295,6 +299,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             uid: string;
             user: UserSettings;
             schedule: Schedule;
+            app: AppSettings;
         } | null> => {
             const token = await verifyToken(hasRetried);
             if (token === null) return null;
@@ -306,6 +311,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                     uid: response.uid,
                     user: response.user,
                     schedule: response.schedule,
+                    app: response.app,
                 };
             } catch (err: any) {
                 const shouldRetry = parseError(
@@ -327,6 +333,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             newSettings: {
                 user: UserSettings;
                 schedule: EditingSchedule;
+                app: AppSettings;
             },
             hasRetried = false,
         ) => {
@@ -344,6 +351,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                         ...oldSettings,
                         user: response.user,
                         schedule: response.schedule,
+                        app: response.app,
                     };
                 });
             } catch (err: any) {
@@ -414,6 +422,35 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 );
                 if (shouldRetry) {
                     saveUserSettings(newSettings, true);
+                }
+            }
+        },
+        [parseError, verifyToken, setSettings],
+    );
+
+    const saveAppSettings = React.useCallback(
+        async (newSettings: AppSettings, hasRetried = false) => {
+            const token = await verifyToken(hasRetried);
+            if (token === null) return;
+
+            try {
+                await APIMethods.saveAppSettings(newSettings, token);
+
+                // even though the api doesn't return it, we still need to set the new settings
+                setSettings((oldSettings) => {
+                    return {
+                        ...oldSettings,
+                        app: newSettings,
+                    };
+                });
+            } catch (err: any) {
+                const shouldRetry = parseError(
+                    err,
+                    hasRetried,
+                    'Save App Settings',
+                );
+                if (shouldRetry) {
+                    saveAppSettings(newSettings, true);
                 }
             }
         },
@@ -636,6 +673,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                         if (newSettings !== null) {
                             stateChanges.user = newSettings.user;
                             stateChanges.schedule = newSettings.schedule;
+                            stateChanges.app = newSettings.app;
                         }
                         return stateChanges;
                     });
@@ -720,6 +758,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             saveSettings,
             saveSchedule,
             saveUserSettings,
+            saveAppSettings,
             saveFCMToken,
         }),
         [
@@ -735,6 +774,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             saveSettings,
             saveSchedule,
             saveUserSettings,
+            saveAppSettings,
             saveFCMToken,
         ],
     );

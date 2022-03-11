@@ -94,17 +94,18 @@ function TeacherSettings({ navigation }: { navigation: any }) {
     // });
 
     // save stuff to server
+    const { navigate } = navigation;
     React.useEffect(() => {
         if (saving) {
             api.saveSchedule(teacherSettings.current)
                 .then(() => {
-                    navigation.navigate('Settings');
+                    navigate('Settings');
                 })
                 .catch(() => {
                     setSaveError(true);
                 });
         }
-    }, [saving, api, settings, navigation]);
+    }, [saving, api, navigate]);
 
     return (
         <View style={styles.pageView}>
