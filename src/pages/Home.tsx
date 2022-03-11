@@ -26,23 +26,12 @@ function Home({ navigation }: { navigation: any }) {
     const insets = useSafeAreaInsets();
     const { value: settings, setSettings } = useSettings();
     const { value: appState, setAppState } = useAppState();
-    const { saveFCMToken, fetchAbsences, fetchSettings, getClassesToday } =
-        useAPI();
+    const { fetchAbsences, fetchSettings, getClassesToday } = useAPI();
 
     React.useEffect(() => {
         // get notfication permission
         notifee.requestPermission();
     }, []);
-
-    React.useEffect(() => {
-        messaging()
-            .getToken()
-            .then((token: string) => saveFCMToken(token));
-
-        return messaging().onTokenRefresh((token) => {
-            saveFCMToken(token);
-        });
-    }, [saveFCMToken]);
 
     React.useEffect(() => {
         const unsubscribe = messaging().onMessage(async () => {

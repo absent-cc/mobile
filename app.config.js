@@ -2,7 +2,6 @@ module.exports = {
     name: 'abSENT',
     owner: 'absent',
     slug: 'absent',
-    entryPoint: './index.js',
     version: '1.0.0',
     scheme: 'absent',
     plugins: [
@@ -49,14 +48,12 @@ module.exports = {
     mods: {
         android: {
             projectBuildGradle: async (config) => {
-                console.log(config.modResults.contents);
+                console.log(
+                    '------------- MODIFYING ANDROID CONFIG -------------',
+                );
                 config.modResults.contents = config.modResults.contents.replace(
                     'compileSdkVersion = 30',
                     'compileSdkVersion = 31',
-                );
-                console.log(
-                    '!!!!!!!!!!!!!!!!!!!!!IN MOD HI!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
-                    config.modResults.contents,
                 );
                 return config;
             },

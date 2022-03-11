@@ -1,6 +1,5 @@
 /* eslint-disable no-nested-ternary */
 import React from 'react';
-import { AppState } from 'react-native';
 import AppLoading from 'expo-app-loading';
 import {
     useFonts,
@@ -12,6 +11,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as Updates from 'expo-updates';
+import messaging from '@react-native-firebase/messaging';
 import Welcome from './pages/Welcome';
 import Home from './pages/Home';
 import Settings from './pages/Settings';
@@ -41,12 +41,26 @@ function App() {
     });
     const appState = useAppState();
     const { value: settings } = useSettings();
-    const { ready: apiReady, isLoggedIn } = useAPI();
+    const { ready: apiReady, isLoggedIn, saveFCMToken } = useAPI();
     const {
         displayer: dialogDisplayer,
         open: openDialog,
         close: closeDialog,
     } = useDialog();
+
+    React.useEffect(() => {
+        if (isLoggedIn) {
+            console.log('Uploading messaging token.');
+            messaging()
+                .getToken()
+                .then((token: string) => saveFCMToken(token));
+
+            return messaging().onTokenRefresh((token) => {
+                saveFCMToken(token);
+            });
+        }
+        return () => undefined;
+    }, [saveFCMToken, isLoggedIn]);
 
     React.useEffect(() => {
         return Updates.addListener((e) => {
@@ -57,7 +71,7 @@ function App() {
     }, [openDialog, closeDialog]);
 
     // first, wait for everything to load from local
-    if (!fontsLoaded || !apiReady || !settings.ready) {
+    if (!fontsLoaded || !apiReady) {
         return <AppLoading />;
     }
 
@@ -125,14 +139,14 @@ function App() {
 
 export default function AppRoot() {
     // app state will be null for a bit
-    if (AppState.currentState === null) {
-        return <AppLoading />;
-    }
+    // if (AppState.currentState === null) {
+    //     return <AppLoading />;
+    // }
 
-    // headless mode for firebase notifications in ios
-    if (AppState.currentState !== 'active') {
-        return null;
-    }
+    // // headless mode for firebase notifications in ios
+    // if (AppState.currentState !== 'active') {
+    //     return null;
+    // }
 
     return (
         <SafeAreaProvider>
