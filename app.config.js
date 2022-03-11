@@ -9,6 +9,7 @@ module.exports = {
         'expo-dev-client',
         'expo-splash-screen',
         '@react-native-firebase/app',
+        'expo-updates',
     ],
     orientation: 'portrait',
     icon: './assets/images/icon.png',
