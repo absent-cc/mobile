@@ -56,10 +56,10 @@ const getFromAPI = async (
     },
     caller: string,
 ): Promise<any> => {
-    // give response a 3s timeout, since fetch doesn't do this automatically
+    // give response a 6s timeout, since fetch doesn't do this automatically
     const responseTimeout = setTimeout(() => {
         throw new NetworkError(caller, true);
-    }, 3000);
+    }, 6000);
 
     let response: Response;
     try {
@@ -150,6 +150,7 @@ const getFromAPI = async (
 export async function fetchAbsences(
     token: string,
     dateStr: string,
+    schoolName: SchoolName,
 ): Promise<AbsenceList> {
     // TODO: make this actually reflect the api
     const response = await getFromAPI(
@@ -157,6 +158,7 @@ export async function fetchAbsences(
             method: 'GET',
             path: `/teachers/absences?${new URLSearchParams({
                 date: dateStr,
+                school: schoolName,
             }).toString()}`,
             token,
         },

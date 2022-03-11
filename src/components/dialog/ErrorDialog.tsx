@@ -1,4 +1,5 @@
 import { Feather } from '@expo/vector-icons';
+// import { useRoute } from '@react-navigation/native';
 import React from 'react';
 import { View, StyleSheet, Text, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -20,20 +21,28 @@ function ErrorDialog({
     lightVersion?: boolean;
 }) {
     const insets = useSafeAreaInsets();
+    // const route = useRoute();
+    // const lightVersion = ['Welcome', 'Loading'].includes(route.name);
+    // const lightVersion = false;
 
+    // Error logger
+    // React.useEffect(() => {
+    //     console.error(`${caller}: ${message}\n${description}`);
+    // }, [caller, description, message]);
+
+    const timeout = React.useRef<NodeJS.Timeout | null>(null);
     React.useEffect(() => {
-        console.error(`${caller}: ${message}\n${description}`);
-    }, [caller, description, message]);
+        timeout.current = setTimeout(close, 5000);
 
-    React.useEffect(() => {
-        const timeout = setTimeout(close, 8000);
-
-        return () => clearTimeout(timeout);
+        return () => {
+            if (timeout.current) clearTimeout(timeout.current);
+        };
     }, [close]);
 
     const [showing, setShowing] = React.useState(false);
     const showMore = () => {
         setShowing(true);
+        if (timeout.current) clearTimeout(timeout.current);
     };
 
     return (

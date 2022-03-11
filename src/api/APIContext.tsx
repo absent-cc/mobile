@@ -90,13 +90,14 @@ const defaultState: APIDataType = {
 export function APIProvider({ children }: { children: React.ReactNode }) {
     const [apiSettings, setAPISettings] =
         React.useState<APIDataType>(defaultState);
-    const [serverLoaded, setServerLoaded] = React.useState(false);
+    const [apiServerLoaded, setAPIServerLoaded] = React.useState(false);
 
     const { value: settings, setSettings, resetSettings } = useSettings();
     const { value: appState, setAppState } = useAppState();
 
     // since the get classes and get absences endpoint takes a date, we'll just regenerate this function once per day
     const dateStr = formatISODate(new Date(appState.lastUpdateTime));
+    const schoolName = settings.user.school;
 
     const logout = React.useCallback(async () => {
         // if (apiSettings.token !== null) {
@@ -104,14 +105,11 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
         // }
 
         resetSettings();
-        setAPISettings((oldState) => {
-            return {
-                ...oldState,
-                token: null,
-                isLoggedIn: false,
-            };
+        setAPISettings({
+            ...defaultState,
+            ready: true,
         });
-        setServerLoaded(false);
+        setAPIServerLoaded(false);
     }, [resetSettings]);
 
     const { open: openDialog, close: closeDialog } = useDialog();
@@ -274,7 +272,11 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             if (token === null) return null;
 
             try {
-                const response = await APIMethods.fetchAbsences(token, dateStr);
+                const response = await APIMethods.fetchAbsences(
+                    token,
+                    dateStr,
+                    schoolName,
+                );
 
                 return response;
             } catch (err: any) {
@@ -289,7 +291,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 return null;
             }
         },
-        [dateStr, parseError, verifyToken],
+        [dateStr, schoolName, parseError, verifyToken],
     );
 
     const fetchSettings = React.useCallback(
@@ -634,37 +636,32 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
         if (
             apiSettings.isLoggedIn &&
             !apiSettings.isVerified &&
-            !serverLoaded
+            !apiServerLoaded
         ) {
             verifyToken(true).then((token) => {
                 if (!token) {
                     logout();
                 }
             });
+            setAPIServerLoaded(true);
         }
     }, [
         apiSettings.isLoggedIn,
         apiSettings.isVerified,
-        serverLoaded,
+        apiServerLoaded,
         verifyToken,
         logout,
     ]);
 
     React.useEffect(() => {
-        if (apiSettings.isLoggedIn && !serverLoaded && apiSettings.isVerified) {
-            Promise.all([fetchAbsences(), fetchSettings(), getClassesToday()])
-                .then(([absences, newSettings, classesToday]) => {
-                    setAppState((oldAppState) => {
-                        const stateChanges = {
-                            ...oldAppState,
-                            // needsUpdate: false,
-                            serverLoaded: true,
-                        };
-                        if (absences !== null) stateChanges.absences = absences;
-                        if (classesToday !== null)
-                            stateChanges.blocksToday = classesToday;
-                        return stateChanges;
-                    });
+        if (
+            apiSettings.isLoggedIn &&
+            apiServerLoaded &&
+            !settings.serverLoaded &&
+            apiSettings.isVerified
+        ) {
+            fetchSettings()
+                .then((newSettings) => {
                     setSettings((oldSettings) => {
                         const stateChanges = {
                             ...oldSettings,
@@ -677,7 +674,6 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                         }
                         return stateChanges;
                     });
-                    setServerLoaded(true);
                 })
                 .catch((e: any) => {
                     // don't retry this, it shouldn't error
@@ -687,13 +683,51 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
     }, [
         apiSettings.isLoggedIn,
         apiSettings.isVerified,
+        fetchSettings,
+        parseError,
+        setSettings,
+        apiServerLoaded,
+        settings.serverLoaded,
+    ]);
+
+    React.useEffect(() => {
+        if (
+            apiSettings.isLoggedIn &&
+            apiServerLoaded &&
+            settings.serverLoaded &&
+            !appState.serverLoaded &&
+            apiSettings.isVerified
+        ) {
+            Promise.all([fetchAbsences(), getClassesToday()])
+                .then(([absences, classesToday]) => {
+                    setAppState((oldAppState) => {
+                        const stateChanges = {
+                            ...oldAppState,
+                            // needsUpdate: false,
+                            serverLoaded: true,
+                        };
+                        if (absences !== null) stateChanges.absences = absences;
+                        if (classesToday !== null)
+                            stateChanges.blocksToday = classesToday;
+                        return stateChanges;
+                    });
+                })
+                .catch((e: any) => {
+                    // don't retry this, it shouldn't error
+                    parseError(e, true, 'Startup load');
+                });
+        }
+    }, [
+        apiSettings.isLoggedIn,
+        apiSettings.isVerified,
+        appState.serverLoaded,
         fetchAbsences,
         fetchSettings,
         getClassesToday,
         parseError,
-        serverLoaded,
+        apiServerLoaded,
         setAppState,
-        setSettings,
+        settings.serverLoaded,
     ]);
 
     // auto app state updating

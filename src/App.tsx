@@ -28,6 +28,7 @@ import Loading from './pages/Loading';
 import { Dialog, useDialog } from './components/dialog/Dialog';
 import ErrorBoundary from './components/ErrorBoundary';
 import UpdateDialog from './components/dialog/UpdateDialog';
+// import WelcomeLoading from './pages/WelcomeLoading';
 
 const Stack = createNativeStackNavigator();
 
@@ -50,13 +51,13 @@ function App() {
 
     React.useEffect(() => {
         if (isLoggedIn) {
-            console.log('Uploading messaging token.');
+            // console.log('Uploading messaging token.');
             messaging()
                 .getToken()
                 .then((token: string) => saveFCMToken(token));
 
             return messaging().onTokenRefresh((token) => {
-                console.log('Uploading messaging token from listener.');
+                // console.log('Uploading messaging token from listener.');
                 saveFCMToken(token);
             });
         }
@@ -83,6 +84,51 @@ function App() {
     ) {
         return <Loading />;
     }
+
+    // let navigationContent;
+    // if (
+    //     isLoggedIn &&
+    //     (!appState.value.serverLoaded || !settings.serverLoaded)
+    // ) {
+    //     <Stack.Screen name="Loading" component={WelcomeLoading} />;
+    // } else if (isLoggedIn) {
+    //     if (settings.userOnboarded) {
+    //         // navigationContent = (
+    //         //     <>
+    //         //         <Stack.Screen name="Home" component={Home} />
+    //         //         <Stack.Screen name="FullList" component={FullList} />
+    //         //         <Stack.Screen name="Settings" component={Settings} />
+    //         //         <Stack.Screen
+    //         //             name="GeneralSettings"
+    //         //             component={GeneralSettings}
+    //         //         />
+    //         //         <Stack.Screen name="AppSettings" component={AppSettings} />
+    //         //         <Stack.Screen
+    //         //             name="TeacherSettings"
+    //         //             component={TeacherSettings}
+    //         //         />
+    //         //     </>
+    //         // );
+    //         navigationContent = <Stack.Screen name="Home" component={Home} />;
+    //     } else {
+    //         navigationContent = (
+    //             <>
+    //                 <Stack.Screen
+    //                     name="ProfileOnboarding"
+    //                     component={ProfileOnboarding}
+    //                 />
+    //                 <Stack.Screen
+    //                     name="ScheduleOnboarding"
+    //                     component={ScheduleOnboarding}
+    //                 />
+    //             </>
+    //         );
+    //     }
+    // } else {
+    //     navigationContent = <Stack.Screen name="Welcome" component={Welcome} />;
+    // }
+
+    // console.log(navigationContent);
 
     return (
         <>
