@@ -116,6 +116,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
 
     const parseError = React.useCallback(
         (error: any, hasRetried: boolean, caller: string): boolean => {
+            const lightVersion = ['Login'].includes(caller);
             if (error instanceof Error && error instanceof APIError) {
                 if (error instanceof BadTokenError) {
                     // retry once
@@ -126,6 +127,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                                 description={error.description || ''}
                                 caller={error.caller}
                                 close={closeDialog}
+                                lightVersion={lightVersion}
                             />,
                         );
                         logout();
@@ -140,6 +142,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                             description={error.description || ''}
                             caller={error.caller}
                             close={closeDialog}
+                            lightVersion={lightVersion}
                         />,
                     );
                     return false;
@@ -151,6 +154,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                             description={error.description || ''}
                             caller={error.caller}
                             close={closeDialog}
+                            lightVersion={lightVersion}
                         />,
                     );
                     logout();
@@ -163,7 +167,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                             description={error.description || ''}
                             caller={error.caller}
                             close={closeDialog}
-                            lightVersion
+                            lightVersion={lightVersion}
                         />,
                     );
                     return false;
@@ -175,6 +179,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                             description={error.description || ''}
                             caller={error.caller}
                             close={closeDialog}
+                            lightVersion={lightVersion}
                         />,
                     );
                     return false;
@@ -188,6 +193,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                                 description={error.description || ''}
                                 caller={error.caller}
                                 close={closeDialog}
+                                lightVersion={lightVersion}
                             />,
                         );
                         return false;
@@ -202,6 +208,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                         description={error.description || ''}
                         caller={error.caller}
                         close={closeDialog}
+                        lightVersion={lightVersion}
                     />,
                 );
                 return false;
@@ -213,6 +220,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                     description={error.message}
                     caller={caller}
                     close={closeDialog}
+                    lightVersion={lightVersion}
                 />,
             );
             return false;
@@ -253,6 +261,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 return token;
             } catch (err: any) {
                 // never retry verifyToken
+                console.log('yo');
                 parseError(err, true, 'Verify Token');
                 return null;
             }

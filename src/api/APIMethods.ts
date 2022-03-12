@@ -57,9 +57,12 @@ const getFromAPI = async (
     caller: string,
 ): Promise<any> => {
     // give response a 6s timeout, since fetch doesn't do this automatically
-    const responseTimeout = setTimeout(() => {
-        throw new NetworkError(caller, true);
-    }, 6000);
+    // const responseTimeout = setTimeout(async () => {
+    //     throw new NetworkError(caller, true);
+    // }, 0);
+
+    const controller = new AbortController();
+    const responseTimeout = setTimeout(() => controller.abort(), 6000);
 
     let response: Response;
     try {
@@ -67,14 +70,14 @@ const getFromAPI = async (
             method,
             headers: token ? getHeaders(token) : headers,
             body: body ? JSON.stringify(body) : undefined,
-        }).then((res) => {
-            clearTimeout(responseTimeout);
-
-            return res;
+            signal: controller.signal,
         });
+        clearTimeout(responseTimeout);
     } catch (e: any) {
         // json error
-        if (e instanceof TypeError) {
+        if (e.name === 'AbortError') {
+            throw new NetworkError(caller);
+        } else if (e instanceof TypeError) {
             throw new NetworkError(caller);
         } else if (e instanceof Error) {
             throw new UnknownError(caller, e.message);
@@ -450,7 +453,7 @@ export async function saveUserSettings(
     //     );
     // }
 
-    getFromAPI(
+    await getFromAPI(
         {
             method: 'PUT',
             path: '/users/me/update/profile/',
@@ -481,7 +484,7 @@ export async function saveAppSettings(newSettings: AppSettings, token: string) {
     //     );
     // }
 
-    getFromAPI(
+    await getFromAPI(
         {
             method: 'PUT',
             path: '/users/me/update/settings/',
@@ -666,7 +669,7 @@ export async function saveFCMToken(fcmToken: string, token: string) {
     //     );
     // }
 
-    getFromAPI(
+    await getFromAPI(
         {
             method: 'PUT',
             path: '/users/me/update/fcm/',
