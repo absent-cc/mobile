@@ -84,11 +84,11 @@ const styles = StyleSheet.create({
         backgroundColor: Theme.darkerWarning,
     },
     icon: {
-        color: Theme.foregroundAlternate,
+        color: Theme.foregroundColor,
     },
     mainMessage: {
         fontFamily: Theme.regularFont,
-        color: Theme.foregroundAlternate,
+        color: Theme.foregroundColor,
         fontSize: 20,
     },
     button: {
@@ -100,21 +100,21 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderWidth: 2,
-        backgroundColor: Theme.backgroundColor,
-        borderColor: Theme.darkerWarning,
+        backgroundColor: Theme.darkerWarning,
+        borderColor: Theme.foregroundColor,
     },
     buttonPressed: {
-        backgroundColor: Theme.lighterForeground,
+        backgroundColor: Theme.warning,
     },
     buttonText: {
         fontSize: 20,
         fontFamily: Theme.strongFont,
         textAlign: 'center',
-        color: Theme.warning,
+        color: Theme.foregroundColor,
     },
     buttonIcon: {
         marginRight: 8,
-        color: Theme.warning,
+        color: Theme.foregroundColor,
     },
 });
 
