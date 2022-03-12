@@ -96,7 +96,7 @@ function Home({ navigation }: { navigation: any }) {
     if (appState.blocksToday?.length === 0) {
         body = (
             <Text style={styles.status}>
-                No school today! Have a great day! 🎉
+                No school today! Enjoy your day! 🎉
             </Text>
         );
     } else if (appState.absences?.length === 0) {
