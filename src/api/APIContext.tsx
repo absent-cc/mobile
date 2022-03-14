@@ -261,7 +261,6 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 return token;
             } catch (err: any) {
                 // never retry verifyToken
-                console.log('yo');
                 parseError(err, true, 'Verify Token');
                 return null;
             }
