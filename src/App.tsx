@@ -78,11 +78,15 @@ function App() {
     }
 
     // then, if we are logged in, wait for a server update
-    if (
-        isLoggedIn &&
-        (!appState.value.serverLoaded || !settings.serverLoaded)
-    ) {
-        return <Loading />;
+    if (isLoggedIn) {
+        // app state only loads once the user onboards
+        if (settings.userOnboarded) {
+            if (!appState.value.serverLoaded || !settings.serverLoaded) {
+                return <Loading />;
+            }
+        } else if (!settings.serverLoaded) {
+            return <Loading />;
+        }
     }
 
     // let navigationContent;

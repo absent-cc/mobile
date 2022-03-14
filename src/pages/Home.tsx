@@ -93,13 +93,14 @@ function Home({ navigation }: { navigation: any }) {
 
     let body;
 
-    if (appState.blocksToday?.length === 0) {
-        body = (
-            <Text style={styles.status}>
-                No school today! Enjoy your day! 🎉
-            </Text>
-        );
-    } else if (appState.absences?.length === 0) {
+    // if (appState.blocksToday?.length === 0) {
+    //     body = (
+    //         <Text style={styles.status}>
+    //             No school today! Enjoy your day! 🎉
+    //         </Text>
+    //     );
+    // } else
+    if (appState.absences?.length === 0) {
         body = (
             <Text style={styles.status}>
                 The absence list hasn't been posted yet, check back later! 🥱

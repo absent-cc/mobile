@@ -699,11 +699,15 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
         settings.serverLoaded,
     ]);
 
+    // this will run:
+    // after logged in, after getting credentials, after loading settings
+    // once the user is onboarded, only once at the start of the app
     React.useEffect(() => {
         if (
             apiSettings.isLoggedIn &&
             apiServerLoaded &&
             settings.serverLoaded &&
+            settings.userOnboarded &&
             !appState.serverLoaded &&
             apiSettings.isVerified
         ) {
@@ -737,6 +741,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
         apiServerLoaded,
         setAppState,
         settings.serverLoaded,
+        settings.userOnboarded,
     ]);
 
     // auto app state updating

@@ -130,7 +130,10 @@ const getFromAPI = async (
             'Authentication Error - Not an NPS issued account'
         ) {
             throw new NonNPSError(caller);
-        } else if (responseJSON?.detail?.startsWith('Authentication Error')) {
+        } else if (
+            responseJSON?.detail?.startsWith &&
+            responseJSON?.detail?.startsWith('Authentication Error')
+        ) {
             throw new AuthenticationError(
                 caller,
                 responseJSON?.detail?.substring(
@@ -138,10 +141,14 @@ const getFromAPI = async (
                 ),
             );
         } else {
+            const desc = responseJSON.detail
+                ? responseJSON.detail
+                : responseJSON;
+
             throw new UnknownError(
                 caller,
                 `${response.status} ${
-                    responseJSON.detail ? responseJSON.detail : responseJSON
+                    typeof desc === 'object' ? JSON.stringify(desc) : desc
                 }`,
             );
         }
