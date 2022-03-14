@@ -2,7 +2,7 @@ import { Feather } from '@expo/vector-icons';
 import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { AbsenceItem } from '../../AbsenceCalculator';
-import { AbsentTeacher, Block } from '../../api/APITypes';
+import { Block } from '../../api/APITypes';
 import Theme from '../../Theme';
 import { ShortBlocks } from '../../Utils';
 
