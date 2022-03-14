@@ -40,7 +40,7 @@ export const ShortBlocks: Record<Block, string> = {
     E: 'E',
     F: 'F',
     G: 'G',
-    ADVISORY: 'ADVISORY',
+    ADVISORY: 'ADV',
     EXTRA: 'EXTRA',
 };
 
