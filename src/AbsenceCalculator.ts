@@ -47,14 +47,14 @@ export default (
     });
 
     const extras: AbsenceItem[] = [];
-    if (schedule.EXTRA.length > 0) {
+    if (schedule.EXTRA && schedule.EXTRA.length > 0) {
         schedule.EXTRA.forEach((teacher) => {
             // check if teacher is in list
             const absentTeacher = absences.find(
                 (teach) => teach.teacher.tid === teacher.tid,
             );
             if (absentTeacher) {
-                result.push({
+                extras.push({
                     block: Block.EXTRA,
                     isFree: false,
                     teacher: absentTeacher,
