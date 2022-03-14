@@ -43,12 +43,18 @@ function TeacherCard({
                         <Text style={[styles.name]}>
                             {absenceItem.teacher.teacher.name}
                         </Text>
-                        <Text style={[styles.time]}>
-                            {absenceItem.teacher.time}
-                        </Text>
-                        <Text style={[styles.note]}>
-                            {absenceItem.teacher.note}
-                        </Text>
+                        {absenceItem.teacher.time &&
+                        absenceItem.teacher.time.trim().length > 0 ? (
+                            <Text style={[styles.time]}>
+                                {absenceItem.teacher.time.trim()}
+                            </Text>
+                        ) : null}
+                        {absenceItem.teacher.note &&
+                        absenceItem.teacher.note.trim().length > 0 ? (
+                            <Text style={[styles.note]}>
+                                {absenceItem.teacher.note.trim()}
+                            </Text>
+                        ) : null}
                     </>
                 )}
             </View>
