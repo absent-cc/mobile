@@ -97,12 +97,17 @@ function ScheduleOnboarding({ navigation }: { navigation: any }) {
             api.saveSettings({
                 user: settings.value.user,
                 schedule: teacherSettings.current,
+                app: settings.value.app,
             })
-                .then(() => {
-                    settings.setSettings((oldSettings) => ({
-                        ...oldSettings,
-                        userOnboarded: true,
-                    }));
+                .then((saveSuccess) => {
+                    if (saveSuccess) {
+                        settings.setSettings((oldSettings) => ({
+                            ...oldSettings,
+                            userOnboarded: true,
+                        }));
+                    } else {
+                        setSaveError(true);
+                    }
                 })
                 .catch(() => {
                     setSaveError(true);

@@ -54,7 +54,7 @@ export interface APIContextType {
         user: UserSettings;
         schedule: EditingSchedule;
         app: AppSettings;
-    }) => Promise<void>;
+    }) => Promise<boolean>;
     saveSchedule: (newSettings: EditingSchedule) => Promise<void>;
     saveUserSettings: (newSettings: UserSettings) => Promise<void>;
     saveAppSettings: (newSettings: AppSettings) => Promise<void>;
@@ -71,7 +71,7 @@ const APIContext = React.createContext<APIContextType>({
     searchTeachers: async () => null,
     getClassesToday: async () => null,
     isRealTeacher: async () => null,
-    saveSettings: async () => undefined,
+    saveSettings: async () => false,
     saveSchedule: async () => undefined,
     saveUserSettings: async () => undefined,
     saveAppSettings: async () => undefined,
@@ -347,9 +347,9 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 app: AppSettings;
             },
             hasRetried = false,
-        ) => {
+        ): Promise<boolean> => {
             const token = await verifyToken(hasRetried);
-            if (token === null) return;
+            if (token === null) return false;
 
             try {
                 const response = await APIMethods.saveSettings(
@@ -365,6 +365,8 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                         app: response.app,
                     };
                 });
+
+                return true;
             } catch (err: any) {
                 const shouldRetry = parseError(
                     err,
@@ -372,9 +374,10 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                     'Save Settings',
                 );
                 if (shouldRetry) {
-                    saveSettings(newSettings, true);
+                    return saveSettings(newSettings, true);
                 }
             }
+            return false;
         },
         [parseError, setSettings, verifyToken],
     );
