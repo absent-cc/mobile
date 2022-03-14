@@ -106,10 +106,12 @@ function ScheduleOnboarding({ navigation }: { navigation: any }) {
                             userOnboarded: true,
                         }));
                     } else {
+                        setSaving(false);
                         setSaveError(true);
                     }
                 })
                 .catch(() => {
+                    setSaving(false);
                     setSaveError(true);
                 });
         }
