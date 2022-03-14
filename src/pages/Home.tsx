@@ -274,6 +274,7 @@ const styles = StyleSheet.create({
         color: Theme.foregroundColor,
         fontFamily: Theme.headerFont,
         fontSize: 30,
+        marginTop: 20,
     },
 });
 
