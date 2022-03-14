@@ -131,7 +131,7 @@ function TeacherField({
             setIsAutocompleteOpen(true);
         } else if (newValue.length <= 2) {
             setIsAutocompleteOpen(false);
-            setSuggestions(null);
+            setTeacherList([]);
         }
     };
 
