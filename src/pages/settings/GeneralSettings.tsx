@@ -91,7 +91,7 @@ function GeneralSettings({ navigation }: { navigation: any }) {
                         navigation.goBack();
                     }}
                     isLeft
-                    text="General Settings"
+                    text="Account Settings"
                 />
                 <View style={styles.content}>
                     <Text style={styles.note}>Edit your account details.</Text>
