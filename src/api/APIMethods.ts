@@ -688,3 +688,14 @@ export async function saveFCMToken(fcmToken: string, token: string) {
         'Save FCM Token',
     );
 }
+
+export async function deleteAccount(token: string) {
+    await getFromAPI(
+        {
+            method: 'PUT',
+            path: '/users/me/delete/',
+            token,
+        },
+        'Delete Account',
+    );
+}

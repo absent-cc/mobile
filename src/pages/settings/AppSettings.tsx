@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     note: {
         color: Theme.foregroundColor,
         fontFamily: Theme.regularFont,
-        fontSize: 16,
+        fontSize: 18,
         marginBottom: 16,
     },
     inputField: {
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
         marginTop: 40,
     },
     validation: {
-        marginBottom: 20,
+        marginVertical: 20,
     },
 });
 

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, ScrollView, View } from 'react-native';
+import { StyleSheet, Text, ScrollView, View, Alert } from 'react-native';
 import React from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Theme from '../../Theme';
@@ -77,6 +77,27 @@ function GeneralSettings({ navigation }: { navigation: any }) {
     //     };
     // });
 
+    const deleteAccount = () => {
+        Alert.alert(
+            'Are you sure?',
+            'Are you sure you want to delete your account? This action is irreversible.',
+            [
+                {
+                    text: 'Delete',
+                    onPress: () => {
+                        api.deleteAccount();
+                        api.logout();
+                    },
+                    style: 'destructive',
+                },
+                {
+                    text: 'Cancel',
+                    style: 'cancel',
+                },
+            ],
+        );
+    };
+
     return (
         <View style={styles.pageView}>
             <HeaderSafearea />
@@ -151,7 +172,6 @@ function GeneralSettings({ navigation }: { navigation: any }) {
                         </ErrorCard>
                     ) : null}
 
-                    <Divider />
                     {validationList.existsInvalid ? (
                         <ErrorCard style={[styles.validation]}>
                             Please check the info you entered and try again.
@@ -180,6 +200,21 @@ function GeneralSettings({ navigation }: { navigation: any }) {
                     >
                         Save
                     </TextButton>
+
+                    <Divider />
+                    <Text style={styles.header}>Delete Your Account</Text>
+                    <Text style={styles.note}>
+                        Delete your account. We'll clear your data from our
+                        servers.
+                    </Text>
+                    <TextButton
+                        style={[{ zIndex: 0 }, styles.delete]}
+                        iconName="user-x"
+                        onPress={deleteAccount}
+                        isFilled
+                    >
+                        Delete Account
+                    </TextButton>
                 </View>
             </ScrollView>
         </View>
@@ -205,17 +240,26 @@ const styles = StyleSheet.create({
     note: {
         color: Theme.foregroundColor,
         fontFamily: Theme.regularFont,
-        fontSize: 16,
+        fontSize: 18,
         marginBottom: 16,
     },
     inputField: {
         marginTop: 10,
     },
     save: {
-        marginTop: 20,
+        marginTop: 40,
     },
     validation: {
-        marginBottom: 20,
+        marginVertical: 20,
+    },
+    header: {
+        color: Theme.foregroundColor,
+        fontFamily: Theme.headerFont,
+        fontSize: 30,
+        marginBottom: 10,
+    },
+    delete: {
+        marginTop: 20,
     },
 });
 

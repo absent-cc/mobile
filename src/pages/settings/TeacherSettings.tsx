@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
     note: {
         color: Theme.foregroundColor,
         fontFamily: Theme.regularFont,
-        fontSize: 16,
+        fontSize: 18,
         marginBottom: 16,
     },
     header: {
@@ -275,7 +275,7 @@ const styles = StyleSheet.create({
         marginBottom: 30,
     },
     validation: {
-        marginBottom: 20,
+        marginVertical: 20,
     },
 });
 

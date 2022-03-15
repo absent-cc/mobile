@@ -59,6 +59,7 @@ export interface APIContextType {
     saveUserSettings: (newSettings: UserSettings) => Promise<void>;
     saveAppSettings: (newSettings: AppSettings) => Promise<void>;
     saveFCMToken: (fcmToken: string) => Promise<void>;
+    deleteAccount: () => Promise<void>;
 }
 
 const APIContext = React.createContext<APIContextType>({
@@ -76,6 +77,7 @@ const APIContext = React.createContext<APIContextType>({
     saveUserSettings: async () => undefined,
     saveAppSettings: async () => undefined,
     saveFCMToken: async () => undefined,
+    deleteAccount: async () => undefined,
 });
 
 const defaultState: APIDataType = {
@@ -93,24 +95,27 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
     const [apiServerLoaded, setAPIServerLoaded] = React.useState(false);
 
     const { value: settings, setSettings, resetSettings } = useSettings();
-    const { value: appState, setAppState } = useAppState();
+    const { value: appState, setAppState, resetAppState } = useAppState();
 
     // since the get classes and get absences endpoint takes a date, we'll just regenerate this function once per day
     const dateStr = formatISODate(new Date(appState.lastUpdateTime));
     const schoolName = settings.user.school;
 
+    const isLoggedInRef = React.useRef(false);
     const logout = React.useCallback(async () => {
         // if (apiSettings.token !== null) {
         //     await APIMethods.logout(apiSettings.token);
         // }
 
+        isLoggedInRef.current = false;
+        resetAppState();
         resetSettings();
         setAPISettings({
             ...defaultState,
             ready: true,
         });
         setAPIServerLoaded(false);
-    }, [resetSettings]);
+    }, [resetSettings, resetAppState]);
 
     const { open: openDialog, close: closeDialog } = useDialog();
 
@@ -601,6 +606,27 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
         [verifyToken, parseError],
     );
 
+    const deleteAccount = React.useCallback(
+        async (hasRetried = false): Promise<void> => {
+            const token = await verifyToken(hasRetried);
+            if (token === null) return;
+
+            try {
+                APIMethods.deleteAccount(token);
+            } catch (err: any) {
+                const shouldRetry = parseError(
+                    err,
+                    hasRetried,
+                    'Delete Account',
+                );
+                if (shouldRetry) {
+                    deleteAccount(true);
+                }
+            }
+        },
+        [verifyToken, parseError],
+    );
+
     // read token only once
     React.useEffect(() => {
         SecureStore.getItemAsync('apisettings')
@@ -653,8 +679,9 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 if (!token) {
                     logout();
                 }
+                isLoggedInRef.current = true;
+                setAPIServerLoaded(true);
             });
-            setAPIServerLoaded(true);
         }
     }, [
         apiSettings.isLoggedIn,
@@ -667,6 +694,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
     React.useEffect(() => {
         if (
             apiSettings.isLoggedIn &&
+            isLoggedInRef.current &&
             apiServerLoaded &&
             !settings.serverLoaded &&
             apiSettings.isVerified
@@ -692,12 +720,12 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 });
         }
     }, [
+        apiServerLoaded,
         apiSettings.isLoggedIn,
         apiSettings.isVerified,
         fetchSettings,
         parseError,
         setSettings,
-        apiServerLoaded,
         settings.serverLoaded,
     ]);
 
@@ -707,6 +735,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
     React.useEffect(() => {
         if (
             apiSettings.isLoggedIn &&
+            isLoggedInRef.current &&
             apiServerLoaded &&
             settings.serverLoaded &&
             settings.userOnboarded &&
@@ -810,6 +839,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             saveUserSettings,
             saveAppSettings,
             saveFCMToken,
+            deleteAccount,
         }),
         [
             apiSettings.ready,
@@ -826,6 +856,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             saveUserSettings,
             saveAppSettings,
             saveFCMToken,
+            deleteAccount,
         ],
     );
 
