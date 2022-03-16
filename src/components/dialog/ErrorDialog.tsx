@@ -77,15 +77,24 @@ function ErrorDialog({
                 {message}
             </Text>
             {showing ? (
-                <Text
-                    style={[
-                        styles.moreDetails,
-                        lightVersion && styles.detailsLight,
-                    ]}
-                >
-                    Error occurred during {caller}.{'\n'}
-                    {description}
-                </Text>
+                <>
+                    <Text
+                        style={[
+                            styles.moreDetails,
+                            lightVersion && styles.detailsLight,
+                        ]}
+                    >
+                        Error occurred during {caller}.
+                    </Text>
+                    <Text
+                        style={[
+                            styles.description,
+                            lightVersion && styles.detailsLight,
+                        ]}
+                    >
+                        {description}
+                    </Text>
+                </>
             ) : (
                 <Text
                     style={[styles.showMore, lightVersion && styles.moreLight]}
@@ -151,6 +160,12 @@ const styles = StyleSheet.create({
     moreDetails: {
         marginTop: 20,
         fontFamily: Theme.regularFont,
+        color: Theme.foregroundAlternate,
+        fontSize: 20,
+    },
+    description: {
+        marginTop: 10,
+        fontFamily: Theme.monospaceFont,
         color: Theme.foregroundAlternate,
         fontSize: 20,
     },

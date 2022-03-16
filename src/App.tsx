@@ -7,6 +7,7 @@ import {
     Inter_400Regular,
     Inter_600SemiBold,
 } from '@expo-google-fonts/inter';
+import { RobotoMono_400Regular } from '@expo-google-fonts/roboto-mono';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -37,6 +38,7 @@ function App() {
         Inter_400Regular,
         Inter_700Bold,
         Inter_600SemiBold,
+        RobotoMono_400Regular,
         // eslint-disable-next-line global-require, import/extensions
         Inter_Display_600SemiBold: require('../assets/fonts/InterDisplay-SemiBold.otf'),
     });

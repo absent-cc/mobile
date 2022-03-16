@@ -39,7 +39,10 @@
                 "typedefs": false
             }
         ],
-        "camelcase": ["error", { "ignoreImports": true, "allow": ["Inter_"] }],
+        "camelcase": [
+            "error",
+            { "ignoreImports": true, "allow": ["Inter_", "RobotoMono_"] }
+        ],
         "@typescript-eslint/no-explicit-any": 0,
         "default-case": "off",
         "no-unused-vars": "off",

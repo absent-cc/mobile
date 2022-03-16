@@ -1518,6 +1518,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@expo-google-fonts/roboto-mono@npm:^0.2.2":
+  version: 0.2.2
+  resolution: "@expo-google-fonts/roboto-mono@npm:0.2.2"
+  checksum: 0df99c6c11dc0db8a8fa54a13266b43ecb23c54bbc5739e7b7ef36a7768451eb4fd262b8d46218e23acc7177d1b1c2142424cbda469a01782706e6bc61a62d95
+  languageName: node
+  linkType: hard
+
 "@expo/config-plugins@npm:4.0.6":
   version: 4.0.6
   resolution: "@expo/config-plugins@npm:4.0.6"
@@ -2660,6 +2667,7 @@ __metadata:
   dependencies:
     "@babel/core": ^7.12.9
     "@expo-google-fonts/inter": ^0.2.2
+    "@expo-google-fonts/roboto-mono": ^0.2.2
     "@expo/ngrok": ^4.1.0
     "@expo/vector-icons": ^12.0.0
     "@notifee/react-native": ^5.0.1
