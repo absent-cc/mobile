@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, ScrollView, View } from 'react-native';
+import { StyleSheet, Text, ScrollView, View, Linking } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Theme from '../Theme';
 import Header from '../components/header/Header';
@@ -50,6 +50,22 @@ function Settings({ navigation }: { navigation: any }) {
                         label="App Options"
                     />
                     <Divider />
+
+                    <RowButton
+                        onPress={() => {
+                            Linking.openURL('https://absent.cc/terms');
+                        }}
+                        label="Terms and Privacy Policy"
+                    />
+
+                    <RowButton
+                        onPress={() => {
+                            Linking.openURL('mailto:hello@absent.cc');
+                        }}
+                        label="Contact Us"
+                    />
+                    <Divider />
+
                     <TextButton
                         style={styles.inputField}
                         iconName="log-out"
