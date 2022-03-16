@@ -25,11 +25,11 @@ import { APIProvider, useAPI } from './api/APIContext';
 import ScheduleOnboarding from './pages/onboarding/ScheduleOnboarding';
 import ProfileOnboarding from './pages/onboarding/ProfileOnboarding';
 import FullList from './pages/FullList';
-// import Loading from './pages/Loading';
+import Loading from './pages/Loading';
 import { Dialog, useDialog } from './components/dialog/Dialog';
 import ErrorBoundary from './components/ErrorBoundary';
 import UpdateDialog from './components/dialog/UpdateDialog';
-import WelcomeLoading from './pages/WelcomeLoading';
+// import WelcomeLoading from './pages/WelcomeLoading';
 
 const Stack = createNativeStackNavigator();
 
@@ -84,10 +84,10 @@ function App() {
         // app state only loads once the user onboards
         if (settings.userOnboarded) {
             if (!appState.value.serverLoaded || !settings.serverLoaded) {
-                return <WelcomeLoading />;
+                return <Loading />;
             }
         } else if (!settings.serverLoaded) {
-            return <WelcomeLoading />;
+            return <Loading />;
         }
     }
 
