@@ -1,20 +1,32 @@
 import React from 'react';
 import { StyleSheet, Image, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import Constants from 'expo-constants';
 import * as Google from 'expo-auth-session/providers/google';
 import Theme from '../Theme';
 import GoogleSignIn from '../components/button/GoogleSignIn';
 import { useAPI } from '../api/APIContext';
 
 function Welcome() {
-    const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
-        expoClientId:
-            '349911558418-rusr95n8ttq00iujmk3je4q5fmkiib5t.apps.googleusercontent.com',
-        iosClientId:
-            '349911558418-9tm5hh1jgk7k7obhcor3k9l3l2ejt3ue.apps.googleusercontent.com',
-        androidClientId:
-            '349911558418-tbkntqmdvhb1j71e52ptl4kagp3q23pi.apps.googleusercontent.com',
-    });
+    const googleOptions = Constants.manifest?.extra?.isDevelopment
+        ? {
+              expoClientId:
+                  '349911558418-rusr95n8ttq00iujmk3je4q5fmkiib5t.apps.googleusercontent.com',
+              iosClientId:
+                  '349911558418-6ps5ft9k690fva0ouc7popfbtr1s0l6a.apps.googleusercontent.com',
+              androidClientId:
+                  '349911558418-5l3t76k9vkajjvn685geu7gephos3c2t.apps.googleusercontent.com',
+          }
+        : {
+              expoClientId:
+                  '349911558418-rusr95n8ttq00iujmk3je4q5fmkiib5t.apps.googleusercontent.com',
+              iosClientId:
+                  '349911558418-9tm5hh1jgk7k7obhcor3k9l3l2ejt3ue.apps.googleusercontent.com',
+              androidClientId:
+                  '349911558418-tbkntqmdvhb1j71e52ptl4kagp3q23pi.apps.googleusercontent.com',
+          };
+    const [request, response, promptAsync] =
+        Google.useIdTokenAuthRequest(googleOptions);
     const api = useAPI();
 
     React.useEffect(() => {

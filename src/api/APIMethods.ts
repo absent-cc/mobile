@@ -1,3 +1,4 @@
+import Constants from 'expo-constants';
 import { AppSettings } from '../state/SettingsContext';
 import {
     apiResponseToSchedule,
@@ -24,7 +25,9 @@ import {
     UserSettings,
 } from './APITypes';
 
-const baseURL = 'https://api.absent.cc/v1';
+const baseURL = Constants.manifest?.extra?.isDevelopment
+    ? 'https://dev.api.absent.cc/v1'
+    : 'https://api.absent.cc/v1';
 
 const headers = {
     'Accept': 'application/json',

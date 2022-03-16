@@ -11,6 +11,9 @@
             },
             "android": {
                 "image": "ubuntu-20.04-jdk-11-ndk-r21e"
+            },
+            "env": {
+                "APP_VARIANT": "development"
             }
         },
         "preview": {
@@ -21,9 +24,24 @@
             },
             "android": {
                 "image": "ubuntu-20.04-jdk-11-ndk-r21e"
+            },
+            "env": {
+                "APP_VARIANT": "development"
             }
         },
-        "production": {}
+        "production": {
+            "distribution": "store",
+            "releaseChannel": "default",
+            "ios": {
+                "cocoapods": "1.11.2"
+            },
+            "android": {
+                "image": "ubuntu-20.04-jdk-11-ndk-r21e"
+            },
+            "env": {
+                "APP_VARIANT": "production"
+            }
+        }
     },
     "submit": {
         "production": {}

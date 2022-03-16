@@ -1,5 +1,7 @@
+const IS_DEV = process.env.APP_VARIANT === 'development';
+
 module.exports = {
-    name: 'abSENT',
+    name: IS_DEV ? 'abSENT (Dev)' : 'abSENT',
     owner: 'absent',
     slug: 'absent',
     version: '1.0.0',
@@ -24,12 +26,14 @@ module.exports = {
     assetBundlePatterns: ['**/*'],
     ios: {
         supportsTablet: true,
-        bundleIdentifier: 'cc.absent.client',
+        bundleIdentifier: IS_DEV ? 'cc.absent.devclient' : 'cc.absent.client',
         icon: './assets/images/icon.png',
         infoPlist: {
             UIBackgroundModes: ['fetch', 'remote-notification'],
         },
-        googleServicesFile: './GoogleService-Info.plist',
+        googleServicesFile: IS_DEV
+            ? './google/dev/GoogleService-Info.plist'
+            : './google/prod/GoogleService-Info.plist',
         entitlements: {
             'aps-environment': 'development',
         },
@@ -39,9 +43,11 @@ module.exports = {
             foregroundImage: './assets/images/adaptive_icon.png',
             backgroundColor: '#FFFFFF',
         },
-        googleServicesFile: './google-services.json',
+        googleServicesFile: IS_DEV
+            ? './google/dev/google-services.json'
+            : './google/prod/google-services.json',
         icon: './assets/images/icon.png',
-        package: 'cc.absent.client',
+        package: IS_DEV ? 'cc.absent.devclient' : 'cc.absent.client',
     },
     web: {
         favicon: './assets/images/icon.png',
@@ -59,5 +65,8 @@ module.exports = {
                 return config;
             },
         },
+    },
+    extra: {
+        isDevelopment: IS_DEV,
     },
 };
