@@ -29,6 +29,7 @@ import Loading from './pages/Loading';
 import { Dialog, useDialog } from './components/dialog/Dialog';
 import ErrorBoundary from './components/ErrorBoundary';
 import UpdateDialog from './components/dialog/UpdateDialog';
+import ErrorDialog from './components/dialog/ErrorDialog';
 // import WelcomeLoading from './pages/WelcomeLoading';
 
 const Stack = createNativeStackNavigator();
@@ -55,8 +56,20 @@ function App() {
         if (isLoggedIn) {
             // console.log('Uploading messaging token.');
             messaging()
-                .getToken()
-                .then((token: string) => saveFCMToken(token));
+                .registerDeviceForRemoteMessages()
+                .then(messaging().getToken)
+                .then(saveFCMToken)
+                .catch((error: any) => {
+                    openDialog(
+                        <ErrorDialog
+                            message="Sorry, there was an unknown error. Please try again."
+                            description={error.message || ''}
+                            caller="Request FCM Token"
+                            close={closeDialog}
+                            lightVersion
+                        />,
+                    );
+                });
 
             return messaging().onTokenRefresh((token) => {
                 // console.log('Uploading messaging token from listener.');
@@ -64,7 +77,7 @@ function App() {
             });
         }
         return () => undefined;
-    }, [saveFCMToken, isLoggedIn]);
+    }, [saveFCMToken, isLoggedIn, openDialog, closeDialog]);
 
     React.useEffect(() => {
         return Updates.addListener((e) => {
