@@ -56,9 +56,11 @@ function App() {
         if (isLoggedIn) {
             // console.log('Uploading messaging token.');
             messaging()
-                .registerDeviceForRemoteMessages()
-                .then(messaging().getToken)
-                .then(saveFCMToken)
+                .getToken()
+                .then((token: string) => {
+                    if (token && token.length > 0) return saveFCMToken(token);
+                    return undefined;
+                })
                 .catch((error: any) => {
                     openDialog(
                         <ErrorDialog
