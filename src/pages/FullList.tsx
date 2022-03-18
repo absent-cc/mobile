@@ -7,12 +7,68 @@ import WaveHeaderSafearea from '../components/header/WaveHeaderSafearea';
 import { splitName } from '../Utils';
 import { useAppState } from '../state/AppStateContext';
 import AllTeacherCard from '../components/card/AllTeacherCard';
+import { SchoolName } from '../api/APITypes';
 
 function FullList({ navigation }: { navigation: any }) {
     const insets = useSafeAreaInsets();
     const { value: appState } = useAppState();
 
-    const cards = appState.absences
+    const cards = [
+        {
+            teacher: {
+                tid: 'y',
+                name: 'Katherine Osorio',
+                school: SchoolName.NSHS,
+            },
+            time: 'All Day',
+            note: 'C, F, G cancelled. No track practice after school.',
+        },
+        {
+            teacher: {
+                tid: 'y',
+                name: 'Steven Orlo',
+                school: SchoolName.NSHS,
+            },
+            time: 'All Day',
+            note: 'All classes cancelled.',
+        },
+        {
+            teacher: {
+                tid: 'y',
+                name: 'Mark Williams',
+                school: SchoolName.NSHS,
+            },
+            time: 'Partial Day PM',
+            note: 'G cancelled',
+        },
+        {
+            teacher: {
+                tid: 'y',
+                name: 'Samuel Thomas',
+                school: SchoolName.NSHS,
+            },
+            time: 'All Day',
+            note: 'All classes cancelled today. Check Schoology.',
+        },
+        {
+            teacher: {
+                tid: 'y',
+                name: 'Millie Roam',
+                school: SchoolName.NSHS,
+            },
+            time: 'Partia Day AM',
+            note: 'Check schoology for more info.',
+        },
+        {
+            teacher: {
+                tid: 'y',
+                name: 'Donna Hamilton',
+                school: SchoolName.NSHS,
+            },
+            time: 'Partia Day PM',
+            note: 'Classes cancelled',
+        },
+    ]
         ?.sort(
             // sort alphabetically
             (a, b) =>

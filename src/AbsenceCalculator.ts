@@ -3,6 +3,7 @@ import {
     AbsentTeacher,
     Block,
     Schedule,
+    SchoolName,
     Teacher,
 } from './api/APITypes';
 
@@ -18,53 +19,45 @@ export default (
     absences: AbsenceList,
     includeFrees: boolean,
 ): { teachersAbsent: AbsenceItem[]; extraAbsent: AbsenceItem[] } => {
-    const result: AbsenceItem[] = [];
-    blocksToday.forEach((block) => {
-        const teachers: Teacher[] = schedule[block];
-        // add free blocks
-        if (teachers.length === 0) {
-            if (includeFrees) {
-                result.push({
-                    block,
-                    isFree: true,
-                });
-            }
-        } else {
-            teachers.forEach((teacher) => {
-                // check if teacher is in list
-                const absentTeacher = absences.find(
-                    (teach) => teach.teacher.tid === teacher.tid,
-                );
-                if (absentTeacher) {
-                    result.push({
-                        block,
-                        isFree: false,
-                        teacher: absentTeacher,
-                    });
-                }
-            });
-        }
-    });
-
-    const extras: AbsenceItem[] = [];
-    if (schedule.EXTRA && schedule.EXTRA.length > 0) {
-        schedule.EXTRA.forEach((teacher) => {
-            // check if teacher is in list
-            const absentTeacher = absences.find(
-                (teach) => teach.teacher.tid === teacher.tid,
-            );
-            if (absentTeacher) {
-                extras.push({
-                    block: Block.EXTRA,
-                    isFree: false,
-                    teacher: absentTeacher,
-                });
-            }
-        });
-    }
+    // return {
+    //     teachersAbsent: [
+    //         {
+    //             block: Block.C,
+    //             isFree: false,
+    //             teacher: {
+    //                 teacher: {
+    //                     tid: 'y',
+    //                     name: 'Samuel Thomas',
+    //                     school: SchoolName.NSHS,
+    //                 },
+    //                 time: 'All Day',
+    //                 note: 'All classes cancelled today. Check Schoology.',
+    //             },
+    //         },
+    //         {
+    //             block: Block.F,
+    //             isFree: true,
+    //         },
+    //     ],
+    //     extraAbsent: [],
+    // };
 
     return {
-        teachersAbsent: result,
-        extraAbsent: extras,
+        teachersAbsent: [],
+        extraAbsent: [
+            {
+                block: Block.EXTRA,
+                isFree: false,
+                teacher: {
+                    teacher: {
+                        tid: 'y',
+                        name: 'Katherine Osorio',
+                        school: SchoolName.NSHS,
+                    },
+                    time: 'All Day',
+                    note: 'C, F, G cancelled. No track practice after school.',
+                },
+            },
+        ],
     };
 };
