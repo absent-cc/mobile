@@ -15,7 +15,7 @@ function Welcome() {
               iosClientId:
                   '349911558418-6ps5ft9k690fva0ouc7popfbtr1s0l6a.apps.googleusercontent.com',
               androidClientId:
-                  '349911558418-5l3t76k9vkajjvn685geu7gephos3c2t.apps.googleusercontent.com',
+                  '349911558418-t8ld1clvadk0jg04rn3q86hms34h9js0.apps.googleusercontent.com',
           }
         : {
               expoClientId:
@@ -23,7 +23,7 @@ function Welcome() {
               iosClientId:
                   '349911558418-9tm5hh1jgk7k7obhcor3k9l3l2ejt3ue.apps.googleusercontent.com',
               androidClientId:
-                  '349911558418-tbkntqmdvhb1j71e52ptl4kagp3q23pi.apps.googleusercontent.com',
+                  '349911558418-mjtpkjiuqfd5lcihfdi2kni73ja13ou5.apps.googleusercontent.com',
           };
     const [request, response, promptAsync] =
         Google.useIdTokenAuthRequest(googleOptions);
