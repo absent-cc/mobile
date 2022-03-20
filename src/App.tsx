@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import React from 'react';
-import { AppState, AppStateStatus, EventSubscription } from 'react-native';
+import { AppState, AppStateStatus } from 'react-native';
 import AppLoading from 'expo-app-loading';
 import {
     useFonts,
@@ -143,9 +143,7 @@ function App() {
                         Updates.reloadAsync();
                     }
                 } catch (e) {
-                    console.log(
-                        'Update check failed, perhaps we are in development',
-                    );
+                    // do nothing
                 }
             }
 
