@@ -72,7 +72,7 @@ class ErrorBoundary extends React.Component {
                         <Text
                             style={{
                                 marginTop: 10,
-                                fontFamily: Theme.regularFont,
+                                fontFamily: Theme.monospaceFont,
                                 color: Theme.foregroundColor,
                                 fontSize: 20,
                             }}

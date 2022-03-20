@@ -1,5 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import React from 'react';
+import { AppState, AppStateStatus } from 'react-native';
 import AppLoading from 'expo-app-loading';
 import {
     useFonts,
@@ -29,6 +30,7 @@ import Loading from './pages/Loading';
 import { Dialog, useDialog } from './components/dialog/Dialog';
 import ErrorBoundary from './components/ErrorBoundary';
 import UpdateDialog from './components/dialog/UpdateDialog';
+import ErrorDialog from './components/dialog/ErrorDialog';
 // import WelcomeLoading from './pages/WelcomeLoading';
 
 const Stack = createNativeStackNavigator();
@@ -42,9 +44,16 @@ function App() {
         // eslint-disable-next-line global-require, import/extensions
         Inter_Display_600SemiBold: require('../assets/fonts/InterDisplay-SemiBold.otf'),
     });
-    const appState = useAppState();
-    const { value: settings } = useSettings();
-    const { ready: apiReady, isLoggedIn, saveFCMToken } = useAPI();
+    const { value: appState, setAppState } = useAppState();
+    const { value: settings, setSettings } = useSettings();
+    const {
+        ready: apiReady,
+        isLoggedIn,
+        saveFCMToken,
+        fetchSettings,
+        fetchAbsences,
+        getClassesToday,
+    } = useAPI();
     const {
         displayer: dialogDisplayer,
         open: openDialog,
@@ -56,7 +65,21 @@ function App() {
             // console.log('Uploading messaging token.');
             messaging()
                 .getToken()
-                .then((token: string) => saveFCMToken(token));
+                .then((token: string) => {
+                    if (token && token.length > 0) return saveFCMToken(token);
+                    return undefined;
+                })
+                .catch((error: any) => {
+                    openDialog(
+                        <ErrorDialog
+                            message="Sorry, there was an unknown error. Please try again."
+                            description={error.message || ''}
+                            caller="Request FCM Token"
+                            close={closeDialog}
+                            lightVersion
+                        />,
+                    );
+                });
 
             return messaging().onTokenRefresh((token) => {
                 // console.log('Uploading messaging token from listener.');
@@ -64,7 +87,7 @@ function App() {
             });
         }
         return () => undefined;
-    }, [saveFCMToken, isLoggedIn]);
+    }, [saveFCMToken, isLoggedIn, openDialog, closeDialog]);
 
     React.useEffect(() => {
         return Updates.addListener((e) => {
@@ -73,6 +96,74 @@ function App() {
             }
         });
     }, [openDialog, closeDialog]);
+
+    const reactAppState = React.useRef(AppState.currentState);
+    React.useEffect(() => {
+        const listener = async (nextAppState: AppStateStatus) => {
+            if (
+                isLoggedIn &&
+                reactAppState.current.match(/inactive|background/) &&
+                nextAppState === 'active'
+            ) {
+                // update when app gets opened
+                Promise.all([
+                    fetchSettings(),
+                    fetchAbsences(),
+                    getClassesToday(),
+                ]).then(([newSettings, absences, classesToday]) => {
+                    setAppState((oldAppState) => {
+                        const stateChanges = {
+                            ...oldAppState,
+                            // needsUpdate: false,
+                        };
+                        if (absences !== null) stateChanges.absences = absences;
+                        if (classesToday !== null)
+                            stateChanges.blocksToday = classesToday;
+                        return stateChanges;
+                    });
+                    setSettings((oldSettings) => {
+                        const stateChanges = {
+                            ...oldSettings,
+                        };
+                        if (newSettings !== null) {
+                            stateChanges.user = newSettings.user;
+                            stateChanges.schedule = newSettings.schedule;
+                            stateChanges.app = newSettings.app;
+                        }
+                        return stateChanges;
+                    });
+                });
+
+                // also check app for updates
+                try {
+                    const update = await Updates.checkForUpdateAsync();
+                    if (update.isAvailable) {
+                        await Updates.fetchUpdateAsync();
+                        openDialog(<UpdateDialog close={closeDialog} />);
+                        Updates.reloadAsync();
+                    }
+                } catch (e) {
+                    // do nothing
+                }
+            }
+
+            reactAppState.current = nextAppState;
+        };
+        AppState.addEventListener('change', listener);
+
+        return () => {
+            AppState.removeEventListener('change', listener);
+        };
+    }, [
+        closeDialog,
+        fetchAbsences,
+        fetchSettings,
+        getClassesToday,
+        isLoggedIn,
+        openDialog,
+        setAppState,
+        setSettings,
+    ]);
 
     // first, wait for everything to load from local
     if (!fontsLoaded || !apiReady) {
@@ -83,7 +174,7 @@ function App() {
     if (isLoggedIn) {
         // app state only loads once the user onboards
         if (settings.userOnboarded) {
-            if (!appState.value.serverLoaded || !settings.serverLoaded) {
+            if (!appState.serverLoaded || !settings.serverLoaded) {
                 return <Loading />;
             }
         } else if (!settings.serverLoaded) {

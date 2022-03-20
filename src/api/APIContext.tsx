@@ -96,17 +96,17 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
 
     const { value: settings, setSettings, resetSettings } = useSettings();
     const { value: appState, setAppState, resetAppState } = useAppState();
+    const { open: openDialog, close: closeDialog } = useDialog();
 
     // since the get classes and get absences endpoint takes a date, we'll just regenerate this function once per day
     const dateStr = formatISODate(new Date(appState.lastUpdateTime));
     const schoolName = settings.user.school;
 
     const isLoggedInRef = React.useRef(false);
-    const logout = React.useCallback(async () => {
-        // if (apiSettings.token !== null) {
-        //     await APIMethods.logout(apiSettings.token);
-        // }
 
+    // this one logs the user out without sending the request to the server
+    // TODO: make sure the fcm token actually gets deleted
+    const simpleLogout = React.useCallback(async () => {
         isLoggedInRef.current = false;
         resetAppState();
         resetSettings();
@@ -115,9 +115,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             ready: true,
         });
         setAPIServerLoaded(false);
-    }, [resetSettings, resetAppState]);
-
-    const { open: openDialog, close: closeDialog } = useDialog();
+    }, [resetAppState, resetSettings]);
 
     const parseError = React.useCallback(
         (error: any, hasRetried: boolean, caller: string): boolean => {
@@ -135,7 +133,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                                 lightVersion={lightVersion}
                             />,
                         );
-                        logout();
+                        simpleLogout();
                         return false;
                     }
                     return true;
@@ -162,7 +160,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                             lightVersion={lightVersion}
                         />,
                     );
-                    logout();
+                    simpleLogout();
                     return false;
                 }
                 if (error instanceof NonNPSError) {
@@ -230,7 +228,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             );
             return false;
         },
-        [logout, closeDialog, openDialog],
+        [simpleLogout, closeDialog, openDialog],
     );
 
     const verifyToken = React.useCallback(
@@ -277,6 +275,25 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             apiSettings.token,
             parseError,
         ],
+    );
+
+    const logout = React.useCallback(
+        async (hasRetried = false) => {
+            const token = await verifyToken(hasRetried);
+            if (token === null) return;
+
+            try {
+                await APIMethods.logout(token);
+
+                await simpleLogout();
+            } catch (err: any) {
+                const shouldRetry = parseError(err, hasRetried, 'Logout');
+                if (shouldRetry) {
+                    logout(true);
+                }
+            }
+        },
+        [parseError, simpleLogout, verifyToken],
     );
 
     const fetchAbsences = React.useCallback(

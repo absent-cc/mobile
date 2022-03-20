@@ -463,7 +463,7 @@ export async function saveUserSettings(
     //     );
     // }
 
-    await getFromAPI(
+    return getFromAPI(
         {
             method: 'PUT',
             path: '/users/me/update/profile/',
@@ -494,7 +494,7 @@ export async function saveAppSettings(newSettings: AppSettings, token: string) {
     //     );
     // }
 
-    await getFromAPI(
+    return getFromAPI(
         {
             method: 'PUT',
             path: '/users/me/update/settings/',
@@ -505,9 +505,16 @@ export async function saveAppSettings(newSettings: AppSettings, token: string) {
     );
 }
 
-// export async function logout(token: string) {
-//     // TODO
-// }
+export async function logout(token: string) {
+    return getFromAPI(
+        {
+            method: 'PUT',
+            path: '/logout/',
+            token,
+        },
+        'Logout',
+    );
+}
 
 export async function searchTeachers(
     searchString: string,
@@ -679,7 +686,7 @@ export async function saveFCMToken(fcmToken: string, token: string) {
     //     );
     // }
 
-    await getFromAPI(
+    return getFromAPI(
         {
             method: 'PUT',
             path: '/users/me/update/fcm/',
@@ -693,7 +700,7 @@ export async function saveFCMToken(fcmToken: string, token: string) {
 }
 
 export async function deleteAccount(token: string) {
-    await getFromAPI(
+    return getFromAPI(
         {
             method: 'PUT',
             path: '/users/me/delete/',

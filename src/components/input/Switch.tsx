@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Switch } from 'react-native';
+import { StyleSheet, Text, View, Switch, Platform } from 'react-native';
 import Theme from '../../Theme';
 
 function SwitchField({
@@ -19,15 +19,28 @@ function SwitchField({
         setValue(newValue);
     };
 
+    const thumbColorOn =
+        Platform.OS === 'android' ? Theme.darkerPrimary : Theme.backgroundColor;
+    const thumbColorOff =
+        Platform.OS === 'android'
+            ? Theme.lightForeground
+            : Theme.backgroundColor;
+    const trackColorOn = Theme.primaryColor;
+    const trackColorOff =
+        Platform.OS === 'android'
+            ? Theme.lighterForeground
+            : Theme.lightForeground;
+
     return (
         <View style={[styles.container, style]}>
             {label ? <Text style={styles.label}>{label}</Text> : null}
             <Switch
                 style={styles.switch}
                 trackColor={{
-                    false: Theme.lightForeground,
-                    true: Theme.primaryColor,
+                    false: trackColorOff,
+                    true: trackColorOn,
                 }}
+                thumbColor={value ? thumbColorOn : thumbColorOff}
                 ios_backgroundColor={Theme.lightForeground}
                 onValueChange={changeFunc}
                 value={value}
