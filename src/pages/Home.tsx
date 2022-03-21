@@ -91,90 +91,75 @@ function Home({ navigation }: { navigation: any }) {
     const now = new Date(appState.lastUpdateTime);
     const [timeWords, timeEmoji] = timeOfDay(now);
 
-    let body;
+    // let body;
 
-    if (appState.blocksToday?.length === 0) {
-        body = (
-            <Text style={styles.status}>
-                No school today! Enjoy your day! 🎉
-            </Text>
-        );
-    } else if (appState.absences?.length === 0) {
-        body = (
-            <Text style={styles.status}>
-                The absence list hasn't been posted yet, check back later! 🥱
-            </Text>
-        );
-    } else {
-        const { teachersAbsent, extraAbsent } = absenceCalculator(
-            settings.schedule,
-            appState.blocksToday,
-            appState.absences,
-            settings.app.showFreeBlocks,
-        );
-        const numTeachersAbsent = teachersAbsent.length + extraAbsent.length;
+    const { teachersAbsent, extraAbsent } = absenceCalculator(
+        settings.schedule,
+        appState.blocksToday,
+        appState.absences,
+        settings.app.showFreeBlocks,
+    );
+    const numTeachersAbsent = teachersAbsent.length + extraAbsent.length;
 
-        const teacherCards = teachersAbsent.map((absenceItem) => (
-            <TeacherCard
-                style={styles.card}
-                absenceItem={absenceItem}
-                key={`${absenceItem.block}-${
-                    absenceItem.teacher?.teacher.name || 'free'
-                }`}
-            />
-        ));
+    const teacherCards = teachersAbsent.map((absenceItem) => (
+        <TeacherCard
+            style={styles.card}
+            absenceItem={absenceItem}
+            key={`${absenceItem.block}-${
+                absenceItem.teacher?.teacher.name || 'free'
+            }`}
+        />
+    ));
 
-        const extraCards = extraAbsent.map((absenceItem) => (
-            <TeacherCard
-                style={styles.card}
-                absenceItem={absenceItem}
-                key={`${absenceItem.block}-${
-                    absenceItem.teacher?.teacher.name || 'free'
-                }`}
-            />
-        ));
+    const extraCards = extraAbsent.map((absenceItem) => (
+        <TeacherCard
+            style={styles.card}
+            absenceItem={absenceItem}
+            key={`${absenceItem.block}-${
+                absenceItem.teacher?.teacher.name || 'free'
+            }`}
+        />
+    ));
 
-        body = (
-            <>
-                {numTeachersAbsent ? (
-                    <Text style={styles.status}>
-                        You have{' '}
-                        <Text style={styles.count}>
-                            {toWords(numTeachersAbsent)}
-                        </Text>
-                        absent teacher{numTeachersAbsent !== 1 ? 's' : ''}{' '}
-                        today!
+    const body = (
+        <>
+            {numTeachersAbsent ? (
+                <Text style={styles.status}>
+                    You have{' '}
+                    <Text style={styles.count}>
+                        {toWords(numTeachersAbsent)}
                     </Text>
-                ) : (
-                    <Text style={styles.status}>
-                        You have no absent teachers today. Check back tomorrow!
-                    </Text>
-                )}
+                    absent teacher{numTeachersAbsent !== 1 ? 's' : ''} today!
+                </Text>
+            ) : (
+                <Text style={styles.status}>
+                    You have no absent teachers today. Check back tomorrow!
+                </Text>
+            )}
 
-                <RowButton
-                    onPress={() => {
-                        navigation.navigate('FullList');
-                    }}
-                    label="See full absence list"
-                    style={{ marginTop: 10 }}
-                />
+            <RowButton
+                onPress={() => {
+                    navigation.navigate('FullList');
+                }}
+                label="See full absence list"
+                style={{ marginTop: 10 }}
+            />
 
-                {teacherCards.length > 0 && (
-                    <>
-                        <Text style={styles.header}>Cancelled Classes</Text>
-                        {teacherCards}
-                    </>
-                )}
+            {teacherCards.length > 0 && (
+                <>
+                    <Text style={styles.header}>Cancelled Classes</Text>
+                    {teacherCards}
+                </>
+            )}
 
-                {extraCards.length > 0 && (
-                    <>
-                        <Text style={styles.header}>Extra Teachers</Text>
-                        {extraCards}
-                    </>
-                )}
-            </>
-        );
-    }
+            {extraCards.length > 0 && (
+                <>
+                    <Text style={styles.header}>Extra Teachers</Text>
+                    {extraCards}
+                </>
+            )}
+        </>
+    );
 
     return (
         <View style={styles.pageView}>
@@ -196,30 +181,16 @@ function Home({ navigation }: { navigation: any }) {
                     iconClick={() => {
                         navigation.navigate('Settings');
                     }}
-                    text={
-                        settings.user.name.length > 0
-                            ? `Good ${timeWords}, ${
-                                  splitName(settings.user.name)[0]
-                              }! ${timeEmoji}`
-                            : `Good ${timeWords}! ${timeEmoji}`
-                    }
+                    text="Good morning, Leah! ☀️"
                 />
                 <View style={styles.content}>
                     <Text style={styles.hello}>
                         Today is{' '}
-                        <Text style={styles.date}>{dateFormatter(now)}</Text>.
+                        <Text style={styles.date}>Friday, March 18</Text>.
                     </Text>
-                    {appState.blocksToday?.length > 0 && (
-                        <Text style={styles.blockList}>
-                            The blocks today are{' '}
-                            {joinListWithCommas(
-                                appState.blocksToday.map(
-                                    (block) => ShortBlockFullNames[block],
-                                ),
-                            )}
-                            .
-                        </Text>
-                    )}
+                    <Text style={styles.blockList}>
+                        The blocks today are C, D, F, and G .
+                    </Text>
                     <Divider />
                     {body}
                 </View>

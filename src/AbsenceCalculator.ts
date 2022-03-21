@@ -19,45 +19,45 @@ export default (
     absences: AbsenceList,
     includeFrees: boolean,
 ): { teachersAbsent: AbsenceItem[]; extraAbsent: AbsenceItem[] } => {
-    // return {
-    //     teachersAbsent: [
-    //         {
-    //             block: Block.C,
-    //             isFree: false,
-    //             teacher: {
-    //                 teacher: {
-    //                     tid: 'y',
-    //                     name: 'Samuel Thomas',
-    //                     school: SchoolName.NSHS,
-    //                 },
-    //                 time: 'All Day',
-    //                 note: 'All classes cancelled today. Check Schoology.',
-    //             },
-    //         },
-    //         {
-    //             block: Block.F,
-    //             isFree: true,
-    //         },
-    //     ],
-    //     extraAbsent: [],
-    // };
-
     return {
-        teachersAbsent: [],
-        extraAbsent: [
+        teachersAbsent: [
             {
-                block: Block.EXTRA,
+                block: Block.C,
                 isFree: false,
                 teacher: {
                     teacher: {
                         tid: 'y',
-                        name: 'Katherine Osorio',
+                        name: 'Samuel Thomas',
                         school: SchoolName.NSHS,
                     },
                     time: 'All Day',
-                    note: 'C, F, G cancelled. No track practice after school.',
+                    note: 'All classes cancelled today. Check Schoology.',
                 },
             },
+            {
+                block: Block.F,
+                isFree: true,
+            },
         ],
+        extraAbsent: [],
     };
+
+    // return {
+    //     teachersAbsent: [],
+    //     extraAbsent: [
+    //         {
+    //             block: Block.EXTRA,
+    //             isFree: false,
+    //             teacher: {
+    //                 teacher: {
+    //                     tid: 'y',
+    //                     name: 'Katherine Osorio',
+    //                     school: SchoolName.NSHS,
+    //                 },
+    //                 time: 'All Day',
+    //                 note: 'C, F, G cancelled. No track practice after school.',
+    //             },
+    //         },
+    //     ],
+    // };
 };
