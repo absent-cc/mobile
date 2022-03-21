@@ -4,7 +4,7 @@ module.exports = {
     name: IS_DEV ? 'abSENT (Dev)' : 'abSENT',
     owner: 'absent',
     slug: 'absent',
-    version: '1.0.0',
+    version: '1.0.1',
     scheme: 'absent',
     plugins: [
         '@notifee/react-native',
