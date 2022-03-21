@@ -1,10 +1,13 @@
 const IS_DEV = process.env.APP_VARIANT === 'development';
 
+const appVersion = '1.0.2';
+const androidVersion = 2;
+
 module.exports = {
     name: IS_DEV ? 'abSENT (Dev)' : 'abSENT',
     owner: 'absent',
     slug: 'absent',
-    version: '1.0.1',
+    version: appVersion,
     scheme: 'absent',
     plugins: [
         '@notifee/react-native',
@@ -37,6 +40,7 @@ module.exports = {
         entitlements: {
             'aps-environment': 'development',
         },
+        buildNumber: appVersion,
     },
     android: {
         adaptiveIcon: {
@@ -48,6 +52,7 @@ module.exports = {
             : './google/prod/google-services.json',
         icon: './assets/images/icon.png',
         package: IS_DEV ? 'cc.absent.devclient' : 'cc.absent.client',
+        versionCode: androidVersion,
     },
     web: {
         favicon: './assets/images/icon.png',
