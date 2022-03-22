@@ -189,7 +189,7 @@ function Home({ navigation }: { navigation: any }) {
                         <Text style={styles.date}>Friday, March 18</Text>.
                     </Text>
                     <Text style={styles.blockList}>
-                        The blocks today are C, D, F, and G .
+                        The blocks today are C, D, F, and G.
                     </Text>
                     <Divider />
                     {body}
