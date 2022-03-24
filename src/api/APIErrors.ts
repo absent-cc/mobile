@@ -43,10 +43,11 @@ export class NonNPSError extends APIError {
 }
 
 export class ServerError extends APIError {
-    constructor(caller: string) {
+    constructor(caller: string, code: string) {
         super(
             'Sorry, there was an error with the server. Please try again.',
             caller,
+            code,
         );
     }
 }

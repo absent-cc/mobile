@@ -90,7 +90,7 @@ const getFromAPI = async (
     }
 
     if (response.status >= 500) {
-        throw new ServerError(caller);
+        throw new ServerError(caller, `Status code ${response.status}`);
     }
 
     let responseText: string;
