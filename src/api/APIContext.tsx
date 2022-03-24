@@ -503,7 +503,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             try {
                 return APIMethods.searchTeachers(
                     searchString,
-                    settings.user.school,
+                    schoolName,
                     token,
                 );
             } catch (err: any) {
@@ -518,7 +518,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 return null;
             }
         },
-        [verifyToken, settings.user.school, parseError],
+        [verifyToken, schoolName, parseError],
     );
 
     const isRealTeacher = React.useCallback(
@@ -533,11 +533,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             if (token === null) return null;
 
             try {
-                return APIMethods.isRealTeacher(
-                    partialName,
-                    settings.user.school,
-                    token,
-                );
+                return APIMethods.isRealTeacher(partialName, schoolName, token);
             } catch (err: any) {
                 const shouldRetry = parseError(
                     err,
@@ -550,7 +546,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 return null;
             }
         },
-        [verifyToken, settings.user.school, parseError],
+        [verifyToken, schoolName, parseError],
     );
 
     const getClassesToday = React.useCallback(
