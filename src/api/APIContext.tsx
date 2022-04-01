@@ -501,7 +501,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             if (token === null) return null;
 
             try {
-                return APIMethods.searchTeachers(
+                return await APIMethods.searchTeachers(
                     searchString,
                     schoolName,
                     token,

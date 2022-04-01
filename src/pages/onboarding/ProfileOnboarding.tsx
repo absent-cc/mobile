@@ -17,6 +17,7 @@ import {
 } from '../../Utils';
 import ErrorCard from '../../components/card/ErrorCard';
 import { useAPI } from '../../api/APIContext';
+import { SchoolName } from '../../api/APITypes';
 
 function ProfileOnboarding({ navigation }: { navigation: any }) {
     const insets = useSafeAreaInsets();
@@ -61,6 +62,18 @@ function ProfileOnboarding({ navigation }: { navigation: any }) {
         }
         return false;
     };
+
+    // next page navigation to prevent race conditions
+    const readyToProceed = React.useRef(false);
+    React.useEffect(() => {
+        if (
+            readyToProceed.current &&
+            settings.value.user.school !== SchoolName.NONE
+        ) {
+            readyToProceed.current = false;
+            navigation.navigate('ScheduleOnboarding');
+        }
+    }, [settings.value.user.school, navigation]);
 
     return (
         <View style={styles.pageView}>
@@ -151,7 +164,14 @@ function ProfileOnboarding({ navigation }: { navigation: any }) {
                         iconName="chevron-right"
                         onPress={() => {
                             if (save()) {
-                                navigation.navigate('ScheduleOnboarding');
+                                if (
+                                    settings.value.user.school !==
+                                    SchoolName.NONE
+                                ) {
+                                    navigation.navigate('ScheduleOnboarding');
+                                } else {
+                                    readyToProceed.current = true;
+                                }
                             }
                         }}
                         isFilled
