@@ -112,7 +112,9 @@ function Home({ navigation }: { navigation: any }) {
             appState.absences,
             settings.app.showFreeBlocks,
         );
-        const numTeachersAbsent = teachersAbsent.length + extraAbsent.length;
+        const numFrees = teachersAbsent.filter((teach) => teach.isFree).length;
+        const numTeachersAbsent =
+            teachersAbsent.length - numFrees + extraAbsent.length;
 
         const teacherCards = teachersAbsent.map((absenceItem) => (
             <TeacherCard
@@ -136,18 +138,34 @@ function Home({ navigation }: { navigation: any }) {
 
         body = (
             <>
-                {numTeachersAbsent ? (
+                {numTeachersAbsent + numFrees > 0 ? (
                     <Text style={styles.status}>
                         You have{' '}
-                        <Text style={styles.count}>
-                            {toWords(numTeachersAbsent)}
-                        </Text>
-                        absent teacher{numTeachersAbsent !== 1 ? 's' : ''}{' '}
+                        {numTeachersAbsent > 0 && (
+                            <>
+                                <Text style={styles.count}>
+                                    {toWords(numTeachersAbsent)}
+                                </Text>
+                                absent teacher
+                                {numTeachersAbsent !== 1 ? 's' : ''}{' '}
+                            </>
+                        )}
+                        {numTeachersAbsent > 0 && numFrees > 0 && 'and '}
+                        {numFrees > 0 && (
+                            <>
+                                <Text style={styles.count}>
+                                    {toWords(numFrees)}
+                                </Text>
+                                free block
+                                {numFrees !== 1 ? 's' : ''}{' '}
+                            </>
+                        )}
                         today!
                     </Text>
                 ) : (
                     <Text style={styles.status}>
-                        You have no absent teachers today. Check back tomorrow!
+                        You have no cancelled classes today. Check back
+                        tomorrow!
                     </Text>
                 )}
 
