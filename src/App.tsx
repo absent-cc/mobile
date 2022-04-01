@@ -102,6 +102,7 @@ function App() {
         const listener = async (nextAppState: AppStateStatus) => {
             if (
                 isLoggedIn &&
+                settings.userOnboarded &&
                 reactAppState.current.match(/inactive|background/) &&
                 nextAppState === 'active'
             ) {
@@ -163,6 +164,7 @@ function App() {
         openDialog,
         setAppState,
         setSettings,
+        settings.userOnboarded,
     ]);
 
     // first, wait for everything to load from local
