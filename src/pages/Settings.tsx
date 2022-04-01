@@ -78,26 +78,26 @@ function Settings({ navigation }: { navigation: any }) {
                     </TextButton>
                     <Text style={styles.attribution}>
                         Thanks for using abSENT!{'\n\n'}
-                        Created by{' '}
+                        Created by{'\n'}
                         <Anchor
                             href="https://rkarim.xyz"
                             style={styles.attribution}
                         >
-                            Roshan Karim
+                            Roshan
                         </Anchor>
                         ,{' '}
                         <Anchor
                             href="https://leah.vashevko.com"
                             style={styles.attribution}
                         >
-                            Leah Vashevko
+                            Leah
                         </Anchor>
                         , and{' '}
                         <Anchor
                             href="https://github.com/bykevinyang/"
                             style={styles.attribution}
                         >
-                            Kevin Yang
+                            Kevin
                         </Anchor>
                         .
                     </Text>
