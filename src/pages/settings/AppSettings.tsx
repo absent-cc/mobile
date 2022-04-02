@@ -10,20 +10,10 @@ import TextButton from '../../components/button/TextButton';
 import LoadingCard from '../../components/card/LoadingCard';
 import ErrorCard from '../../components/card/ErrorCard';
 import { useAPI } from '../../api/APIContext';
+import WithHeader from '../../components/header/WithHeader';
 
 function AppSettings({ navigation }: { navigation: any }) {
     const insets = useSafeAreaInsets();
-    // const { value: settingsValue, setSettings } = useSettings();
-    // const [appSettings, setAppSettings] = React.useState(settingsValue.app);
-
-    // // autosave app settings
-    // React.useEffect(() => {
-    //     setSettings((oldSettings) => ({
-    //         ...oldSettings,
-    //         app: appSettings,
-    //     }));
-    // }, [appSettings, setSettings]);
-    // });
 
     const api = useAPI();
     const settings = useSettings();
@@ -56,89 +46,75 @@ function AppSettings({ navigation }: { navigation: any }) {
     // });
 
     return (
-        <View style={styles.pageView}>
-            <HeaderSafearea />
-            <ScrollView
-                style={[styles.container, { marginTop: insets.top }]}
-                // bounces={false}
-                keyboardShouldPersistTaps="handled"
+        <WithHeader
+            style={styles.pageView}
+            iconName="chevron-left"
+            iconClick={() => {
+                navigation.goBack();
+            }}
+            isLeft
+            text="App Options"
+        >
+            <Text style={styles.note}>Edit app options.</Text>
+            <SwitchField
+                style={styles.inputField}
+                label="Show free blocks as absent teachers"
+                onChange={(newValue: boolean) => {
+                    // setAppSettings((oldSettings) => ({
+                    //     ...oldSettings,
+                    //     showFreeBlocks: newValue,
+                    // }));
+                    appSettings.current.showFreeBlocks = newValue;
+                }}
+                defaultValue={appSettings.current.showFreeBlocks}
+            />
+
+            <SwitchField
+                style={styles.inputField}
+                label="Send notifications"
+                onChange={(newValue: boolean) => {
+                    // setAppSettings((oldSettings) => ({
+                    //     ...oldSettings,
+                    //     sendNotifications: newValue,
+                    // }));
+                    appSettings.current.sendNotifications = newValue;
+                }}
+                defaultValue={appSettings.current.sendNotifications}
+            />
+
+            <SwitchField
+                style={styles.inputField}
+                label="Send notification even if no teachers are absent"
+                onChange={(newValue: boolean) => {
+                    // setAppSettings((oldSettings) => ({
+                    //     ...oldSettings,
+                    //     sendNoAbsenceNotification: newValue,
+                    // }));
+                    appSettings.current.sendNoAbsenceNotification = newValue;
+                }}
+                defaultValue={appSettings.current.sendNoAbsenceNotification}
+            />
+
+            {saving ? (
+                <LoadingCard style={[styles.validation]}>Saving...</LoadingCard>
+            ) : null}
+            {saveError ? (
+                <ErrorCard style={[styles.validation]}>
+                    There was a problem while saving your information. Please
+                    try again.
+                </ErrorCard>
+            ) : null}
+            <TextButton
+                style={[{ zIndex: 1 }, styles.save]}
+                iconName="save"
+                onPress={() => {
+                    setSaving(true);
+                }}
+                isFilled
             >
-                <Header
-                    iconName="chevron-left"
-                    iconClick={() => {
-                        navigation.goBack();
-                    }}
-                    isLeft
-                    text="App Options"
-                />
-                <View style={styles.content}>
-                    <Text style={styles.note}>Edit app options.</Text>
-                    <SwitchField
-                        style={styles.inputField}
-                        label="Show free blocks as absent teachers"
-                        onChange={(newValue: boolean) => {
-                            // setAppSettings((oldSettings) => ({
-                            //     ...oldSettings,
-                            //     showFreeBlocks: newValue,
-                            // }));
-                            appSettings.current.showFreeBlocks = newValue;
-                        }}
-                        defaultValue={appSettings.current.showFreeBlocks}
-                    />
-
-                    <SwitchField
-                        style={styles.inputField}
-                        label="Send notifications"
-                        onChange={(newValue: boolean) => {
-                            // setAppSettings((oldSettings) => ({
-                            //     ...oldSettings,
-                            //     sendNotifications: newValue,
-                            // }));
-                            appSettings.current.sendNotifications = newValue;
-                        }}
-                        defaultValue={appSettings.current.sendNotifications}
-                    />
-
-                    <SwitchField
-                        style={styles.inputField}
-                        label="Send notification even if no teachers are absent"
-                        onChange={(newValue: boolean) => {
-                            // setAppSettings((oldSettings) => ({
-                            //     ...oldSettings,
-                            //     sendNoAbsenceNotification: newValue,
-                            // }));
-                            appSettings.current.sendNoAbsenceNotification =
-                                newValue;
-                        }}
-                        defaultValue={
-                            appSettings.current.sendNoAbsenceNotification
-                        }
-                    />
-
-                    {saving ? (
-                        <LoadingCard style={[styles.validation]}>
-                            Saving...
-                        </LoadingCard>
-                    ) : null}
-                    {saveError ? (
-                        <ErrorCard style={[styles.validation]}>
-                            There was a problem while saving your information.
-                            Please try again.
-                        </ErrorCard>
-                    ) : null}
-                    <TextButton
-                        style={[{ zIndex: 1 }, styles.save]}
-                        iconName="save"
-                        onPress={() => {
-                            setSaving(true);
-                        }}
-                        isFilled
-                    >
-                        Save
-                    </TextButton>
-                </View>
-            </ScrollView>
-        </View>
+                Save
+            </TextButton>
+        </WithHeader>
     );
 }
 
@@ -147,16 +123,6 @@ const styles = StyleSheet.create({
         flex: 1,
         width: '100%',
         backgroundColor: Theme.backgroundColor,
-    },
-    container: {
-        flex: 1,
-        width: '100%',
-        backgroundColor: Theme.backgroundColor,
-    },
-    content: {
-        paddingHorizontal: 30,
-        paddingTop: 5,
-        paddingBottom: 300,
     },
     note: {
         color: Theme.foregroundColor,

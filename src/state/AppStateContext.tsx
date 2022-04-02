@@ -7,6 +7,7 @@ export interface AppStateType {
     absences: AbsenceList;
     blocksToday: Block[];
     lastUpdateTime: number;
+    tallestWaveHeader: number;
     // needsUpdate: boolean;
 }
 
@@ -22,6 +23,7 @@ export const defaultState: AppStateType = {
     absences: [],
     blocksToday: [],
     lastUpdateTime: 0,
+    tallestWaveHeader: 250,
     // needsUpdate: false,
 };
 

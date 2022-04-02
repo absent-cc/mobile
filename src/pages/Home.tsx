@@ -21,6 +21,7 @@ import absenceCalculator from '../AbsenceCalculator';
 import { useAppState } from '../state/AppStateContext';
 import { dateFormatter, timeOfDay, toWords } from '../DateWordUtils';
 import RowButton from '../components/RowButton';
+import WithWaveHeader from '../components/header/WithWaveHeader';
 
 function Home({ navigation }: { navigation: any }) {
     const insets = useSafeAreaInsets();
@@ -195,54 +196,48 @@ function Home({ navigation }: { navigation: any }) {
     }
 
     return (
-        <View style={styles.pageView}>
-            <WaveHeaderSafearea />
-            <ScrollView
-                style={[styles.container, { marginTop: insets.top }]}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={refreshing}
-                        onRefresh={onRefresh}
-                        tintColor={Theme.lightForeground}
-                        colors={[Theme.primaryColor, Theme.secondaryColor]}
-                    />
-                }
-                // bounces={false}
-            >
-                <WaveHeader
-                    iconName="settings"
-                    iconClick={() => {
-                        navigation.navigate('Settings');
-                    }}
-                    text={
-                        settings.user.name.length > 0
-                            ? `Good ${timeWords}, ${
-                                  splitName(settings.user.name)[0]
-                              }! ${timeEmoji}`
-                            : `Good ${timeWords}! ${timeEmoji}`
-                    }
+        <WithWaveHeader
+            style={[styles.pageView]}
+            iconName="settings"
+            iconClick={() => {
+                navigation.navigate('Settings');
+            }}
+            text={
+                settings.user.name.length > 0
+                    ? `Good ${timeWords}, ${
+                          splitName(settings.user.name)[0]
+                      }! ${timeEmoji}`
+                    : `Good ${timeWords}! ${timeEmoji}`
+            }
+            refreshControl={
+                <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                    tintColor={Theme.foregroundAlternate}
+                    colors={[
+                        Theme.foregroundAlternate,
+                        Theme.lighterForeground,
+                    ]}
                 />
-                <View style={styles.content}>
-                    <Text style={styles.hello}>
-                        Today is{' '}
-                        <Text style={styles.date}>{dateFormatter(now)}</Text>.
-                    </Text>
-                    {appState.blocksToday?.length > 0 && (
-                        <Text style={styles.blockList}>
-                            The blocks today are{' '}
-                            {joinListWithCommas(
-                                appState.blocksToday.map(
-                                    (block) => ShortBlockFullNames[block],
-                                ),
-                            )}
-                            .
-                        </Text>
+            }
+        >
+            <Text style={styles.hello}>
+                Today is <Text style={styles.date}>{dateFormatter(now)}</Text>.
+            </Text>
+            {appState.blocksToday?.length > 0 && (
+                <Text style={styles.blockList}>
+                    The blocks today are{' '}
+                    {joinListWithCommas(
+                        appState.blocksToday.map(
+                            (block) => ShortBlockFullNames[block],
+                        ),
                     )}
-                    <Divider />
-                    {body}
-                </View>
-            </ScrollView>
-        </View>
+                    .
+                </Text>
+            )}
+            <Divider />
+            {body}
+        </WithWaveHeader>
     );
 }
 
@@ -250,17 +245,7 @@ const styles = StyleSheet.create({
     pageView: {
         flex: 1,
         width: '100%',
-        backgroundColor: Theme.backgroundColor,
-    },
-    container: {
-        flex: 1,
-        width: '100%',
-        backgroundColor: Theme.backgroundColor,
-    },
-    content: {
-        paddingHorizontal: 30,
-        paddingTop: 15,
-        paddingBottom: 80,
+        // backgroundColor: Theme.backgroundColor,
     },
     hello: {
         color: Theme.foregroundColor,

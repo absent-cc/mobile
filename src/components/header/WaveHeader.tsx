@@ -2,7 +2,8 @@ import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import Theme from '../../Theme';
-import Wave from './Wave';
+import InverseWave from './InverseWave';
+import { useAppState } from '../../state/AppStateContext';
 
 function WaveHeader({
     iconName,
@@ -17,9 +18,27 @@ function WaveHeader({
     style?: any;
     isLeft?: boolean;
 }) {
+    const appState = useAppState();
     return (
-        <View style={[style, styles.container]}>
-            <Wave style={styles.wave} />
+        <View
+            style={[
+                style,
+                styles.container,
+                {
+                    minHeight: Math.max(250, appState.value.tallestWaveHeader),
+                },
+            ]}
+            onLayout={(event: any) => {
+                const { height } = event.nativeEvent.layout;
+                if (height > appState.value.tallestWaveHeader) {
+                    appState.setAppState((oldState) => ({
+                        ...oldState,
+                        tallestWaveHeader: height,
+                    }));
+                }
+            }}
+        >
+            <InverseWave style={styles.wave} />
             <Text
                 style={[
                     styles.header,
@@ -52,21 +71,20 @@ function WaveHeader({
 const styles = StyleSheet.create({
     container: {
         width: '100%',
-        height: 250,
+        justifyContent: 'flex-end',
     },
     wave: {
         width: '100%',
-        height: 250,
+        height: '100%',
         position: 'absolute',
     },
     header: {
         fontFamily: Theme.headerFont,
         color: Theme.foregroundAlternate,
         fontSize: 38,
-        position: 'absolute',
-        left: 30,
-        right: 30,
-        bottom: 100,
+        marginTop: 50,
+        marginHorizontal: 30,
+        marginBottom: 100,
     },
     headerWithRightIcon: {
         paddingRight: 30,

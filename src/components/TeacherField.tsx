@@ -103,9 +103,6 @@ function TeacherField({
         changeFunc.current(currentTeacher);
     }, [currentTeacher]);
 
-    // scrolling on focus
-    const selfRef = React.useRef<View | null>(null);
-
     // functions
     const autocompleteOptionPress = (option: string) => {
         setTextValue({
@@ -240,6 +237,8 @@ function TeacherField({
         );
     });
 
+    // scrolling on focus
+    const selfRef = React.useRef<View | null>(null);
     const [inputHeight, setInputHeight] = React.useState(0);
     const onInputLayout = (event: any) => {
         setInputHeight(event.nativeEvent.layout.height);

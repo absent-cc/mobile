@@ -18,6 +18,7 @@ import ErrorCard from '../../components/card/ErrorCard';
 import { useAPI } from '../../api/APIContext';
 import Divider from '../../components/Divider';
 import LoadingCard from '../../components/card/LoadingCard';
+import WithHeader from '../../components/header/WithHeader';
 
 function GeneralSettings({ navigation }: { navigation: any }) {
     const insets = useSafeAreaInsets();
@@ -99,125 +100,111 @@ function GeneralSettings({ navigation }: { navigation: any }) {
     };
 
     return (
-        <View style={styles.pageView}>
-            <HeaderSafearea />
-            <ScrollView
-                style={[styles.container, { marginTop: insets.top }]}
-                // bounces={false}
-                keyboardShouldPersistTaps="handled"
+        <WithHeader
+            style={styles.pageView}
+            iconName="chevron-left"
+            iconClick={() => {
+                navigation.goBack();
+            }}
+            isLeft
+            text="Account Settings"
+        >
+            <Text style={styles.note}>Edit your account details.</Text>
+            <TextField
+                label="What's your name?"
+                onChange={(newValue: string) => {
+                    userSettings.current.name = newValue;
+
+                    // once it has already been validated once, redo on subsequent inputs
+                    if (validationList.existsInvalid) validate();
+                }}
+                placeholder="e.g. Kevin McFakehead"
+                style={[styles.inputField, { zIndex: 4 }]}
+                defaultValue={userSettings.current.name}
+            />
+            {validationList.name ? (
+                <ErrorCard style={[styles.validation]}>
+                    Please enter your name.
+                </ErrorCard>
+            ) : null}
+            <Dropdown
+                label="What grade are you in?"
+                onChange={(newValue: number) => {
+                    userSettings.current.grade = GradeList[newValue];
+
+                    // once it has already been validated once, redo on subsequent inputs
+                    if (validationList.existsInvalid) validate();
+                }}
+                style={[styles.inputField, { zIndex: 3 }]}
+                placeholder="Select a grade"
+                options={['9', '10', '11', '12']}
+                defaultValue={gradeIndexer(userSettings.current.grade)}
+            />
+            {validationList.grade ? (
+                <ErrorCard style={[styles.validation]}>
+                    Please select a grade.
+                </ErrorCard>
+            ) : null}
+            <Dropdown
+                label="Which school do you go to?"
+                onChange={(newValue: number) => {
+                    userSettings.current.school = SchoolList[newValue];
+
+                    // once it has already been validated once, redo on subsequent inputs
+                    if (validationList.existsInvalid) validate();
+                }}
+                style={[styles.inputField, { zIndex: 2 }]}
+                placeholder="Select a school"
+                options={['South', 'North']}
+                defaultValue={schoolIndexer(userSettings.current.school)}
+            />
+            {validationList.school ? (
+                <ErrorCard style={[styles.validation]}>
+                    Please select a school.
+                </ErrorCard>
+            ) : null}
+
+            {validationList.existsInvalid ? (
+                <ErrorCard style={[styles.validation]}>
+                    Please check the info you entered and try again.
+                </ErrorCard>
+            ) : null}
+            {saving ? (
+                <LoadingCard style={[styles.validation]}>Saving...</LoadingCard>
+            ) : null}
+            {saveError ? (
+                <ErrorCard style={[styles.validation]}>
+                    There was a problem while saving your information. Please
+                    try again.
+                </ErrorCard>
+            ) : null}
+            <TextButton
+                style={[{ zIndex: 1 }, styles.save]}
+                iconName="save"
+                onPress={() => {
+                    if (validate()) {
+                        setSaving(true);
+                    }
+                }}
+                isFilled
             >
-                <Header
-                    iconName="chevron-left"
-                    iconClick={() => {
-                        navigation.goBack();
-                    }}
-                    isLeft
-                    text="Account Settings"
-                />
-                <View style={styles.content}>
-                    <Text style={styles.note}>Edit your account details.</Text>
-                    <TextField
-                        label="What's your name?"
-                        onChange={(newValue: string) => {
-                            userSettings.current.name = newValue;
+                Save
+            </TextButton>
 
-                            // once it has already been validated once, redo on subsequent inputs
-                            if (validationList.existsInvalid) validate();
-                        }}
-                        placeholder="e.g. Kevin McFakehead"
-                        style={[styles.inputField, { zIndex: 4 }]}
-                        defaultValue={userSettings.current.name}
-                    />
-                    {validationList.name ? (
-                        <ErrorCard style={[styles.validation]}>
-                            Please enter your name.
-                        </ErrorCard>
-                    ) : null}
-                    <Dropdown
-                        label="What grade are you in?"
-                        onChange={(newValue: number) => {
-                            userSettings.current.grade = GradeList[newValue];
-
-                            // once it has already been validated once, redo on subsequent inputs
-                            if (validationList.existsInvalid) validate();
-                        }}
-                        style={[styles.inputField, { zIndex: 3 }]}
-                        placeholder="Select a grade"
-                        options={['9', '10', '11', '12']}
-                        defaultValue={gradeIndexer(userSettings.current.grade)}
-                    />
-                    {validationList.grade ? (
-                        <ErrorCard style={[styles.validation]}>
-                            Please select a grade.
-                        </ErrorCard>
-                    ) : null}
-                    <Dropdown
-                        label="Which school do you go to?"
-                        onChange={(newValue: number) => {
-                            userSettings.current.school = SchoolList[newValue];
-
-                            // once it has already been validated once, redo on subsequent inputs
-                            if (validationList.existsInvalid) validate();
-                        }}
-                        style={[styles.inputField, { zIndex: 2 }]}
-                        placeholder="Select a school"
-                        options={['South', 'North']}
-                        defaultValue={schoolIndexer(
-                            userSettings.current.school,
-                        )}
-                    />
-                    {validationList.school ? (
-                        <ErrorCard style={[styles.validation]}>
-                            Please select a school.
-                        </ErrorCard>
-                    ) : null}
-
-                    {validationList.existsInvalid ? (
-                        <ErrorCard style={[styles.validation]}>
-                            Please check the info you entered and try again.
-                        </ErrorCard>
-                    ) : null}
-                    {saving ? (
-                        <LoadingCard style={[styles.validation]}>
-                            Saving...
-                        </LoadingCard>
-                    ) : null}
-                    {saveError ? (
-                        <ErrorCard style={[styles.validation]}>
-                            There was a problem while saving your information.
-                            Please try again.
-                        </ErrorCard>
-                    ) : null}
-                    <TextButton
-                        style={[{ zIndex: 1 }, styles.save]}
-                        iconName="save"
-                        onPress={() => {
-                            if (validate()) {
-                                setSaving(true);
-                            }
-                        }}
-                        isFilled
-                    >
-                        Save
-                    </TextButton>
-
-                    <Divider />
-                    <Text style={styles.header}>Delete Your Account</Text>
-                    <Text style={styles.note}>
-                        Delete your account. We'll clear your data from our
-                        servers.
-                    </Text>
-                    <TextButton
-                        style={[{ zIndex: 0 }, styles.delete]}
-                        iconName="user-x"
-                        onPress={deleteAccount}
-                        isFilled
-                    >
-                        Delete Account
-                    </TextButton>
-                </View>
-            </ScrollView>
-        </View>
+            <Divider />
+            <Text style={styles.header}>Delete Your Account</Text>
+            <Text style={styles.note}>
+                Delete your account. We'll clear your data from our servers.
+            </Text>
+            <TextButton
+                style={[{ zIndex: 0 }, styles.delete]}
+                iconName="user-x"
+                onPress={deleteAccount}
+                isFilled
+            >
+                Delete Account
+            </TextButton>
+        </WithHeader>
     );
 }
 
@@ -226,16 +213,6 @@ const styles = StyleSheet.create({
         flex: 1,
         width: '100%',
         backgroundColor: Theme.backgroundColor,
-    },
-    container: {
-        flex: 1,
-        width: '100%',
-        backgroundColor: Theme.backgroundColor,
-    },
-    content: {
-        paddingHorizontal: 30,
-        paddingTop: 5,
-        paddingBottom: 300,
     },
     note: {
         color: Theme.foregroundColor,

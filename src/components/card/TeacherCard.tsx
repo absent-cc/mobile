@@ -69,17 +69,21 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     blockBox: {
-        width: 70,
-        height: 70,
+        // width: 70,
+        // height: 70,
+        flex: 1,
+        padding: 4,
+        aspectRatio: 1,
         marginRight: 20,
         backgroundColor: Theme.primaryColor,
         borderRadius: 20,
 
+        flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
     },
     content: {
-        flex: 1,
+        flex: 4,
     },
     block: {
         fontFamily: Theme.strongFont,

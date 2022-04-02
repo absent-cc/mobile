@@ -1,15 +1,12 @@
-import { StyleSheet, ScrollView, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import React from 'react';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Theme from '../Theme';
-import WaveHeader from '../components/header/WaveHeader';
-import WaveHeaderSafearea from '../components/header/WaveHeaderSafearea';
 import { splitName } from '../Utils';
 import { useAppState } from '../state/AppStateContext';
 import AllTeacherCard from '../components/card/AllTeacherCard';
+import WithWaveHeader from '../components/header/WithWaveHeader';
 
 function FullList({ navigation }: { navigation: any }) {
-    const insets = useSafeAreaInsets();
     const { value: appState } = useAppState();
 
     const cards = appState.absences
@@ -31,23 +28,17 @@ function FullList({ navigation }: { navigation: any }) {
         });
 
     return (
-        <View style={styles.pageView}>
-            <WaveHeaderSafearea />
-            <ScrollView
-                style={[styles.container, { marginTop: insets.top }]}
-                // bounces={false}
-            >
-                <WaveHeader
-                    iconName="chevron-left"
-                    iconClick={() => {
-                        navigation.goBack();
-                    }}
-                    isLeft
-                    text="All Absences"
-                />
-                <View style={styles.content}>{cards}</View>
-            </ScrollView>
-        </View>
+        <WithWaveHeader
+            style={styles.pageView}
+            iconName="chevron-left"
+            iconClick={() => {
+                navigation.goBack();
+            }}
+            isLeft
+            text="All Absences"
+        >
+            {cards}
+        </WithWaveHeader>
     );
 }
 

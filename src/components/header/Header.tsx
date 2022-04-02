@@ -49,16 +49,16 @@ function Header({
 const styles = StyleSheet.create({
     container: {
         width: '100%',
-        height: 200,
+        minHeight: 180,
+        justifyContent: 'flex-end',
     },
     header: {
         fontFamily: Theme.headerFont,
         color: Theme.foregroundColor,
         fontSize: 38,
-        position: 'absolute',
-        left: 30,
-        right: 30,
-        bottom: 20,
+        marginTop: 50,
+        marginHorizontal: 30,
+        marginBottom: 20,
     },
     headerWithRightIcon: {
         paddingRight: 30,

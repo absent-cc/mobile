@@ -1,109 +1,94 @@
 import React from 'react';
-import { StyleSheet, Text, ScrollView, View, Linking } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { StyleSheet, Text, Linking } from 'react-native';
 import Theme from '../Theme';
-import Header from '../components/header/Header';
 import Divider from '../components/Divider';
 import TextButton from '../components/button/TextButton';
 import RowButton from '../components/RowButton';
 import Anchor from '../components/Anchor';
-import HeaderSafearea from '../components/header/HeaderSafearea';
 import { useAPI } from '../api/APIContext';
+import WithHeader from '../components/header/WithHeader';
 
 function Settings({ navigation }: { navigation: any }) {
-    const insets = useSafeAreaInsets();
-
     const api = useAPI();
 
     return (
-        <View style={styles.pageView}>
-            <HeaderSafearea />
-            <ScrollView
-                style={[styles.container, { marginTop: insets.top }]}
-                // bounces={false}
+        <WithHeader
+            style={styles.pageView}
+            iconName="x"
+            iconClick={() => {
+                navigation.goBack();
+            }}
+            text="Settings"
+        >
+            <RowButton
+                onPress={() => {
+                    navigation.navigate('GeneralSettings');
+                }}
+                label="Account Settings"
+            />
+            <RowButton
+                onPress={() => {
+                    navigation.navigate('TeacherSettings');
+                }}
+                label="Edit your teachers"
+            />
+
+            <RowButton
+                onPress={() => {
+                    navigation.navigate('AppSettings');
+                }}
+                label="App Options"
+            />
+            <Divider />
+
+            <RowButton
+                onPress={() => {
+                    Linking.openURL('https://absent.cc/terms');
+                }}
+                label="Terms and Privacy Policy"
+            />
+
+            <RowButton
+                onPress={() => {
+                    Linking.openURL('mailto:hello@absent.cc');
+                }}
+                label="Contact Us"
+            />
+            <Divider />
+
+            <TextButton
+                style={styles.inputField}
+                iconName="log-out"
+                onPress={() => {
+                    api.logout();
+                }}
+                isFilled
             >
-                <Header
-                    iconName="x"
-                    iconClick={() => {
-                        navigation.goBack();
-                    }}
-                    text="Settings"
-                />
-                <View style={styles.content}>
-                    <RowButton
-                        onPress={() => {
-                            navigation.navigate('GeneralSettings');
-                        }}
-                        label="Account Settings"
-                    />
-                    <RowButton
-                        onPress={() => {
-                            navigation.navigate('TeacherSettings');
-                        }}
-                        label="Edit your teachers"
-                    />
-
-                    <RowButton
-                        onPress={() => {
-                            navigation.navigate('AppSettings');
-                        }}
-                        label="App Options"
-                    />
-                    <Divider />
-
-                    <RowButton
-                        onPress={() => {
-                            Linking.openURL('https://absent.cc/terms');
-                        }}
-                        label="Terms and Privacy Policy"
-                    />
-
-                    <RowButton
-                        onPress={() => {
-                            Linking.openURL('mailto:hello@absent.cc');
-                        }}
-                        label="Contact Us"
-                    />
-                    <Divider />
-
-                    <TextButton
-                        style={styles.inputField}
-                        iconName="log-out"
-                        onPress={() => {
-                            api.logout();
-                        }}
-                        isFilled
-                    >
-                        Log out
-                    </TextButton>
-                    <Text style={styles.attribution}>
-                        Thanks for using abSENT!{'\n\n'}
-                        Created by{'\n'}
-                        <Anchor
-                            href="https://rkarim.xyz"
-                            style={styles.attribution}
-                        >
-                            Roshan
-                        </Anchor>
-                        ,{' '}
-                        <Anchor
-                            href="https://leah.vashevko.com"
-                            style={styles.attribution}
-                        >
-                            Leah
-                        </Anchor>
-                        , and{' '}
-                        <Anchor
-                            href="https://github.com/bykevinyang/"
-                            style={styles.attribution}
-                        >
-                            Kevin
-                        </Anchor>
-                        .
-                    </Text>
-                </View>
-            </ScrollView>
-        </View>
+                Log out
+            </TextButton>
+            <Text style={styles.attribution}>
+                Thanks for using abSENT!{'\n\n'}
+                Created by{'\n'}
+                <Anchor href="https://rkarim.xyz" style={styles.attribution}>
+                    Roshan
+                </Anchor>
+                ,{' '}
+                <Anchor
+                    href="https://leah.vashevko.com"
+                    style={styles.attribution}
+                >
+                    Leah
+                </Anchor>
+                , and{' '}
+                <Anchor
+                    href="https://github.com/bykevinyang/"
+                    style={styles.attribution}
+                >
+                    Kevin
+                </Anchor>
+                .
+            </Text>
+        </WithHeader>
     );
 }
 
@@ -112,16 +97,6 @@ const styles = StyleSheet.create({
         flex: 1,
         width: '100%',
         backgroundColor: Theme.backgroundColor,
-    },
-    container: {
-        flex: 1,
-        width: '100%',
-        backgroundColor: Theme.backgroundColor,
-    },
-    content: {
-        paddingHorizontal: 30,
-        paddingTop: 5,
-        paddingBottom: 200,
     },
     text: {
         color: Theme.foregroundColor,
