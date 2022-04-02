@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import TextButton from './button/TextButton';
 import TeacherField from './TeacherField';
 
@@ -7,10 +7,12 @@ function ExtraTeachers({
     onChange,
     style,
     defaultValue,
+    scrollRef,
 }: {
     onChange: (newSettings: string[]) => void;
     style?: any;
     defaultValue: string[];
+    scrollRef: React.MutableRefObject<ScrollView | null>;
 }) {
     const changeFunc = React.useRef(onChange);
 
@@ -69,6 +71,7 @@ function ExtraTeachers({
                     onDelete={() => {
                         removeTeacher(index);
                     }}
+                    scrollRef={scrollRef}
                 />
             </View>
         );

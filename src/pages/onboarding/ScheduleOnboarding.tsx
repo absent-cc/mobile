@@ -117,6 +117,9 @@ function ScheduleOnboarding({ navigation }: { navigation: any }) {
         }
     }, [saving, api, settings, teacherSettings]);
 
+    // scroll to text inputs
+    const scrollViewRef = React.useRef<ScrollView | null>(null);
+
     return (
         <View style={styles.pageView}>
             <WaveHeaderSafearea />
@@ -124,6 +127,7 @@ function ScheduleOnboarding({ navigation }: { navigation: any }) {
                 style={[styles.container, { marginTop: insets.top }]}
                 // bounces={false}
                 keyboardShouldPersistTaps="handled"
+                ref={scrollViewRef}
             >
                 <WaveHeader
                     text="Your Schedule"
@@ -150,6 +154,7 @@ function ScheduleOnboarding({ navigation }: { navigation: any }) {
                         onChange={updateBlock}
                         isInvalid={validationList.A}
                         defaultValue={teacherSettings.current.A}
+                        scrollRef={scrollViewRef}
                     />
                     <ClassInput
                         style={[styles.classInput, { zIndex: 9 }]}
@@ -157,6 +162,7 @@ function ScheduleOnboarding({ navigation }: { navigation: any }) {
                         onChange={updateBlock}
                         isInvalid={validationList.B}
                         defaultValue={teacherSettings.current.B}
+                        scrollRef={scrollViewRef}
                     />
                     <ClassInput
                         style={[styles.classInput, { zIndex: 8 }]}
@@ -164,6 +170,7 @@ function ScheduleOnboarding({ navigation }: { navigation: any }) {
                         onChange={updateBlock}
                         isInvalid={validationList.C}
                         defaultValue={teacherSettings.current.C}
+                        scrollRef={scrollViewRef}
                     />
                     <ClassInput
                         style={[styles.classInput, { zIndex: 7 }]}
@@ -171,6 +178,7 @@ function ScheduleOnboarding({ navigation }: { navigation: any }) {
                         onChange={updateBlock}
                         isInvalid={validationList.D}
                         defaultValue={teacherSettings.current.D}
+                        scrollRef={scrollViewRef}
                     />
                     <ClassInput
                         style={[styles.classInput, { zIndex: 6 }]}
@@ -178,6 +186,7 @@ function ScheduleOnboarding({ navigation }: { navigation: any }) {
                         onChange={updateBlock}
                         isInvalid={validationList.E}
                         defaultValue={teacherSettings.current.E}
+                        scrollRef={scrollViewRef}
                     />
                     <ClassInput
                         style={[styles.classInput, { zIndex: 5 }]}
@@ -185,6 +194,7 @@ function ScheduleOnboarding({ navigation }: { navigation: any }) {
                         onChange={updateBlock}
                         isInvalid={validationList.F}
                         defaultValue={teacherSettings.current.F}
+                        scrollRef={scrollViewRef}
                     />
                     <ClassInput
                         style={[styles.classInput, { zIndex: 4 }]}
@@ -192,6 +202,7 @@ function ScheduleOnboarding({ navigation }: { navigation: any }) {
                         onChange={updateBlock}
                         isInvalid={validationList.G}
                         defaultValue={teacherSettings.current.G}
+                        scrollRef={scrollViewRef}
                     />
                     <ClassInput
                         style={[styles.classInput, { zIndex: 3 }]}
@@ -199,6 +210,7 @@ function ScheduleOnboarding({ navigation }: { navigation: any }) {
                         onChange={updateBlock}
                         isInvalid={validationList.ADVISORY}
                         defaultValue={teacherSettings.current.ADVISORY}
+                        scrollRef={scrollViewRef}
                     />
 
                     <Text style={styles.header}>Extra Teachers</Text>
@@ -218,6 +230,7 @@ function ScheduleOnboarding({ navigation }: { navigation: any }) {
                             updateBlock(Block.EXTRA, newSettings);
                         }}
                         defaultValue={teacherSettings.current.EXTRA}
+                        scrollRef={scrollViewRef}
                     />
 
                     <Divider />

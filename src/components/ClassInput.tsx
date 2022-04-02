@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Pressable } from 'react-native';
+import { StyleSheet, Text, View, Pressable, ScrollView } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import Theme from '../Theme';
 import { BlockMapping } from '../Utils';
@@ -15,12 +15,14 @@ function ClassInput({
     onChange,
     isInvalid,
     defaultValue,
+    scrollRef,
 }: {
     block: Block;
     style?: any;
     onChange: (block: Block, newSettings: string[]) => void;
     isInvalid: boolean;
     defaultValue: string[];
+    scrollRef: React.MutableRefObject<ScrollView | null>;
 }) {
     const changeFunc = React.useRef(onChange);
     React.useEffect(() => {
@@ -123,6 +125,7 @@ function ClassInput({
                     onDelete={() => {
                         removeTeacher(index);
                     }}
+                    scrollRef={scrollRef}
                 />
             </View>
         );

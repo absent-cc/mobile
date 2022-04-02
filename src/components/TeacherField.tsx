@@ -8,6 +8,7 @@ import {
     ScrollView,
     Keyboard,
     Platform,
+    HostComponent,
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import Theme from '../Theme';
@@ -22,12 +23,14 @@ function TeacherField({
     onDelete = () => {
         // default
     },
+    scrollRef,
 }: {
     defaultValue?: string;
     onChange: (val: string) => void;
     style?: any;
     deletable?: boolean;
     onDelete?: () => void;
+    scrollRef: React.MutableRefObject<ScrollView | null>;
 }) {
     const changeFunc = React.useRef(onChange);
 
@@ -100,6 +103,9 @@ function TeacherField({
         changeFunc.current(currentTeacher);
     }, [currentTeacher]);
 
+    // scrolling on focus
+    const selfRef = React.useRef<View | null>(null);
+
     // functions
     const autocompleteOptionPress = (option: string) => {
         setTextValue({
@@ -139,6 +145,20 @@ function TeacherField({
         setIsActive(true);
         if (trimmedTextValue.length > 2) {
             setIsAutocompleteOpen(true);
+        }
+
+        // scroll
+        if (scrollRef.current) {
+            selfRef.current?.measureLayout(
+                scrollRef.current as unknown as HostComponent<unknown>,
+                (_, top) => {
+                    scrollRef.current?.scrollTo({
+                        y: Math.max(top - 200, 0),
+                        animated: true,
+                    });
+                },
+                () => undefined,
+            );
         }
     };
 
@@ -226,7 +246,7 @@ function TeacherField({
     };
 
     return (
-        <View style={[style]}>
+        <View style={[style]} ref={selfRef}>
             <View style={styles.inputContainer} onLayout={onInputLayout}>
                 <TextInput
                     onChangeText={onTextInput}
