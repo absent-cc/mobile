@@ -92,10 +92,15 @@ function App() {
     React.useEffect(() => {
         return Updates.addListener((e) => {
             if (e.type === Updates.UpdateEventType.UPDATE_AVAILABLE) {
-                openDialog(<UpdateDialog close={closeDialog} />);
+                if (isLoggedIn) {
+                    openDialog(<UpdateDialog close={closeDialog} />);
+                } else {
+                    // auto reload updates on welcome screen
+                    Updates.reloadAsync();
+                }
             }
         });
-    }, [openDialog, closeDialog]);
+    }, [openDialog, closeDialog, isLoggedIn]);
 
     const reactAppState = React.useRef(AppState.currentState);
     React.useEffect(() => {
