@@ -1,19 +1,10 @@
-import {
-    StyleSheet,
-    Text,
-    ScrollView,
-    View,
-    RefreshControl,
-} from 'react-native';
+import { StyleSheet, Text, RefreshControl } from 'react-native';
 import React from 'react';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import notifee from '@notifee/react-native';
 import messaging from '@react-native-firebase/messaging';
 import Theme from '../Theme';
-import WaveHeader from '../components/header/WaveHeader';
 import TeacherCard from '../components/card/TeacherCard';
 import Divider from '../components/Divider';
-import WaveHeaderSafearea from '../components/header/WaveHeaderSafearea';
 import { useSettings } from '../state/SettingsContext';
 import { joinListWithCommas, ShortBlockFullNames, splitName } from '../Utils';
 import { useAPI } from '../api/APIContext';
@@ -24,7 +15,6 @@ import RowButton from '../components/RowButton';
 import WithWaveHeader from '../components/header/WithWaveHeader';
 
 function Home({ navigation }: { navigation: any }) {
-    const insets = useSafeAreaInsets();
     const { value: settings, setSettings } = useSettings();
     const { value: appState, setAppState } = useAppState();
     const { fetchAbsences, fetchSettings, getClassesToday } = useAPI();
