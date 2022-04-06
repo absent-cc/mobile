@@ -76,7 +76,6 @@ function App() {
                             description={error.message || ''}
                             caller="Request FCM Token"
                             close={closeDialog}
-                            lightVersion
                         />,
                     );
                 });
