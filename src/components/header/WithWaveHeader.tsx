@@ -76,6 +76,7 @@ const WithWaveHeader = React.forwardRef(
                     scrollEventThrottle={16}
                     // bounces={false}
                     ref={ref}
+                    keyboardShouldPersistTaps="handled"
                 >
                     <WaveHeader
                         iconName={iconName}

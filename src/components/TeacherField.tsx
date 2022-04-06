@@ -239,6 +239,8 @@ function TeacherField({
 
     // scrolling on focus
     const selfRef = React.useRef<View | null>(null);
+
+    // ios autocomplete vertical offset
     const [inputHeight, setInputHeight] = React.useState(0);
     const onInputLayout = (event: any) => {
         setInputHeight(event.nativeEvent.layout.height);
