@@ -533,7 +533,11 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             if (token === null) return null;
 
             try {
-                return APIMethods.isRealTeacher(partialName, schoolName, token);
+                return await APIMethods.isRealTeacher(
+                    partialName,
+                    schoolName,
+                    token,
+                );
             } catch (err: any) {
                 const shouldRetry = parseError(
                     err,
@@ -555,7 +559,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             if (token === null) return null;
 
             try {
-                return APIMethods.getClassesToday(dateStr, token);
+                return await APIMethods.getClassesToday(dateStr, token);
             } catch (err: any) {
                 const shouldRetry = parseError(
                     err,
@@ -604,7 +608,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             if (token === null) return;
 
             try {
-                APIMethods.saveFCMToken(fcmToken, token);
+                await APIMethods.saveFCMToken(fcmToken, token);
             } catch (err: any) {
                 const shouldRetry = parseError(
                     err,
@@ -625,7 +629,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             if (token === null) return;
 
             try {
-                APIMethods.deleteAccount(token);
+                await APIMethods.deleteAccount(token);
             } catch (err: any) {
                 const shouldRetry = parseError(
                     err,

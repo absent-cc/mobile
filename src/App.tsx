@@ -180,10 +180,20 @@ function App() {
         // app state only loads once the user onboards
         if (settings.userOnboarded) {
             if (!appState.serverLoaded || !settings.serverLoaded) {
-                return <Loading />;
+                return (
+                    <>
+                        <Loading />
+                        {dialogDisplayer}
+                    </>
+                );
             }
         } else if (!settings.serverLoaded) {
-            return <Loading />;
+            return (
+                <>
+                    <Loading />
+                    {dialogDisplayer}
+                </>
+            );
         }
     }
 
