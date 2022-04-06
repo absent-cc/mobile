@@ -18,6 +18,7 @@ const WithWaveHeader = React.forwardRef(
             text,
             isLeft = false,
             refreshControl,
+            reversed = false,
         }: {
             children: React.ReactNode;
             style?: any;
@@ -26,6 +27,7 @@ const WithWaveHeader = React.forwardRef(
             text: string;
             isLeft?: boolean;
             refreshControl?: React.ReactElement;
+            reversed?: boolean;
         },
         ref: React.ForwardedRef<ScrollView | null>,
     ) => {
@@ -43,8 +45,8 @@ const WithWaveHeader = React.forwardRef(
                         Theme.tertiaryColor,
                     ]}
                     locations={[0, 0.5, 1]}
-                    start={{ x: 0.0, y: 0.0 }}
-                    end={{ x: 1.0, y: 1.0 }}
+                    start={reversed ? { x: 1.0, y: 0.0 } : { x: 0.0, y: 0.0 }}
+                    end={reversed ? { x: 0.0, y: 1.0 } : { x: 1.0, y: 1.0 }}
                     style={[
                         styles.gradientBg,
                         {

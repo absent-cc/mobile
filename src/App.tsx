@@ -10,7 +10,7 @@ import {
 } from '@expo-google-fonts/inter';
 import { RobotoMono_400Regular } from '@expo-google-fonts/roboto-mono';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createStackNavigator } from '@react-navigation/stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as Updates from 'expo-updates';
 import messaging from '@react-native-firebase/messaging';
@@ -31,9 +31,10 @@ import { Dialog, useDialog } from './components/dialog/Dialog';
 import ErrorBoundary from './components/ErrorBoundary';
 import UpdateDialog from './components/dialog/UpdateDialog';
 import ErrorDialog from './components/dialog/ErrorDialog';
+import MainScreen from './MainScreen';
 // import WelcomeLoading from './pages/WelcomeLoading';
 
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
 
 function App() {
     const [fontsLoaded] = useFonts({
@@ -253,11 +254,11 @@ function App() {
                 {isLoggedIn ? (
                     settings.userOnboarded ? (
                         <>
-                            <Stack.Screen name="Home" component={Home} />
-                            <Stack.Screen
+                            <Stack.Screen name="Main" component={MainScreen} />
+                            {/* <Stack.Screen
                                 name="FullList"
                                 component={FullList}
-                            />
+                            /> */}
                             <Stack.Screen
                                 name="Settings"
                                 component={Settings}

@@ -142,3 +142,62 @@ export const formatISODate = (date: Date): string => {
         day < 10 ? `0${day}` : day
     }`;
 };
+
+export function todayFromTimeString(
+    now: Date,
+    timeString: string,
+): Date | null {
+    const [hour, minute] = timeString.split(':');
+
+    if (hour && minute) {
+        let parsedHour = parseInt(hour, 10);
+        const parsedMinute = parseInt(minute, 10);
+
+        if (!Number.isNaN(parsedHour) && !Number.isNaN(parsedMinute)) {
+            // Account for PM (there are no classes before 8 am or after 8 pm)
+            if (parsedHour < 8) parsedHour += 12;
+
+            const date = new Date(now);
+            date.setHours(parsedHour);
+            date.setMinutes(parsedMinute);
+            date.setSeconds(0);
+
+            return date;
+        }
+        return null;
+    }
+    return null;
+}
+
+export function timeBetweenTimeStrings(
+    start: string,
+    end: string,
+): number | null {
+    const [startHour, startMinute] = start.split(':');
+    const [endHour, endMinute] = end.split(':');
+
+    if (startHour && startMinute && endHour && endMinute) {
+        let parsedStartHour = parseInt(startHour, 10);
+        const parsedStartMinutes = parseInt(startMinute, 10);
+        let parsedEndHour = parseInt(endHour, 10);
+        const parsedEndMinutes = parseInt(endMinute, 10);
+
+        if (
+            !Number.isNaN(parsedStartHour) &&
+            !Number.isNaN(parsedStartMinutes) &&
+            !Number.isNaN(parsedEndHour) &&
+            !Number.isNaN(parsedEndMinutes)
+        ) {
+            // Account for PM (there are no classes before 8 am or after 8 pm)
+            if (parsedStartHour < 8) parsedStartHour += 12;
+            if (parsedEndHour < 8) parsedEndHour += 12;
+
+            const minutesStart = parsedStartHour * 60 + parsedStartMinutes;
+            const minutesEnd = parsedEndHour * 60 + parsedEndMinutes;
+
+            return minutesEnd - minutesStart;
+        }
+        return null;
+    }
+    return null;
+}
