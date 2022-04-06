@@ -146,7 +146,6 @@ function App() {
                     if (update.isAvailable) {
                         await Updates.fetchUpdateAsync();
                         openDialog(<UpdateDialog close={closeDialog} />);
-                        Updates.reloadAsync();
                     }
                 } catch (e) {
                     // do nothing
