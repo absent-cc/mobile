@@ -1,10 +1,7 @@
 import React from 'react';
-import { StyleSheet, ScrollView, View, Text } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { StyleSheet, Text } from 'react-native';
 import Theme from '../../Theme';
-import Header from '../../components/header/Header';
 import SwitchField from '../../components/input/Switch';
-import HeaderSafearea from '../../components/header/HeaderSafearea';
 import { useSettings } from '../../state/SettingsContext';
 import TextButton from '../../components/button/TextButton';
 import LoadingCard from '../../components/card/LoadingCard';
@@ -13,8 +10,6 @@ import { useAPI } from '../../api/APIContext';
 import WithHeader from '../../components/header/WithHeader';
 
 function AppSettings({ navigation }: { navigation: any }) {
-    const insets = useSafeAreaInsets();
-
     const api = useAPI();
     const settings = useSettings();
 

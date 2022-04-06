@@ -1,12 +1,9 @@
-import { StyleSheet, Text, ScrollView, View, Alert } from 'react-native';
+import { StyleSheet, Text, Alert } from 'react-native';
 import React from 'react';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Theme from '../../Theme';
-import Header from '../../components/header/Header';
 import TextField from '../../components/input/TextField';
 import Dropdown from '../../components/input/Dropdown';
 import TextButton from '../../components/button/TextButton';
-import HeaderSafearea from '../../components/header/HeaderSafearea';
 import { useSettings } from '../../state/SettingsContext';
 import {
     gradeIndexer,
@@ -21,8 +18,6 @@ import LoadingCard from '../../components/card/LoadingCard';
 import WithHeader from '../../components/header/WithHeader';
 
 function GeneralSettings({ navigation }: { navigation: any }) {
-    const insets = useSafeAreaInsets();
-
     const api = useAPI();
     const settings = useSettings();
 
