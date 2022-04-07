@@ -126,6 +126,7 @@ function ScheduleOnboarding({ navigation }: { navigation: any }) {
                 navigation.goBack();
             }}
             ref={scrollViewRef}
+            largeBottom
         >
             <Text style={styles.text}>
                 You're almost done, just a few more steps!

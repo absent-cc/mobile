@@ -158,6 +158,7 @@ function TeacherSettings({ navigation }: { navigation: any }) {
             isLeft
             text="Teachers"
             ref={scrollViewRef}
+            largeBottom
             footer={
                 <View
                     style={[

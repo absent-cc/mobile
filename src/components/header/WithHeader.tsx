@@ -17,6 +17,7 @@ const WithHeader = React.forwardRef(
             isLeft = false,
             refreshControl,
             footer,
+            largeBottom = false,
         }: {
             children: React.ReactNode;
             style?: any;
@@ -26,6 +27,7 @@ const WithHeader = React.forwardRef(
             isLeft?: boolean;
             refreshControl?: React.ReactElement;
             footer?: React.ReactElement;
+            largeBottom?: boolean;
         },
         ref: React.ForwardedRef<ScrollView | null>,
     ) => {
@@ -55,7 +57,14 @@ const WithHeader = React.forwardRef(
                         text={text}
                         isLeft={isLeft}
                     />
-                    <View style={styles.content}>{children}</View>
+                    <View
+                        style={[
+                            styles.content,
+                            largeBottom && styles.contentLargeBottom,
+                        ]}
+                    >
+                        {children}
+                    </View>
                 </ScrollView>
                 {footer}
             </View>
@@ -83,8 +92,11 @@ const styles = StyleSheet.create({
     content: {
         paddingHorizontal: 30,
         paddingTop: 15,
-        paddingBottom: 300,
+        paddingBottom: 50,
         backgroundColor: Theme.backgroundColor,
+    },
+    contentLargeBottom: {
+        paddingBottom: 450,
     },
 });
 

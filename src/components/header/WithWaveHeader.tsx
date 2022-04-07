@@ -20,6 +20,7 @@ const WithWaveHeader = React.forwardRef(
             refreshControl,
             reversed = false,
             footer,
+            largeBottom = false,
         }: {
             children: React.ReactNode;
             style?: any;
@@ -30,6 +31,7 @@ const WithWaveHeader = React.forwardRef(
             refreshControl?: React.ReactElement;
             reversed?: boolean;
             footer?: React.ReactElement;
+            largeBottom?: boolean;
         },
         ref: React.ForwardedRef<ScrollView | null>,
     ) => {
@@ -88,7 +90,14 @@ const WithWaveHeader = React.forwardRef(
                         text={text}
                         isLeft={isLeft}
                     />
-                    <View style={styles.content}>{children}</View>
+                    <View
+                        style={[
+                            styles.content,
+                            largeBottom && styles.contentLargeBottom,
+                        ]}
+                    >
+                        {children}
+                    </View>
                 </ScrollView>
                 {footer}
             </View>
@@ -116,9 +125,12 @@ const styles = StyleSheet.create({
     content: {
         paddingHorizontal: 30,
         paddingTop: 15,
-        paddingBottom: 300,
+        paddingBottom: 50,
         backgroundColor: Theme.backgroundColor,
         flex: 1,
+    },
+    contentLargeBottom: {
+        paddingBottom: 450,
     },
 });
 
