@@ -19,6 +19,7 @@ const WithWaveHeader = React.forwardRef(
             isLeft = false,
             refreshControl,
             reversed = false,
+            footer,
         }: {
             children: React.ReactNode;
             style?: any;
@@ -28,6 +29,7 @@ const WithWaveHeader = React.forwardRef(
             isLeft?: boolean;
             refreshControl?: React.ReactElement;
             reversed?: boolean;
+            footer?: React.ReactElement;
         },
         ref: React.ForwardedRef<ScrollView | null>,
     ) => {
@@ -88,6 +90,7 @@ const WithWaveHeader = React.forwardRef(
                     />
                     <View style={styles.content}>{children}</View>
                 </ScrollView>
+                {footer}
             </View>
         );
     },
