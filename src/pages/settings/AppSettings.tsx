@@ -1,5 +1,6 @@
 import React from 'react';
-import { Alert, StyleSheet, Text } from 'react-native';
+import { Alert, StyleSheet, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Theme from '../../Theme';
 import SwitchField from '../../components/input/Switch';
 import { useSettings } from '../../state/SettingsContext';
@@ -10,6 +11,8 @@ import { useAPI } from '../../api/APIContext';
 import WithHeader from '../../components/header/WithHeader';
 
 function AppSettings({ navigation }: { navigation: any }) {
+    const insets = useSafeAreaInsets();
+
     const api = useAPI();
     const settings = useSettings();
 
@@ -25,6 +28,7 @@ function AppSettings({ navigation }: { navigation: any }) {
         if (saving) {
             api.saveAppSettings(appSettings.current)
                 .then(() => {
+                    hasUnsavedChanges.current = false;
                     navigate('Settings');
                 })
                 .catch(() => {
@@ -40,32 +44,30 @@ function AppSettings({ navigation }: { navigation: any }) {
     //     };
     // });
 
+    // prevent leaving without saving
+    const hasUnsavedChanges = React.useRef(false);
     React.useEffect(
         () =>
             navigation.addListener('beforeRemove', (e: any) => {
-                // if (!hasUnsavedChanges) {
-                //   // If we don't have unsaved changes, then we don't need to do anything
-                //   return;
-                // }
+                if (!hasUnsavedChanges.current) {
+                    return;
+                }
 
-                // Prevent default behavior of leaving the screen
+                // Prevent leaving screen
                 e.preventDefault();
 
-                // Prompt the user before leaving the screen
                 Alert.alert(
-                    'Discard changes?',
-                    'You have unsaved changes. Are you sure to discard them and leave the screen?',
+                    'Unsaved changes',
+                    'You have unsaved changes. Are you sure you want to discard them?',
                     [
                         {
-                            text: "Don't leave",
+                            text: 'Stay',
                             style: 'cancel',
                             onPress: () => undefined,
                         },
                         {
                             text: 'Discard',
                             style: 'destructive',
-                            // If the user confirmed, then we dispatch the action we blocked earlier
-                            // This will continue the action that had triggered the removal of the screen
                             onPress: () => navigation.dispatch(e.data.action),
                         },
                     ],
@@ -83,6 +85,36 @@ function AppSettings({ navigation }: { navigation: any }) {
             }}
             isLeft
             text="App Options"
+            footer={
+                <View
+                    style={[
+                        styles.savePanel,
+                        { paddingBottom: insets.bottom + 20 },
+                    ]}
+                >
+                    {saving ? (
+                        <LoadingCard style={[styles.saveValidation]}>
+                            Saving...
+                        </LoadingCard>
+                    ) : null}
+                    {saveError ? (
+                        <ErrorCard style={[styles.saveValidation]}>
+                            There was a problem while saving your information.
+                            Please try again.
+                        </ErrorCard>
+                    ) : null}
+                    <TextButton
+                        style={[{ zIndex: 1 }]}
+                        iconName="save"
+                        onPress={() => {
+                            setSaving(true);
+                        }}
+                        isFilled
+                    >
+                        Save
+                    </TextButton>
+                </View>
+            }
         >
             <Text style={styles.note}>Edit app options.</Text>
             <SwitchField
@@ -93,6 +125,7 @@ function AppSettings({ navigation }: { navigation: any }) {
                     //     ...oldSettings,
                     //     showFreeBlocks: newValue,
                     // }));
+                    hasUnsavedChanges.current = true;
                     appSettings.current.showFreeBlocks = newValue;
                 }}
                 defaultValue={appSettings.current.showFreeBlocks}
@@ -106,6 +139,7 @@ function AppSettings({ navigation }: { navigation: any }) {
                     //     ...oldSettings,
                     //     sendNotifications: newValue,
                     // }));
+                    hasUnsavedChanges.current = true;
                     appSettings.current.sendNotifications = newValue;
                 }}
                 defaultValue={appSettings.current.sendNotifications}
@@ -119,30 +153,11 @@ function AppSettings({ navigation }: { navigation: any }) {
                     //     ...oldSettings,
                     //     sendNoAbsenceNotification: newValue,
                     // }));
+                    hasUnsavedChanges.current = true;
                     appSettings.current.sendNoAbsenceNotification = newValue;
                 }}
                 defaultValue={appSettings.current.sendNoAbsenceNotification}
             />
-
-            {saving ? (
-                <LoadingCard style={[styles.validation]}>Saving...</LoadingCard>
-            ) : null}
-            {saveError ? (
-                <ErrorCard style={[styles.validation]}>
-                    There was a problem while saving your information. Please
-                    try again.
-                </ErrorCard>
-            ) : null}
-            <TextButton
-                style={[{ zIndex: 1 }, styles.save]}
-                iconName="save"
-                onPress={() => {
-                    setSaving(true);
-                }}
-                isFilled
-            >
-                Save
-            </TextButton>
         </WithHeader>
     );
 }
@@ -168,6 +183,18 @@ const styles = StyleSheet.create({
     },
     validation: {
         marginVertical: 20,
+    },
+    saveValidation: {
+        marginBottom: 20,
+    },
+    savePanel: {
+        position: 'absolute',
+        bottom: 0,
+        width: '100%',
+        backgroundColor: Theme.backgroundColor,
+        padding: 20,
+        borderTopWidth: 2,
+        borderColor: Theme.lightForeground,
     },
 });
 

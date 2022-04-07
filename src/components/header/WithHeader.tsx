@@ -16,6 +16,7 @@ const WithHeader = React.forwardRef(
             text,
             isLeft = false,
             refreshControl,
+            footer,
         }: {
             children: React.ReactNode;
             style?: any;
@@ -24,6 +25,7 @@ const WithHeader = React.forwardRef(
             text: string;
             isLeft?: boolean;
             refreshControl?: React.ReactElement;
+            footer?: React.ReactElement;
         },
         ref: React.ForwardedRef<ScrollView | null>,
     ) => {
@@ -55,6 +57,7 @@ const WithHeader = React.forwardRef(
                     />
                     <View style={styles.content}>{children}</View>
                 </ScrollView>
+                {footer}
             </View>
         );
     },

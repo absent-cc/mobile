@@ -1,5 +1,6 @@
-import { StyleSheet, Text, Alert } from 'react-native';
+import { StyleSheet, Text, Alert, View } from 'react-native';
 import React from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Theme from '../../Theme';
 import TextField from '../../components/input/TextField';
 import Dropdown from '../../components/input/Dropdown';
@@ -18,6 +19,8 @@ import LoadingCard from '../../components/card/LoadingCard';
 import WithHeader from '../../components/header/WithHeader';
 
 function GeneralSettings({ navigation }: { navigation: any }) {
+    const insets = useSafeAreaInsets();
+
     const api = useAPI();
     const settings = useSettings();
 
@@ -58,6 +61,7 @@ function GeneralSettings({ navigation }: { navigation: any }) {
         if (saving) {
             api.saveUserSettings(userSettings.current)
                 .then(() => {
+                    hasUnsavedChanges.current = false;
                     navigate('Settings');
                 })
                 .catch(() => {
@@ -94,6 +98,38 @@ function GeneralSettings({ navigation }: { navigation: any }) {
         );
     };
 
+    // prevent leaving without saving
+    const hasUnsavedChanges = React.useRef(false);
+    React.useEffect(
+        () =>
+            navigation.addListener('beforeRemove', (e: any) => {
+                if (!hasUnsavedChanges.current) {
+                    return;
+                }
+
+                // Prevent leaving screen
+                e.preventDefault();
+
+                Alert.alert(
+                    'Unsaved changes',
+                    'You have unsaved changes. Are you sure you want to discard them?',
+                    [
+                        {
+                            text: 'Stay',
+                            style: 'cancel',
+                            onPress: () => undefined,
+                        },
+                        {
+                            text: 'Discard',
+                            style: 'destructive',
+                            onPress: () => navigation.dispatch(e.data.action),
+                        },
+                    ],
+                );
+            }),
+        [navigation],
+    );
+
     return (
         <WithHeader
             style={styles.pageView}
@@ -103,12 +139,50 @@ function GeneralSettings({ navigation }: { navigation: any }) {
             }}
             isLeft
             text="Account Settings"
+            footer={
+                <View
+                    style={[
+                        styles.savePanel,
+                        { paddingBottom: insets.bottom + 20 },
+                    ]}
+                >
+                    {validationList.existsInvalid ? (
+                        <ErrorCard style={[styles.saveValidation]}>
+                            Please check the info you entered and try again.
+                        </ErrorCard>
+                    ) : null}
+                    {saving ? (
+                        <LoadingCard style={[styles.saveValidation]}>
+                            Saving...
+                        </LoadingCard>
+                    ) : null}
+                    {saveError ? (
+                        <ErrorCard style={[styles.saveValidation]}>
+                            There was a problem while saving your information.
+                            Please try again.
+                        </ErrorCard>
+                    ) : null}
+                    <TextButton
+                        style={[{ zIndex: 1 }]}
+                        iconName="save"
+                        onPress={() => {
+                            if (validate()) {
+                                setSaving(true);
+                            }
+                        }}
+                        isFilled
+                    >
+                        Save
+                    </TextButton>
+                </View>
+            }
         >
             <Text style={styles.note}>Edit your account details.</Text>
             <TextField
                 label="What's your name?"
                 onChange={(newValue: string) => {
                     userSettings.current.name = newValue;
+                    hasUnsavedChanges.current = true;
 
                     // once it has already been validated once, redo on subsequent inputs
                     if (validationList.existsInvalid) validate();
@@ -126,6 +200,7 @@ function GeneralSettings({ navigation }: { navigation: any }) {
                 label="What grade are you in?"
                 onChange={(newValue: number) => {
                     userSettings.current.grade = GradeList[newValue];
+                    hasUnsavedChanges.current = true;
 
                     // once it has already been validated once, redo on subsequent inputs
                     if (validationList.existsInvalid) validate();
@@ -144,6 +219,7 @@ function GeneralSettings({ navigation }: { navigation: any }) {
                 label="Which school do you go to?"
                 onChange={(newValue: number) => {
                     userSettings.current.school = SchoolList[newValue];
+                    hasUnsavedChanges.current = true;
 
                     // once it has already been validated once, redo on subsequent inputs
                     if (validationList.existsInvalid) validate();
@@ -159,34 +235,8 @@ function GeneralSettings({ navigation }: { navigation: any }) {
                 </ErrorCard>
             ) : null}
 
-            {validationList.existsInvalid ? (
-                <ErrorCard style={[styles.validation]}>
-                    Please check the info you entered and try again.
-                </ErrorCard>
-            ) : null}
-            {saving ? (
-                <LoadingCard style={[styles.validation]}>Saving...</LoadingCard>
-            ) : null}
-            {saveError ? (
-                <ErrorCard style={[styles.validation]}>
-                    There was a problem while saving your information. Please
-                    try again.
-                </ErrorCard>
-            ) : null}
-            <TextButton
-                style={[{ zIndex: 1 }, styles.save]}
-                iconName="save"
-                onPress={() => {
-                    if (validate()) {
-                        setSaving(true);
-                    }
-                }}
-                isFilled
-            >
-                Save
-            </TextButton>
-
             <Divider />
+
             <Text style={styles.header}>Delete Your Account</Text>
             <Text style={styles.note}>
                 Delete your account. We'll clear your data from our servers.
@@ -232,6 +282,18 @@ const styles = StyleSheet.create({
     },
     delete: {
         marginTop: 20,
+    },
+    saveValidation: {
+        marginBottom: 20,
+    },
+    savePanel: {
+        position: 'absolute',
+        bottom: 0,
+        width: '100%',
+        backgroundColor: Theme.backgroundColor,
+        padding: 20,
+        borderTopWidth: 2,
+        borderColor: Theme.lightForeground,
     },
 });
 

@@ -26,7 +26,7 @@ import {
 } from './APITypes';
 
 const baseURL = Constants.manifest?.extra?.isDevelopment
-    ? 'https://dev.api.absent.cc/v1'
+    ? 'https://api.absent.cc/v1'
     : 'https://api.absent.cc/v1';
 
 const headers = {

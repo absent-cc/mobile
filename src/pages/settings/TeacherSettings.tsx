@@ -1,5 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, ScrollView } from 'react-native';
+import { StyleSheet, Text, ScrollView, Alert, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Theme from '../../Theme';
 import TextButton from '../../components/button/TextButton';
 import ClassInput from '../../components/ClassInput';
@@ -9,11 +10,12 @@ import { useSettings } from '../../state/SettingsContext';
 import { useAPI } from '../../api/APIContext';
 import { BlockIterator } from '../../Utils';
 import ErrorCard from '../../components/card/ErrorCard';
-import Divider from '../../components/Divider';
 import LoadingCard from '../../components/card/LoadingCard';
 import WithHeader from '../../components/header/WithHeader';
 
 function TeacherSettings({ navigation }: { navigation: any }) {
+    const insets = useSafeAreaInsets();
+
     const api = useAPI();
     const settings = useSettings();
 
@@ -72,6 +74,13 @@ function TeacherSettings({ navigation }: { navigation: any }) {
     };
 
     const updateBlock = (block: Block, newSettings: string[]) => {
+        const currentSettings = teacherSettings.current[block];
+        if (
+            !currentSettings.every((val, index) => val === newSettings[index])
+        ) {
+            hasUnsavedChanges.current = true;
+        }
+
         teacherSettings.current[block] = newSettings;
 
         // when the error gets fixed, the error goes away
@@ -95,6 +104,7 @@ function TeacherSettings({ navigation }: { navigation: any }) {
         if (saving) {
             api.saveSchedule(teacherSettings.current)
                 .then(() => {
+                    hasUnsavedChanges.current = false;
                     navigate('Settings');
                 })
                 .catch(() => {
@@ -106,6 +116,38 @@ function TeacherSettings({ navigation }: { navigation: any }) {
     // scroll to text inputs
     const scrollViewRef = React.useRef<ScrollView | null>(null);
 
+    // prevent leaving without saving
+    const hasUnsavedChanges = React.useRef(false);
+    React.useEffect(
+        () =>
+            navigation.addListener('beforeRemove', (e: any) => {
+                if (!hasUnsavedChanges.current) {
+                    return;
+                }
+
+                // Prevent leaving screen
+                e.preventDefault();
+
+                Alert.alert(
+                    'Unsaved changes',
+                    'You have unsaved changes. Are you sure you want to discard them?',
+                    [
+                        {
+                            text: 'Stay',
+                            style: 'cancel',
+                            onPress: () => undefined,
+                        },
+                        {
+                            text: 'Discard',
+                            style: 'destructive',
+                            onPress: () => navigation.dispatch(e.data.action),
+                        },
+                    ],
+                );
+            }),
+        [navigation],
+    );
+
     return (
         <WithHeader
             style={styles.pageView}
@@ -116,6 +158,43 @@ function TeacherSettings({ navigation }: { navigation: any }) {
             isLeft
             text="Teachers"
             ref={scrollViewRef}
+            footer={
+                <View
+                    style={[
+                        styles.savePanel,
+                        { paddingBottom: insets.bottom + 20 },
+                    ]}
+                >
+                    {validationList.existsInvalid ? (
+                        <ErrorCard style={[styles.saveValidation]}>
+                            Please check the info you entered and try again.
+                        </ErrorCard>
+                    ) : null}
+                    {saving ? (
+                        <LoadingCard style={[styles.saveValidation]}>
+                            Saving...
+                        </LoadingCard>
+                    ) : null}
+                    {saveError ? (
+                        <ErrorCard style={[styles.saveValidation]}>
+                            There was a problem while saving your information.
+                            Please try again.
+                        </ErrorCard>
+                    ) : null}
+                    <TextButton
+                        style={[{ zIndex: 1 }]}
+                        iconName="save"
+                        onPress={() => {
+                            if (validate()) {
+                                setSaving(true);
+                            }
+                        }}
+                        isFilled
+                    >
+                        Save
+                    </TextButton>
+                </View>
+            }
         >
             <Text style={styles.note}>
                 Tap on each block to edit up your classes.
@@ -204,34 +283,6 @@ function TeacherSettings({ navigation }: { navigation: any }) {
                 defaultValue={teacherSettings.current.EXTRA}
                 scrollRef={scrollViewRef}
             />
-
-            <Divider />
-            {validationList.existsInvalid ? (
-                <ErrorCard style={[styles.validation]}>
-                    Please check the info you entered and try again.
-                </ErrorCard>
-            ) : null}
-            {saving ? (
-                <LoadingCard style={[styles.validation]}>Saving...</LoadingCard>
-            ) : null}
-            {saveError ? (
-                <ErrorCard style={[styles.validation]}>
-                    There was a problem while saving your information. Please
-                    try again.
-                </ErrorCard>
-            ) : null}
-            <TextButton
-                style={[{ zIndex: 1 }]}
-                iconName="save"
-                onPress={() => {
-                    if (validate()) {
-                        setSaving(true);
-                    }
-                }}
-                isFilled
-            >
-                Save
-            </TextButton>
         </WithHeader>
     );
 }
@@ -246,7 +297,7 @@ const styles = StyleSheet.create({
         color: Theme.foregroundColor,
         fontFamily: Theme.regularFont,
         fontSize: 18,
-        marginBottom: 16,
+        marginBottom: 20,
     },
     header: {
         color: Theme.foregroundColor,
@@ -263,6 +314,18 @@ const styles = StyleSheet.create({
     },
     validation: {
         marginVertical: 20,
+    },
+    saveValidation: {
+        marginBottom: 20,
+    },
+    savePanel: {
+        position: 'absolute',
+        bottom: 0,
+        width: '100%',
+        backgroundColor: Theme.backgroundColor,
+        padding: 20,
+        borderTopWidth: 2,
+        borderColor: Theme.lightForeground,
     },
 });
 
