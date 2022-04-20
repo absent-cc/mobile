@@ -177,9 +177,9 @@ export function timeBetweenTimeStrings(
     const [endHour, endMinute] = end.split(':');
 
     if (startHour && startMinute && endHour && endMinute) {
-        let parsedStartHour = parseInt(startHour, 10);
+        const parsedStartHour = parseInt(startHour, 10);
         const parsedStartMinutes = parseInt(startMinute, 10);
-        let parsedEndHour = parseInt(endHour, 10);
+        const parsedEndHour = parseInt(endHour, 10);
         const parsedEndMinutes = parseInt(endMinute, 10);
 
         if (
@@ -188,9 +188,9 @@ export function timeBetweenTimeStrings(
             !Number.isNaN(parsedEndHour) &&
             !Number.isNaN(parsedEndMinutes)
         ) {
-            // Account for PM (there are no classes before 8 am or after 8 pm)
-            if (parsedStartHour < 8) parsedStartHour += 12;
-            if (parsedEndHour < 8) parsedEndHour += 12;
+            // // Account for PM (there are no classes before 8 am or after 8 pm)
+            // if (parsedStartHour < 8) parsedStartHour += 12;
+            // if (parsedEndHour < 8) parsedEndHour += 12;
 
             const minutesStart = parsedStartHour * 60 + parsedStartMinutes;
             const minutesEnd = parsedEndHour * 60 + parsedEndMinutes;
@@ -200,4 +200,65 @@ export function timeBetweenTimeStrings(
         return null;
     }
     return null;
+}
+
+export function sortTimeStrings(
+    timeStrings: string[],
+    ascending: boolean,
+): string[] {
+    return timeStrings.sort((a, b) => {
+        // check for no undefineds
+        // nulls sort after anything else
+        if (a === undefined) {
+            return 1;
+        }
+        if (b === undefined) {
+            return -1;
+        }
+
+        const timeDiffA = timeBetweenTimeStrings('00:00', a);
+        const timeDiffB = timeBetweenTimeStrings('00:00', b);
+
+        // equal items sort equally
+        if (timeDiffA === timeDiffB) {
+            return 0;
+        }
+        // nulls sort after anything else
+        if (timeDiffA === null) {
+            return 1;
+        }
+        if (timeDiffB === null) {
+            return -1;
+        }
+
+        if (ascending) {
+            return timeDiffA > timeDiffB ? 1 : -1;
+        }
+
+        // descending
+        return timeDiffA < timeDiffB ? 1 : -1;
+    });
+}
+
+export function toPrettyTime(uglyTime: string): string {
+    const [hour, minute] = uglyTime.split(':');
+
+    if (hour && minute) {
+        const parsedHour = parseInt(hour, 10);
+        const parsedMinute = parseInt(minute, 10);
+
+        if (!Number.isNaN(parsedHour) && !Number.isNaN(parsedMinute)) {
+            return `${parsedHour > 12 ? parsedHour - 12 : parsedHour}:${
+                parsedMinute < 10 ? `0${parsedMinute}` : parsedMinute
+            }`;
+        }
+        return uglyTime;
+    }
+
+    // on errors, just return the original one
+    return uglyTime;
+    // return null;
+
+    // const [hour, minute] = uglyTime.split(':');
+    // return `${parseInt(hour, 10)}:${minute}`;
 }
