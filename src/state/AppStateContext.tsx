@@ -1,11 +1,18 @@
 import React from 'react';
-import { AbsenceList, Block, WeekSchedule } from '../api/APITypes';
+import {
+    AbsenceList,
+    Block,
+    TeacherBlock,
+    WeekSchedule,
+} from '../api/APITypes';
 import { formatISODate, isSameDay } from '../DateWordUtils';
+import { extractDayBlocks, extractTeacherBlocks } from '../Utils';
 
 export interface AppStateType {
     serverLoaded: boolean;
     absences: AbsenceList;
-    blocksToday: Block[];
+    teacherBlocksToday: TeacherBlock[];
+    dayBlocksToday: Block[];
     lastUpdateTime: Date;
     tallestWaveHeader: number;
     weekSchedule: WeekSchedule;
@@ -27,7 +34,8 @@ export interface AppStateContextType {
 export const defaultState: AppStateType = {
     serverLoaded: false,
     absences: [],
-    blocksToday: [],
+    teacherBlocksToday: [],
+    dayBlocksToday: [],
     lastUpdateTime: new Date(0),
     tallestWaveHeader: 250,
     dateToday: formatISODate(new Date()),
@@ -52,7 +60,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     React.useEffect(() => {
         // debug mode
         const loopStartTime = Date.now();
-        const virtualStartTime = new Date(2022, 3, 20, 23, 59, 45).getTime();
+        const virtualStartTime = new Date(2022, 3, 13, 23, 59, 45).getTime();
 
         const update = () => {
             setAppState((oldAppState) => {
@@ -83,12 +91,6 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
                     stateChanges.needsUpdate = true;
                 }
 
-                // parse blocks today
-                stateChanges.blocksToday =
-                    stateChanges.weekSchedule[
-                        stateChanges.dateToday
-                    ]?.schedule.map((dayBlock) => dayBlock.block) ?? [];
-
                 return stateChanges;
             });
         };
@@ -100,6 +102,18 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
 
         return () => clearInterval(interval);
     }, []);
+
+    React.useEffect(() => {
+        setAppState((oldAppState) => ({
+            ...oldAppState,
+            teacherBlocksToday: extractTeacherBlocks(
+                oldAppState.weekSchedule[oldAppState.dateToday],
+            ),
+            dayBlocksToday: extractDayBlocks(
+                oldAppState.weekSchedule[oldAppState.dateToday],
+            ),
+        }));
+    }, [appState.weekSchedule]);
 
     // Memoized just in case
     const resetAppState = React.useCallback(() => {

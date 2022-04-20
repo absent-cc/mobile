@@ -4,22 +4,24 @@ import {
     Block,
     Schedule,
     Teacher,
+    TeacherBlock,
 } from './api/APITypes';
+import { isTeacherBlock } from './Utils';
 
 export type AbsenceItem = {
-    block: Block;
+    block: TeacherBlock;
     isFree: boolean;
     teacher?: AbsentTeacher;
 };
 
 export default (
     schedule: Schedule,
-    blocksToday: Block[],
+    teacherBlocksToday: TeacherBlock[],
     absences: AbsenceList,
     includeFrees: boolean,
 ): { teachersAbsent: AbsenceItem[]; extraAbsent: AbsenceItem[] } => {
     const result: AbsenceItem[] = [];
-    blocksToday.forEach((block) => {
+    teacherBlocksToday.forEach((block) => {
         const teachers: Teacher[] = schedule[block];
         // add free blocks
         if (teachers.length === 0) {
@@ -55,7 +57,7 @@ export default (
             );
             if (absentTeacher) {
                 extras.push({
-                    block: Block.EXTRA,
+                    block: TeacherBlock.EXTRA,
                     isFree: false,
                     teacher: absentTeacher,
                 });

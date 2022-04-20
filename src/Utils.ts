@@ -1,26 +1,29 @@
 import {
     Block,
+    DaySchedule,
     EditingSchedule,
     Grade,
     Schedule,
     SchoolName,
+    TeacherBlock,
     UserSettings,
 } from './api/APITypes';
 import { AppSettings } from './state/SettingsContext';
 
-export const BlockIterator: Block[] = [
-    Block.A,
-    Block.B,
-    Block.C,
-    Block.D,
-    Block.E,
-    Block.F,
-    Block.G,
-    Block.ADVISORY,
-    Block.EXTRA,
+export const BlockIterator: TeacherBlock[] = [
+    TeacherBlock.A,
+    TeacherBlock.B,
+    TeacherBlock.C,
+    TeacherBlock.D,
+    TeacherBlock.E,
+    TeacherBlock.F,
+    TeacherBlock.G,
+    TeacherBlock.ADVISORY,
+    TeacherBlock.EXTRA,
 ];
 
-export const BlockMapping: Record<Block, string> = {
+// full block names used in headers for settings
+export const TeacherBlockFullNames: Record<TeacherBlock, string> = {
     A: 'A Block',
     B: 'B Block',
     C: 'C Block',
@@ -32,6 +35,7 @@ export const BlockMapping: Record<Block, string> = {
     EXTRA: 'Extra Teachers',
 };
 
+// used in block cards
 export const ShortBlocks: Record<Block, string> = {
     A: 'A',
     B: 'B',
@@ -41,9 +45,12 @@ export const ShortBlocks: Record<Block, string> = {
     F: 'F',
     G: 'G',
     ADVISORY: 'ADV',
-    EXTRA: 'EXTRA',
+    WIN: 'WIN',
+    LION: 'LI',
+    TIGER: 'TIG',
 };
 
+// used in the "the blocks today are" on the home page
 export const ShortBlockFullNames: Record<Block, string> = {
     A: 'A',
     B: 'B',
@@ -53,7 +60,24 @@ export const ShortBlockFullNames: Record<Block, string> = {
     F: 'F',
     G: 'G',
     ADVISORY: 'Advisory',
-    EXTRA: 'Extra',
+    WIN: 'WIN',
+    LION: 'Lion',
+    TIGER: 'Tiger',
+};
+
+// day block full names
+export const DayBlockFullNames: Record<Block, string> = {
+    A: 'A Block',
+    B: 'B Block',
+    C: 'C Block',
+    D: 'D Block',
+    E: 'E Block',
+    F: 'F Block',
+    G: 'G Block',
+    ADVISORY: 'Advisory',
+    WIN: 'WIN',
+    LION: 'Lion',
+    TIGER: 'Tiger',
 };
 
 export const EmptySchedule: Schedule = {
@@ -145,7 +169,7 @@ export const strToSchool = (str: string): SchoolName => {
 };
 
 export const apiResponseToSchedule = (
-    response: Record<Block, any[] | null>,
+    response: Record<TeacherBlock, any[] | null>,
 ): Schedule => {
     const schedule: Partial<Schedule> = {};
     BlockIterator.forEach((block) => {
@@ -180,4 +204,31 @@ export const joinListWithCommas = (list: any[]) => {
     }
 
     return result;
+};
+
+export const isTeacherBlock = (block: Block): boolean => {
+    return block !== Block.WIN && block !== Block.LION && block !== Block.TIGER;
+};
+
+export const extractTeacherBlocks = (
+    schedule: DaySchedule | undefined,
+): TeacherBlock[] => {
+    if (!schedule) return [];
+
+    const result: TeacherBlock[] = [];
+    schedule.schedule.forEach(({ block }) => {
+        if (isTeacherBlock(block)) {
+            result.push(block as unknown as TeacherBlock);
+        }
+    });
+
+    return result;
+};
+
+export const extractDayBlocks = (
+    schedule: DaySchedule | undefined,
+): Block[] => {
+    if (!schedule) return [];
+
+    return schedule.schedule.map(({ block }) => block);
 };

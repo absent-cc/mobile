@@ -19,10 +19,12 @@ import {
 import {
     AbsenceList,
     Block,
+    DaySchedule,
     EditingSchedule,
     Schedule,
     SchoolName,
     UserSettings,
+    WeekSchedule,
 } from './APITypes';
 
 const baseURL = Constants.manifest?.extra?.isDevelopment
@@ -295,6 +297,66 @@ export async function getClassesToday(
     );
 
     return response.classes;
+}
+
+export async function fetchWeekSchedule(
+    dateStr: string,
+    school: SchoolName,
+    token: string,
+): Promise<WeekSchedule> {
+    // const responseStr = await fetch(
+    //     url(
+    // `/teachers/classes?${new URLSearchParams({
+    //     date: dateStr,
+    // }).toString()}`,
+    //     ),
+    //     {
+    //         method: 'GET',
+    //         headers: getHeaders(token),
+    //     },
+    // );
+    // if (!responseStr.ok) {
+    //     throw new Error(
+    //         `getClassesToday failed with error ${
+    //             responseStr.status
+    //         }: ${await responseStr.text()}`,
+    //     );
+    // }
+
+    // const response = await responseStr.json();
+
+    // return response.classes;
+    const response = await getFromAPI(
+        {
+            method: 'GET',
+            path: `/info/schedule/week?${new URLSearchParams({
+                date: dateStr,
+            }).toString()}`,
+            token,
+        },
+        'Fetch Week Schedule',
+    );
+
+    const result: WeekSchedule = {};
+
+    const convertSpecialBlocks = (block: string) => {
+        if (block === 'EXTRA')
+            return school === SchoolName.NSHS ? Block.LION : Block.TIGER;
+
+        return block as Block;
+    };
+
+    response.forEach((day: DaySchedule) => {
+        result[day.date] = {
+            ...day,
+            schedule: day.schedule.map((dayBlock) => ({
+                ...dayBlock,
+                block: convertSpecialBlocks(dayBlock.block),
+            })),
+        };
+    });
+
+    return result;
 }
 
 export async function saveSettings(

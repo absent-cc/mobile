@@ -5,7 +5,7 @@ import { AbsenceItem } from '../../AbsenceCalculator';
 import { Block } from '../../api/APITypes';
 import { toPrettyTime } from '../../DateWordUtils';
 import Theme from '../../Theme';
-import { BlockMapping, ShortBlocks } from '../../Utils';
+import { TeacherBlockFullNames, ShortBlocks } from '../../Utils';
 
 function PassingTimeCard({
     style,

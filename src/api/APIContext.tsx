@@ -9,6 +9,7 @@ import {
     EditingSchedule,
     Schedule,
     UserSettings,
+    WeekSchedule,
 } from './APITypes';
 import { formatISODate } from '../DateWordUtils';
 import {
@@ -46,6 +47,7 @@ export interface APIContextType {
     login: (accessToken: string) => Promise<void>;
     searchTeachers: (searchString: string) => Promise<string[] | null>;
     getClassesToday: () => Promise<Block[] | null>;
+    fetchWeekSchedule: () => Promise<WeekSchedule | null>;
     isRealTeacher: (partialName: string) => Promise<{
         isReal: boolean;
         similar: string[];
@@ -72,6 +74,7 @@ const APIContext = React.createContext<APIContextType>({
     login: async () => undefined,
     searchTeachers: async () => null,
     getClassesToday: async () => null,
+    fetchWeekSchedule: async () => null,
     isRealTeacher: async () => null,
     saveSettings: async () => false,
     saveSchedule: async () => undefined,
@@ -580,6 +583,32 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
         [verifyToken, dateStr, parseError],
     );
 
+    const fetchWeekSchedule = React.useCallback(
+        async (hasRetried = false): Promise<WeekSchedule | null> => {
+            const token = await verifyToken(hasRetried);
+            if (token === null) return null;
+
+            try {
+                return await APIMethods.fetchWeekSchedule(
+                    dateStr,
+                    schoolName,
+                    token,
+                );
+            } catch (err: any) {
+                const shouldRetry = parseError(
+                    err,
+                    hasRetried,
+                    'Fetch Week Schedule',
+                );
+                if (shouldRetry) {
+                    return fetchWeekSchedule(true);
+                }
+                return null;
+            }
+        },
+        [verifyToken, dateStr, schoolName, parseError],
+    );
+
     // (step 2 **) only if the user hasn't logged in before
     //             this runs once a user signs in through google
     const login = React.useCallback(
@@ -656,16 +685,17 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             await Promise.all([
                 fetchSettings(),
                 fetchAbsences(),
-                getClassesToday(),
-            ]).then(([newSettings, absences, classesToday]) => {
+                fetchWeekSchedule(),
+            ]).then(([newSettings, absences, weekSchedule]) => {
                 setAppState((oldAppState) => {
                     const stateChanges = {
                         ...oldAppState,
                         needsUpdate: false,
                     };
+                    console.log(weekSchedule);
                     if (absences !== null) stateChanges.absences = absences;
-                    if (classesToday !== null)
-                        stateChanges.blocksToday = classesToday;
+                    if (weekSchedule !== null)
+                        stateChanges.weekSchedule = weekSchedule;
                     return stateChanges;
                 });
                 setSettings((oldSettings) => {
@@ -686,7 +716,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
     }, [
         fetchAbsences,
         fetchSettings,
-        getClassesToday,
+        fetchWeekSchedule,
         parseError,
         setAppState,
         setSettings,
@@ -818,8 +848,8 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             !appState.serverLoaded &&
             apiSettings.isVerified
         ) {
-            Promise.all([fetchAbsences(), getClassesToday()])
-                .then(([absences, classesToday]) => {
+            Promise.all([fetchAbsences(), fetchWeekSchedule()])
+                .then(([absences, weekSchedule]) => {
                     setAppState((oldAppState) => {
                         const stateChanges = {
                             ...oldAppState,
@@ -827,8 +857,8 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                             serverLoaded: true,
                         };
                         if (absences !== null) stateChanges.absences = absences;
-                        if (classesToday !== null)
-                            stateChanges.blocksToday = classesToday;
+                        if (weekSchedule !== null)
+                            stateChanges.weekSchedule = weekSchedule;
                         return stateChanges;
                     });
                 })
@@ -838,14 +868,13 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 });
         }
     }, [
+        apiServerLoaded,
         apiSettings.isLoggedIn,
         apiSettings.isVerified,
         appState.serverLoaded,
         fetchAbsences,
-        fetchSettings,
-        getClassesToday,
+        fetchWeekSchedule,
         parseError,
-        apiServerLoaded,
         setAppState,
         settings.serverLoaded,
         settings.userOnboarded,
@@ -890,6 +919,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             saveFCMToken,
             deleteAccount,
             refreshData,
+            fetchWeekSchedule,
         }),
         [
             apiSettings.ready,
@@ -908,6 +938,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             saveFCMToken,
             deleteAccount,
             refreshData,
+            fetchWeekSchedule,
         ],
     );
 

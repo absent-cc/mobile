@@ -2,9 +2,13 @@ import { Feather } from '@expo/vector-icons';
 import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { AbsenceItem } from '../../AbsenceCalculator';
-import { Block } from '../../api/APITypes';
+import { Block, TeacherBlock } from '../../api/APITypes';
 import Theme from '../../Theme';
-import { BlockMapping, ShortBlocks } from '../../Utils';
+import {
+    TeacherBlockFullNames,
+    ShortBlocks,
+    DayBlockFullNames,
+} from '../../Utils';
 
 function BlockCard({
     style,
@@ -39,7 +43,7 @@ function BlockCard({
                 </View>
                 <View style={styles.content}>
                     <Text style={[styles.name, isActive && styles.activeName]}>
-                        {BlockMapping[block]}
+                        {DayBlockFullNames[block]}
                     </Text>
                     <Text style={[styles.time, isActive && styles.activeTime]}>
                         9:00 - 10:15

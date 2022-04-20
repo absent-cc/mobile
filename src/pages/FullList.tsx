@@ -10,7 +10,7 @@ function FullList() {
     const { value: appState } = useAppState();
     let cards;
 
-    if (appState.blocksToday && appState.blocksToday.length > 0) {
+    if (appState.dayBlocksToday && appState.dayBlocksToday.length > 0) {
         cards = appState.absences
             ?.sort(
                 // sort alphabetically

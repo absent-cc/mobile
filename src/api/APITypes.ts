@@ -12,7 +12,7 @@ export enum Grade {
     G12 = 12,
 }
 
-export enum Block {
+export enum TeacherBlock {
     A = 'A',
     B = 'B',
     C = 'C',
@@ -24,6 +24,20 @@ export enum Block {
     EXTRA = 'EXTRA',
 }
 
+export enum Block {
+    A = 'A',
+    B = 'B',
+    C = 'C',
+    D = 'D',
+    E = 'E',
+    F = 'F',
+    G = 'G',
+    ADVISORY = 'ADVISORY',
+    WIN = 'WIN',
+    LION = 'LION',
+    TIGER = 'TIGER',
+}
+
 export type Teacher = {
     tid: string;
     name: string;
@@ -31,11 +45,11 @@ export type Teacher = {
 };
 
 export type Schedule = {
-    [key in Block]: Teacher[];
+    [key in TeacherBlock]: Teacher[];
 };
 
 export type EditingSchedule = {
-    [key in Block]: string[];
+    [key in TeacherBlock]: string[];
 };
 
 export type UserSettings = {

@@ -52,7 +52,7 @@ function Home({ navigation }: { navigation: any }) {
 
     let body;
 
-    if (appState.blocksToday?.length === 0) {
+    if (appState.dayBlocksToday?.length === 0) {
         body = (
             <Text style={styles.status}>
                 No school today! Enjoy your day! 🎉
@@ -67,7 +67,7 @@ function Home({ navigation }: { navigation: any }) {
     } else {
         const { teachersAbsent, extraAbsent } = absenceCalculator(
             settings.schedule,
-            appState.blocksToday,
+            appState.teacherBlocksToday,
             appState.absences,
             settings.app.showFreeBlocks,
         );
@@ -182,11 +182,11 @@ function Home({ navigation }: { navigation: any }) {
             <Text style={styles.hello}>
                 Today is <Text style={styles.date}>{dateFormatter(now)}</Text>.
             </Text>
-            {appState.blocksToday?.length > 0 && (
+            {appState.dayBlocksToday?.length > 0 && (
                 <Text style={styles.blockList}>
                     The blocks today are{' '}
                     {joinListWithCommas(
-                        appState.blocksToday.map(
+                        appState.dayBlocksToday.map(
                             (block) => ShortBlockFullNames[block],
                         ),
                     )}

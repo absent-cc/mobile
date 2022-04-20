@@ -3,7 +3,7 @@ import { StyleSheet, Text, ScrollView } from 'react-native';
 import Theme from '../../Theme';
 import Divider from '../../components/Divider';
 import TextButton from '../../components/button/TextButton';
-import { Block, EditingSchedule } from '../../api/APITypes';
+import { Block, EditingSchedule, TeacherBlock } from '../../api/APITypes';
 import { useSettings } from '../../state/SettingsContext';
 import { BlockIterator } from '../../Utils';
 import ErrorCard from '../../components/card/ErrorCard';
@@ -25,7 +25,7 @@ function ScheduleOnboarding({ navigation }: { navigation: any }) {
 
                 // for the onboarding process, an empty list is NOT a free block
                 if (teachers.length === 0) {
-                    return [block, block === Block.EXTRA ? [] : ['']];
+                    return [block, block === TeacherBlock.EXTRA ? [] : ['']];
                 }
                 return [block, teachers.map((teacher) => teacher.name)];
             }),
@@ -50,22 +50,22 @@ function ScheduleOnboarding({ navigation }: { navigation: any }) {
         EXTRA: false,
     });
 
-    const invalidBlock = (block: Block): boolean => {
+    const invalidBlock = (block: TeacherBlock): boolean => {
         return teacherSettings.current[block].includes('');
     };
 
     const validate = (): boolean => {
         const newValidationList = { ...validationList, existsInvalid: false };
 
-        newValidationList.A = invalidBlock(Block.A);
-        newValidationList.B = invalidBlock(Block.B);
-        newValidationList.C = invalidBlock(Block.C);
-        newValidationList.D = invalidBlock(Block.D);
-        newValidationList.E = invalidBlock(Block.E);
-        newValidationList.F = invalidBlock(Block.F);
-        newValidationList.G = invalidBlock(Block.G);
-        newValidationList.ADVISORY = invalidBlock(Block.ADVISORY);
-        newValidationList.EXTRA = invalidBlock(Block.EXTRA);
+        newValidationList.A = invalidBlock(TeacherBlock.A);
+        newValidationList.B = invalidBlock(TeacherBlock.B);
+        newValidationList.C = invalidBlock(TeacherBlock.C);
+        newValidationList.D = invalidBlock(TeacherBlock.D);
+        newValidationList.E = invalidBlock(TeacherBlock.E);
+        newValidationList.F = invalidBlock(TeacherBlock.F);
+        newValidationList.G = invalidBlock(TeacherBlock.G);
+        newValidationList.ADVISORY = invalidBlock(TeacherBlock.ADVISORY);
+        newValidationList.EXTRA = invalidBlock(TeacherBlock.EXTRA);
 
         // summary
         newValidationList.existsInvalid =
@@ -76,7 +76,7 @@ function ScheduleOnboarding({ navigation }: { navigation: any }) {
         return !newValidationList.existsInvalid;
     };
 
-    const updateBlock = (block: Block, newSettings: string[]) => {
+    const updateBlock = (block: TeacherBlock, newSettings: string[]) => {
         teacherSettings.current[block] = newSettings;
 
         // when the error gets fixed, the error goes away
@@ -140,7 +140,7 @@ function ScheduleOnboarding({ navigation }: { navigation: any }) {
 
             <ClassInput
                 style={[styles.classInput, { zIndex: 10 }]}
-                block={Block.A}
+                block={TeacherBlock.A}
                 onChange={updateBlock}
                 isInvalid={validationList.A}
                 defaultValue={teacherSettings.current.A}
@@ -148,7 +148,7 @@ function ScheduleOnboarding({ navigation }: { navigation: any }) {
             />
             <ClassInput
                 style={[styles.classInput, { zIndex: 9 }]}
-                block={Block.B}
+                block={TeacherBlock.B}
                 onChange={updateBlock}
                 isInvalid={validationList.B}
                 defaultValue={teacherSettings.current.B}
@@ -156,7 +156,7 @@ function ScheduleOnboarding({ navigation }: { navigation: any }) {
             />
             <ClassInput
                 style={[styles.classInput, { zIndex: 8 }]}
-                block={Block.C}
+                block={TeacherBlock.C}
                 onChange={updateBlock}
                 isInvalid={validationList.C}
                 defaultValue={teacherSettings.current.C}
@@ -164,7 +164,7 @@ function ScheduleOnboarding({ navigation }: { navigation: any }) {
             />
             <ClassInput
                 style={[styles.classInput, { zIndex: 7 }]}
-                block={Block.D}
+                block={TeacherBlock.D}
                 onChange={updateBlock}
                 isInvalid={validationList.D}
                 defaultValue={teacherSettings.current.D}
@@ -172,7 +172,7 @@ function ScheduleOnboarding({ navigation }: { navigation: any }) {
             />
             <ClassInput
                 style={[styles.classInput, { zIndex: 6 }]}
-                block={Block.E}
+                block={TeacherBlock.E}
                 onChange={updateBlock}
                 isInvalid={validationList.E}
                 defaultValue={teacherSettings.current.E}
@@ -180,7 +180,7 @@ function ScheduleOnboarding({ navigation }: { navigation: any }) {
             />
             <ClassInput
                 style={[styles.classInput, { zIndex: 5 }]}
-                block={Block.F}
+                block={TeacherBlock.F}
                 onChange={updateBlock}
                 isInvalid={validationList.F}
                 defaultValue={teacherSettings.current.F}
@@ -188,7 +188,7 @@ function ScheduleOnboarding({ navigation }: { navigation: any }) {
             />
             <ClassInput
                 style={[styles.classInput, { zIndex: 4 }]}
-                block={Block.G}
+                block={TeacherBlock.G}
                 onChange={updateBlock}
                 isInvalid={validationList.G}
                 defaultValue={teacherSettings.current.G}
@@ -196,7 +196,7 @@ function ScheduleOnboarding({ navigation }: { navigation: any }) {
             />
             <ClassInput
                 style={[styles.classInput, { zIndex: 3 }]}
-                block={Block.ADVISORY}
+                block={TeacherBlock.ADVISORY}
                 onChange={updateBlock}
                 isInvalid={validationList.ADVISORY}
                 defaultValue={teacherSettings.current.ADVISORY}
@@ -216,7 +216,7 @@ function ScheduleOnboarding({ navigation }: { navigation: any }) {
             <ExtraTeachers
                 style={[{ zIndex: 2 }]}
                 onChange={(newSettings) => {
-                    updateBlock(Block.EXTRA, newSettings);
+                    updateBlock(TeacherBlock.EXTRA, newSettings);
                 }}
                 defaultValue={teacherSettings.current.EXTRA}
                 scrollRef={scrollViewRef}

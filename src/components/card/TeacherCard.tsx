@@ -2,7 +2,7 @@ import { Feather } from '@expo/vector-icons';
 import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { AbsenceItem } from '../../AbsenceCalculator';
-import { Block } from '../../api/APITypes';
+import { Block, TeacherBlock } from '../../api/APITypes';
 import Theme from '../../Theme';
 import { ShortBlocks } from '../../Utils';
 
@@ -15,11 +15,11 @@ function TeacherCard({
 }) {
     let boxContent;
 
-    if (absenceItem.block === Block.ADVISORY) {
+    if (absenceItem.block === TeacherBlock.ADVISORY) {
         boxContent = (
             <Text style={styles.adv}>{ShortBlocks[Block.ADVISORY]}</Text>
         );
-    } else if (absenceItem.block === Block.EXTRA) {
+    } else if (absenceItem.block === TeacherBlock.EXTRA) {
         boxContent = <Feather name="plus" style={styles.icon} size={40} />;
     } else {
         boxContent = (

@@ -2,10 +2,10 @@ import React from 'react';
 import { StyleSheet, Text, View, Pressable, ScrollView } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import Theme from '../Theme';
-import { BlockMapping } from '../Utils';
+import { TeacherBlockFullNames } from '../Utils';
 import TextButton from './button/TextButton';
 import SwitchField from './input/Switch';
-import { Block } from '../api/APITypes';
+import { Block, TeacherBlock } from '../api/APITypes';
 import TeacherField from './TeacherField';
 import ErrorCard from './card/ErrorCard';
 
@@ -17,9 +17,9 @@ function ClassInput({
     defaultValue,
     scrollRef,
 }: {
-    block: Block;
+    block: TeacherBlock;
     style?: any;
-    onChange: (block: Block, newSettings: string[]) => void;
+    onChange: (block: TeacherBlock, newSettings: string[]) => void;
     isInvalid: boolean;
     defaultValue: string[];
     scrollRef: React.MutableRefObject<ScrollView | null>;
@@ -145,7 +145,7 @@ function ClassInput({
                         isInvalid ? styles.invalidTitle : null,
                     ]}
                 >
-                    {BlockMapping[block]}
+                    {TeacherBlockFullNames[block]}
                 </Text>
                 {isInvalid ? (
                     <Feather
