@@ -54,11 +54,14 @@ const WithWaveHeader = React.forwardRef(
                     style={[
                         styles.gradientBg,
                         {
-                            height:
+                            // get height, but make sure it's at least the top inset
+                            height: Math.max(
                                 appState.value.tallestWaveHeader +
-                                insets.top +
-                                scrollHeight +
-                                20,
+                                    insets.top +
+                                    scrollHeight +
+                                    20,
+                                insets.top,
+                            ),
                         },
                     ]}
                 />
@@ -74,10 +77,7 @@ const WithWaveHeader = React.forwardRef(
                     refreshControl={refreshControl}
                     onScroll={(event: any) => {
                         const height = event.nativeEvent.contentOffset.y;
-                        // when you pull up
-                        if (height < 0) {
-                            setScrollHeight(height * -1);
-                        }
+                        setScrollHeight(height * -1);
                     }}
                     scrollEventThrottle={16}
                     // bounces={false}
