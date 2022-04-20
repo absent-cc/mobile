@@ -169,6 +169,24 @@ export function todayFromTimeString(
     return null;
 }
 
+export function timeStringToMinRep(timeString: string): number {
+    if (!timeString) return 0;
+
+    const [hour, minute] = timeString.split(':');
+
+    if (hour && minute) {
+        const parsedHour = parseInt(hour, 10);
+        const parsedMinute = parseInt(minute, 10);
+
+        if (!Number.isNaN(parsedHour) && !Number.isNaN(parsedMinute)) {
+            return parsedHour * 60 + parsedMinute;
+        }
+        return 0;
+    }
+
+    return 0;
+}
+
 export function timeBetweenTimeStrings(
     start: string,
     end: string,
@@ -261,4 +279,13 @@ export function toPrettyTime(uglyTime: string): string {
 
     // const [hour, minute] = uglyTime.split(':');
     // return `${parseInt(hour, 10)}:${minute}`;
+}
+
+export function toTimeString(time: number): string {
+    const hour = Math.floor(time / 60);
+    const minute = time - hour * 60;
+
+    return `${hour > 12 ? hour - 12 : hour}:${
+        minute < 10 ? `0${minute}` : minute
+    }`;
 }

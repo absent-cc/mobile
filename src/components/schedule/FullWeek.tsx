@@ -5,7 +5,9 @@ import {
     sortTimeStrings,
     timeBetweenTimeStrings,
     toPrettyTime,
+    toTimeString,
 } from '../../DateWordUtils';
+import { useAppState } from '../../state/AppStateContext';
 import Theme from '../../Theme';
 import { ShortBlocks } from '../../Utils';
 
@@ -103,127 +105,161 @@ const SampleSched = {
 };
 
 function FullWeek({ style }: { style?: any }) {
+    const { value: appState } = useAppState();
+
     const [tooSmall, setTooSmall] = React.useState<Record<string, boolean>>({});
     const [minuteRatio, setMinuteRatio] = React.useState(1.5);
     const [isLoading, setLoading] = React.useState(true);
     const minDiffToPx = (minDiff: number) => minDiff * minuteRatio;
 
-    const firstStartTime = sortTimeStrings(
-        Object.entries(SampleSched).map(([, blocks]) => {
-            return blocks[0].startTime;
-        }),
-        true,
-    )[0];
+    // const firstStartTime = sortTimeStrings(
+    //     Object.entries(SampleSched).map(([, blocks]) => {
+    //         return blocks[0].startTime;
+    //     }),
+    //     true,
+    // )[0];
 
-    const lastEndTime = sortTimeStrings(
-        Object.entries(SampleSched).map(([, blocks]) => {
-            return blocks[blocks.length - 1].endTime;
-        }),
-        false,
-    )[0];
+    const firstStartTime =
+        Object.entries(appState.weekSchedule)
+            // get start times
+            .map(([, daySchedule]) => {
+                return daySchedule.schedule[0].startTime;
+            })
+            // remove zeroes (broken times)
+            .filter((el) => el !== 0)
+            // sort ascending and get first
+            .sort((a, b) => a - b)[0] ?? 0;
 
-    const body = Object.entries(SampleSched).map(([day, blocks]) => {
-        let lastBlockEndTime = firstStartTime;
+    // const lastEndTime = sortTimeStrings(
+    //     Object.entries(SampleSched).map(([, blocks]) => {
+    //         return blocks[blocks.length - 1].endTime;
+    //     }),
+    //     false,
+    // )[0];
 
-        let dayBody = blocks.map((block, blockIndex) => {
-            // unique key to identify the block to store which ones are too small
-            const blockKey = `${day}-${block.block}`;
+    const lastEndTime =
+        Object.entries(appState.weekSchedule)
+            // get start times
+            .map(([, daySchedule]) => {
+                return daySchedule.schedule[daySchedule.schedule.length - 1]
+                    .endTime;
+            })
+            // remove zeroes (broken times)
+            .filter((el) => el !== 0)
+            // sort descending and get first
+            .sort((a, b) => b - a)[0] ?? 0;
 
-            const minDiff =
-                timeBetweenTimeStrings(block.startTime, block.endTime) || 0;
-            const height = minDiffToPx(minDiff);
-            const topMargin = minDiffToPx(
-                timeBetweenTimeStrings(lastBlockEndTime, block.startTime) || 0,
-            );
+    const body = Object.entries(appState.weekSchedule).map(
+        ([day, daySchedule]) => {
+            let lastBlockEndTime = firstStartTime;
 
-            lastBlockEndTime = block.endTime;
+            let dayBody = daySchedule.schedule.map((block, blockIndex) => {
+                // unique key to identify the block to store which ones are too small
+                const blockKey = `${day}-${block.block}`;
+
+                const minDiff = block.endTime - block.startTime;
+                const height = minDiffToPx(minDiff);
+                const topMargin = minDiffToPx(
+                    block.startTime - lastBlockEndTime,
+                );
+
+                lastBlockEndTime = block.endTime;
+
+                return (
+                    <React.Fragment key={block.block}>
+                        {block.startTime !== firstStartTime && (
+                            <View
+                                style={[
+                                    styles.blockDivider,
+                                    {
+                                        height: topMargin,
+                                        // borderTopWidth:
+                                        //     blockIndex === 0 ? 0 : 2,
+                                    },
+                                ]}
+                            />
+                        )}
+                        <View
+                            style={[
+                                styles.block,
+                                {
+                                    minHeight: height,
+                                },
+                            ]}
+                            // makes the minute ratio be the largest it should be
+                            onLayout={(event: any) => {
+                                const { height: realHeight } =
+                                    event.nativeEvent.layout;
+
+                                // react native's measurements seem to be a little funky
+                                // so there's a little 2 pixel tolerance
+                                // for some reason, real height reads 120.5 while height is 120.25
+                                if (realHeight > height + 2) {
+                                    if (tooSmall[blockKey]) {
+                                        setMinuteRatio(realHeight / minDiff);
+                                    } else {
+                                        setTooSmall((newTooSmall) => ({
+                                            ...newTooSmall,
+                                            [blockKey]: true,
+                                        }));
+                                    }
+                                }
+                            }}
+                        >
+                            <View style={styles.blockContent}>
+                                <Text style={styles.blockText}>
+                                    {ShortBlocks[block.block]}
+                                </Text>
+                                {!tooSmall[blockKey] && (
+                                    <Text style={styles.time}>
+                                        {toTimeString(block.startTime)}
+                                        {' - '}
+                                        {toTimeString(block.endTime)}
+                                    </Text>
+                                )}
+                                {block.lunches && block.lunches?.length > 0 && (
+                                    <Text style={styles.lunchLink}>Lunch</Text>
+                                )}
+                            </View>
+                        </View>
+
+                        {
+                            // if it's the last block
+                            blockIndex === daySchedule.schedule.length - 1 && (
+                                <View
+                                    style={[
+                                        styles.blockFlexDivider,
+                                        {
+                                            borderBottomWidth:
+                                                block.endTime === lastEndTime
+                                                    ? 0
+                                                    : 2,
+                                        },
+                                    ]}
+                                    key={`divideafter-${block.block}`}
+                                />
+                            )
+                        }
+                    </React.Fragment>
+                );
+            });
+
+            if (dayBody.length === 0) {
+                dayBody = [
+                    <Text style={[styles.block]} key="noschool">
+                        No school.
+                    </Text>,
+                ];
+            }
 
             return (
-                <React.Fragment key={block.block}>
-                    {block.startTime !== firstStartTime && (
-                        <View
-                            style={[
-                                styles.blockDivider,
-                                {
-                                    height: topMargin,
-                                    borderTopWidth: blockIndex === 0 ? 0 : 2,
-                                },
-                            ]}
-                        />
-                    )}
-                    <View
-                        style={[
-                            styles.block,
-                            {
-                                minHeight: height,
-                            },
-                        ]}
-                        // makes the minute ratio be the largest it should be
-                        onLayout={(event: any) => {
-                            const { height: realHeight } =
-                                event.nativeEvent.layout;
-
-                            // react native's measurements seem to be a little funky
-                            // so there's a little 2 pixel tolerance
-                            // for some reason, real height reads 120.5 while height is 120.25
-                            if (realHeight > height + 2) {
-                                if (tooSmall[blockKey]) {
-                                    setMinuteRatio(realHeight / minDiff);
-                                } else {
-                                    setTooSmall((newTooSmall) => ({
-                                        ...newTooSmall,
-                                        [blockKey]: true,
-                                    }));
-                                }
-                            }
-                        }}
-                    >
-                        <View style={styles.blockContent}>
-                            <Text style={styles.blockText}>
-                                {ShortBlocks[block.block]}
-                            </Text>
-                            {!tooSmall[blockKey] && (
-                                <Text style={styles.time}>
-                                    {toPrettyTime(block.startTime)} -{' '}
-                                    {toPrettyTime(block.endTime)}
-                                </Text>
-                            )}
-                            {block.lunches && block.lunches?.length > 0 && (
-                                <Text style={styles.lunchLink}>Lunch</Text>
-                            )}
-                        </View>
-                    </View>
-                    {blockIndex === blocks.length - 1 && (
-                        <View
-                            style={[
-                                styles.blockFlexDivider,
-                                {
-                                    borderBottomWidth:
-                                        block.endTime === lastEndTime ? 0 : 2,
-                                },
-                            ]}
-                            key={`divideafter-${block.block}`}
-                        />
-                    )}
+                <React.Fragment key={day}>
+                    <View style={[styles.day]}>{dayBody}</View>
+                    <View style={[styles.dayDivider, { height: '100%' }]} />
                 </React.Fragment>
             );
-        });
-
-        if (dayBody.length === 0) {
-            dayBody = [
-                <Text style={[styles.block]} key="noschool">
-                    No school.
-                </Text>,
-            ];
-        }
-
-        return (
-            <React.Fragment key={day}>
-                <View style={[styles.day]}>{dayBody}</View>
-                <View style={[styles.dayDivider, { height: '100%' }]} />
-            </React.Fragment>
-        );
-    });
+        },
+    );
 
     React.useEffect(() => {
         setTimeout(() => setLoading(false), 150);
@@ -246,36 +282,36 @@ function FullWeek({ style }: { style?: any }) {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: Theme.lightForeground,
+        backgroundColor: Theme.primaryColor,
         flexDirection: 'row',
         alignItems: 'flex-start',
         borderWidth: 2,
         borderBottomWidth: 0,
         borderRightWidth: 0,
-        borderColor: Theme.darkForeground,
+        borderColor: Theme.primaryColor,
     },
     day: {
-        borderColor: Theme.darkForeground,
+        borderColor: Theme.primaryColor,
         flex: 1,
     },
     dayDivider: {
         width: 2,
         flex: 0,
-        backgroundColor: Theme.darkForeground,
+        backgroundColor: Theme.primaryColor,
     },
     blockDivider: {
-        borderTopWidth: 2,
-        borderBottomWidth: 2,
-        borderColor: Theme.darkForeground,
+        // borderTopWidth: 2,
+        // borderBottomWidth: 2,
+        borderColor: Theme.primaryColor,
     },
     blockFlexDivider: {
-        borderTopWidth: 2,
-        borderColor: Theme.darkForeground,
+        // borderTopWidth: 2,
+        borderColor: Theme.primaryColor,
         flex: 1,
     },
     block: {
         width: '100%',
-        borderColor: Theme.darkForeground,
+        borderColor: Theme.primaryColor,
         backgroundColor: Theme.backgroundColor,
     },
     blockContent: {

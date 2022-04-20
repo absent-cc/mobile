@@ -79,10 +79,11 @@ function BlockCard({
                             9:00 - 10:15
                         </Text>
                     </View>
+                    <View style={[styles.lunchDivider]} />
                     <View
                         style={[
                             styles.lunchBox,
-                            styles.midLunch,
+                            // styles.midLunch,
                             isActive && styles.activeLunch,
                             activeLunch === 1 && styles.currentLunch,
                         ]}
@@ -104,6 +105,9 @@ function BlockCard({
                             9:00 - 10:15
                         </Text>
                     </View>
+                    <View
+                        style={[styles.lunchDivider, styles.lunchDividerActive]}
+                    />
                     <View
                         style={[
                             styles.lunchBox,
@@ -251,6 +255,15 @@ const styles = StyleSheet.create({
         // borderWidth: 2,
         // borderColor: Theme.foregroundAlternate,
         // borderColor: Theme.primaryColor,
+        backgroundColor: Theme.primaryColor,
+    },
+    lunchDivider: {
+        width: 5,
+        marginHorizontal: 5,
+        marginVertical: 10,
+        borderRadius: 20,
+    },
+    lunchDividerActive: {
         backgroundColor: Theme.primaryColor,
     },
 });

@@ -1,4 +1,5 @@
 import Constants from 'expo-constants';
+import { timeStringToMinRep } from '../DateWordUtils';
 import { AppSettings } from '../state/SettingsContext';
 import {
     apiResponseToSchedule,
@@ -28,8 +29,8 @@ import {
 } from './APITypes';
 
 const baseURL = Constants.manifest?.extra?.isDevelopment
-    ? 'https://api.absent.cc/v1'
-    : 'https://api.absent.cc/v1';
+    ? 'https://api.absent.cc/v2'
+    : 'https://api.absent.cc/v2';
 
 const headers = {
     'Accept': 'application/json',
@@ -349,9 +350,19 @@ export async function fetchWeekSchedule(
     response.forEach((day: DaySchedule) => {
         result[day.date] = {
             ...day,
-            schedule: day.schedule.map((dayBlock) => ({
+            schedule: day.schedule.map((dayBlock: any) => ({
                 ...dayBlock,
+                startTime: timeStringToMinRep(dayBlock.startTime),
+                endTime: timeStringToMinRep(dayBlock.endTime),
                 block: convertSpecialBlocks(dayBlock.block),
+                lunches:
+                    dayBlock.lunches && dayBlock.lunches.length > 0
+                        ? dayBlock.lunches.map((lunch: any) => ({
+                              ...lunch,
+                              startTime: timeStringToMinRep(lunch.startTime),
+                              endTime: timeStringToMinRep(lunch.endTime),
+                          }))
+                        : null,
             })),
         };
     });

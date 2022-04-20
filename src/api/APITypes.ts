@@ -74,14 +74,14 @@ export enum LunchType {
 
 export type Lunch = {
     lunch: LunchType;
-    startTime: string;
-    endTime: string;
+    startTime: number;
+    endTime: number;
 };
 
 export type DayBlock = {
     block: Block;
-    startTime: string;
-    endTime: string;
+    startTime: number;
+    endTime: number;
     lunches: Lunch[];
 };
 

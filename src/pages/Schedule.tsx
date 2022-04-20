@@ -26,7 +26,7 @@ function Schedule() {
                 <BlockCard
                     style={styles.blockCard}
                     block={Block.C}
-                    // isLunch
+                    isLunch
                     // isActive
                     // activeLunch={0}
                 />

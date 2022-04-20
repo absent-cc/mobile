@@ -2,12 +2,17 @@ import React from 'react';
 import {
     AbsenceList,
     Block,
+    LunchType,
     TeacherBlock,
     WeekSchedule,
 } from '../api/APITypes';
 import { formatISODate, isSameDay } from '../DateWordUtils';
 import { extractDayBlocks, extractTeacherBlocks } from '../Utils';
 
+export enum TimeRelation {
+    Current,
+    After,
+}
 export interface AppStateType {
     serverLoaded: boolean;
     absences: AbsenceList;
@@ -17,9 +22,11 @@ export interface AppStateType {
     tallestWaveHeader: number;
     weekSchedule: WeekSchedule;
     dateToday: string;
-    currentBlock: {
+    current: {
         block: Block | null;
-        relation: 'current' | 'after';
+        blockRelation: TimeRelation;
+        lunch: LunchType | null;
+        lunchRelation: TimeRelation;
     };
     needsUpdate: boolean;
 }
@@ -40,9 +47,11 @@ export const defaultState: AppStateType = {
     tallestWaveHeader: 250,
     dateToday: formatISODate(new Date()),
     weekSchedule: {},
-    currentBlock: {
+    current: {
         block: null,
-        relation: 'current',
+        blockRelation: TimeRelation.Current,
+        lunch: null,
+        lunchRelation: TimeRelation.Current,
     },
     needsUpdate: false,
 };
@@ -69,7 +78,8 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
                 const now = new Date(
                     Date.now() - loopStartTime + virtualStartTime,
                 );
-                console.log('running loop at', now.toString());
+                const nowMinRep = now.getHours() * 60 + now.getMinutes();
+                console.log('running loop at', now.toString(), nowMinRep);
 
                 const stateChanges: AppStateType = {
                     ...oldAppState,
@@ -89,6 +99,95 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
                     }
 
                     stateChanges.needsUpdate = true;
+                }
+
+                const todaySchedule =
+                    stateChanges.weekSchedule[stateChanges.dateToday]?.schedule;
+                if (todaySchedule && todaySchedule.length > 0) {
+                    let lastBlockIndex = -1;
+                    let blockRelation = TimeRelation.Current;
+
+                    for (let i = 0; i < todaySchedule.length; i += 1) {
+                        const dayBlock = todaySchedule[i];
+
+                        // first block is after now (before start of school day)
+                        if (i === 0 && dayBlock.startTime > nowMinRep) {
+                            lastBlockIndex = -1;
+                            blockRelation = TimeRelation.Current;
+                            break;
+                        }
+
+                        // last block is before now (after end of school day)
+                        if (
+                            i === todaySchedule.length - 1 &&
+                            dayBlock.endTime < nowMinRep
+                        ) {
+                            lastBlockIndex = -1;
+                            blockRelation = TimeRelation.After;
+                            break;
+                        }
+
+                        // keep moving up the lastBlockIndex until it's not applicable
+                        if (nowMinRep <= dayBlock.startTime) {
+                            lastBlockIndex = i;
+
+                            // if we find it inside the block, then stop
+                            if (nowMinRep < dayBlock.endTime) {
+                                blockRelation = TimeRelation.Current;
+                                break;
+                            } else {
+                                blockRelation = TimeRelation.After;
+                            }
+                        }
+                    }
+
+                    // now once we've found the block, let's find the lunch
+                    let lastLunchIndex = -1;
+                    let lunchRelation = TimeRelation.Current;
+
+                    const currentBlock = todaySchedule[lastBlockIndex] ?? null;
+                    if (currentBlock !== null) {
+                        if (
+                            currentBlock.lunches &&
+                            currentBlock.lunches.length > 0
+                        ) {
+                            for (
+                                let i = 0;
+                                i < currentBlock.lunches.length;
+                                i += 1
+                            ) {
+                                const lunchBlock = currentBlock.lunches[i];
+
+                                // keep moving up the lastLunchIndex until it's not applicable
+                                if (nowMinRep <= lunchBlock.startTime) {
+                                    lastLunchIndex = i;
+
+                                    // if we find it inside the block, then stop
+                                    if (nowMinRep < lunchBlock.endTime) {
+                                        lunchRelation = TimeRelation.Current;
+                                        break;
+                                    } else {
+                                        lunchRelation = TimeRelation.After;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    stateChanges.current = {
+                        block:
+                            currentBlock !== null ? currentBlock.block : null,
+                        blockRelation,
+                        lunch:
+                            // get current lunch id but make it null if lastLunchIndex is wrong for some reason
+                            lastLunchIndex > -1
+                                ? currentBlock.lunches[lastLunchIndex].lunch ??
+                                  null
+                                : null,
+                        lunchRelation,
+                    };
+
+                    console.log(stateChanges.current);
                 }
 
                 return stateChanges;
