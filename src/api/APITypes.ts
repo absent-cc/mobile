@@ -51,3 +51,32 @@ export type AbsentTeacher = {
 };
 
 export type AbsenceList = AbsentTeacher[];
+
+export enum LunchType {
+    L1 = 'L1',
+    L2 = 'L2',
+    L3 = 'L3',
+}
+
+export type Lunch = {
+    lunch: LunchType;
+    startTime: string;
+    endTime: string;
+};
+
+export type DayBlock = {
+    block: Block;
+    startTime: string;
+    endTime: string;
+    lunches: Lunch[];
+};
+
+export type DaySchedule = {
+    date: string;
+    name: string;
+    note: string;
+    special: boolean;
+    schedule: DayBlock[];
+};
+
+export type WeekSchedule = Record<string, DaySchedule>;

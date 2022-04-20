@@ -1,14 +1,20 @@
 import React from 'react';
-import { AbsenceList, Block } from '../api/APITypes';
-import { isSameDay } from '../DateWordUtils';
+import { AbsenceList, Block, WeekSchedule } from '../api/APITypes';
+import { formatISODate, isSameDay } from '../DateWordUtils';
 
 export interface AppStateType {
     serverLoaded: boolean;
     absences: AbsenceList;
     blocksToday: Block[];
-    lastUpdateTime: number;
+    lastUpdateTime: Date;
     tallestWaveHeader: number;
-    // needsUpdate: boolean;
+    weekSchedule: WeekSchedule;
+    dateToday: string;
+    currentBlock: {
+        block: Block | null;
+        relation: 'current' | 'after';
+    };
+    needsUpdate: boolean;
 }
 
 export interface AppStateContextType {
@@ -22,9 +28,15 @@ export const defaultState: AppStateType = {
     serverLoaded: false,
     absences: [],
     blocksToday: [],
-    lastUpdateTime: 0,
+    lastUpdateTime: new Date(0),
     tallestWaveHeader: 250,
-    // needsUpdate: false,
+    dateToday: formatISODate(new Date()),
+    weekSchedule: {},
+    currentBlock: {
+        block: null,
+        relation: 'current',
+    },
+    needsUpdate: false,
 };
 
 const AppStateContext = React.createContext<AppStateContextType>({
@@ -38,22 +50,44 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
 
     // state updater
     React.useEffect(() => {
+        // debug mode
+        const loopStartTime = Date.now();
+        const virtualStartTime = new Date(2022, 3, 20, 23, 59, 45).getTime();
+
         const update = () => {
             setAppState((oldAppState) => {
                 const lastStateUpdate = oldAppState.lastUpdateTime;
-                const now = Date.now();
+                // const now = new Date();
+                const now = new Date(
+                    Date.now() - loopStartTime + virtualStartTime,
+                );
+                console.log('running loop at', now.toString());
 
                 const stateChanges: AppStateType = {
                     ...oldAppState,
                     lastUpdateTime: now,
-                    // needsUpdate: true,
+                    dateToday: formatISODate(now),
                 };
 
                 // reset day
-                if (!isSameDay(new Date(lastStateUpdate), new Date(now))) {
+                if (!isSameDay(lastStateUpdate, now)) {
                     stateChanges.absences = [];
-                    stateChanges.blocksToday = [];
+
+                    // if it's a new week
+                    if (
+                        !(stateChanges.dateToday in stateChanges.weekSchedule)
+                    ) {
+                        stateChanges.weekSchedule = {};
+                    }
+
+                    stateChanges.needsUpdate = true;
                 }
+
+                // parse blocks today
+                stateChanges.blocksToday =
+                    stateChanges.weekSchedule[
+                        stateChanges.dateToday
+                    ]?.schedule.map((dayBlock) => dayBlock.block) ?? [];
 
                 return stateChanges;
             });

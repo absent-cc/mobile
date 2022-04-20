@@ -17,7 +17,7 @@ import WithWaveHeader from '../components/header/WithWaveHeader';
 function Home({ navigation }: { navigation: any }) {
     const { value: settings, setSettings } = useSettings();
     const { value: appState, setAppState } = useAppState();
-    const { fetchAbsences, fetchSettings, getClassesToday } = useAPI();
+    const { refreshData } = useAPI();
 
     React.useEffect(() => {
         // get notfication permission
@@ -41,45 +41,13 @@ function Home({ navigation }: { navigation: any }) {
     // refresh
     React.useEffect(() => {
         if (refreshing) {
-            Promise.all([
-                fetchSettings(),
-                fetchAbsences(),
-                getClassesToday(),
-            ]).then(([newSettings, absences, classesToday]) => {
+            refreshData().then(() => {
                 setRefreshing(false);
-                setAppState((oldAppState) => {
-                    const stateChanges = {
-                        ...oldAppState,
-                        // needsUpdate: false,
-                    };
-                    if (absences !== null) stateChanges.absences = absences;
-                    if (classesToday !== null)
-                        stateChanges.blocksToday = classesToday;
-                    return stateChanges;
-                });
-                setSettings((oldSettings) => {
-                    const stateChanges = {
-                        ...oldSettings,
-                    };
-                    if (newSettings !== null) {
-                        stateChanges.user = newSettings.user;
-                        stateChanges.schedule = newSettings.schedule;
-                        stateChanges.app = newSettings.app;
-                    }
-                    return stateChanges;
-                });
             });
         }
-    }, [
-        fetchAbsences,
-        fetchSettings,
-        getClassesToday,
-        refreshing,
-        setAppState,
-        setSettings,
-    ]);
+    }, [refreshData, refreshing]);
 
-    const now = new Date(appState.lastUpdateTime);
+    const now = appState.lastUpdateTime;
     const [timeWords, timeEmoji] = timeOfDay(now);
 
     let body;

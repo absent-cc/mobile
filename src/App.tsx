@@ -43,16 +43,9 @@ function App() {
         // eslint-disable-next-line global-require, import/extensions
         Inter_Display_600SemiBold: require('../assets/fonts/InterDisplay-SemiBold.otf'),
     });
-    const { value: appState, setAppState } = useAppState();
-    const { value: settings, setSettings } = useSettings();
-    const {
-        ready: apiReady,
-        isLoggedIn,
-        saveFCMToken,
-        fetchSettings,
-        fetchAbsences,
-        getClassesToday,
-    } = useAPI();
+    const { value: appState } = useAppState();
+    const { value: settings } = useSettings();
+    const { ready: apiReady, isLoggedIn, saveFCMToken, refreshData } = useAPI();
     const {
         displayer: dialogDisplayer,
         open: openDialog,
@@ -106,37 +99,13 @@ function App() {
             if (
                 isLoggedIn &&
                 settings.userOnboarded &&
+                // onboarded gets set to true BEFORE fetching settings from the server
+                settings.serverLoaded &&
                 reactAppState.current.match(/inactive|background/) &&
                 nextAppState === 'active'
             ) {
                 // update when app gets opened
-                Promise.all([
-                    fetchSettings(),
-                    fetchAbsences(),
-                    getClassesToday(),
-                ]).then(([newSettings, absences, classesToday]) => {
-                    setAppState((oldAppState) => {
-                        const stateChanges = {
-                            ...oldAppState,
-                            // needsUpdate: false,
-                        };
-                        if (absences !== null) stateChanges.absences = absences;
-                        if (classesToday !== null)
-                            stateChanges.blocksToday = classesToday;
-                        return stateChanges;
-                    });
-                    setSettings((oldSettings) => {
-                        const stateChanges = {
-                            ...oldSettings,
-                        };
-                        if (newSettings !== null) {
-                            stateChanges.user = newSettings.user;
-                            stateChanges.schedule = newSettings.schedule;
-                            stateChanges.app = newSettings.app;
-                        }
-                        return stateChanges;
-                    });
-                });
+                refreshData();
 
                 // also check app for updates
                 try {
@@ -159,13 +128,10 @@ function App() {
         };
     }, [
         closeDialog,
-        fetchAbsences,
-        fetchSettings,
-        getClassesToday,
         isLoggedIn,
         openDialog,
-        setAppState,
-        setSettings,
+        refreshData,
+        settings.serverLoaded,
         settings.userOnboarded,
     ]);
 

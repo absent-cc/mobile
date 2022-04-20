@@ -60,6 +60,7 @@ export interface APIContextType {
     saveAppSettings: (newSettings: AppSettings) => Promise<void>;
     saveFCMToken: (fcmToken: string) => Promise<void>;
     deleteAccount: () => Promise<void>;
+    refreshData: () => Promise<void>;
 }
 
 const APIContext = React.createContext<APIContextType>({
@@ -78,6 +79,7 @@ const APIContext = React.createContext<APIContextType>({
     saveAppSettings: async () => undefined,
     saveFCMToken: async () => undefined,
     deleteAccount: async () => undefined,
+    refreshData: async () => undefined,
 });
 
 const defaultState: APIDataType = {
@@ -98,10 +100,12 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
     const { value: appState, setAppState, resetAppState } = useAppState();
     const { open: openDialog, close: closeDialog } = useDialog();
 
-    // since the get classes and get absences endpoint takes a date, we'll just regenerate this function once per day
-    const dateStr = formatISODate(new Date(appState.lastUpdateTime));
+    const dateStr = appState.dateToday;
     const schoolName = settings.user.school;
 
+    // TODO: figure out how this is different from apiSettings.isVerified
+    //       why do i write code like this :(
+    // this (maybe) stores if the token has been verified after initial login
     const isLoggedInRef = React.useRef(false);
 
     // this one logs the user out without sending the request to the server
@@ -256,6 +260,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                     lastTokenUpdate: now,
                     token,
                 }));
+                // fetchSettings doesn't tell us if the user is onboarded, so we need to get that from this refresh call
                 setSettings((oldSettings) => ({
                     ...oldSettings,
                     userOnboarded: onboarded,
@@ -575,6 +580,8 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
         [verifyToken, dateStr, parseError],
     );
 
+    // (step 2 **) only if the user hasn't logged in before
+    //             this runs once a user signs in through google
     const login = React.useCallback(
         async (accessToken: string) => {
             try {
@@ -644,6 +651,49 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
         [verifyToken, parseError],
     );
 
+    const refreshData = React.useCallback(async (): Promise<void> => {
+        try {
+            await Promise.all([
+                fetchSettings(),
+                fetchAbsences(),
+                getClassesToday(),
+            ]).then(([newSettings, absences, classesToday]) => {
+                setAppState((oldAppState) => {
+                    const stateChanges = {
+                        ...oldAppState,
+                        needsUpdate: false,
+                    };
+                    if (absences !== null) stateChanges.absences = absences;
+                    if (classesToday !== null)
+                        stateChanges.blocksToday = classesToday;
+                    return stateChanges;
+                });
+                setSettings((oldSettings) => {
+                    const stateChanges = {
+                        ...oldSettings,
+                    };
+                    if (newSettings !== null) {
+                        stateChanges.user = newSettings.user;
+                        stateChanges.schedule = newSettings.schedule;
+                        stateChanges.app = newSettings.app;
+                    }
+                    return stateChanges;
+                });
+            });
+        } catch (err: any) {
+            parseError(err, true, 'Refresh Data');
+        }
+    }, [
+        fetchAbsences,
+        fetchSettings,
+        getClassesToday,
+        parseError,
+        setAppState,
+        setSettings,
+    ]);
+
+    // (step 1) read token from storage
+    //          if it exists, we mark as ready but unverified
     // read token only once
     React.useEffect(() => {
         SecureStore.getItemAsync('apisettings')
@@ -653,6 +703,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                     : {};
             })
             .then((savedSettings) => {
+                // if the user has logged in before, isLoggedIn will be true
                 setAPISettings({
                     ...defaultState,
                     ...savedSettings,
@@ -684,6 +735,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
         }
     }, [apiSettings, parseError]);
 
+    // (step 3) verify the token once we have it
     // when we have a token, try to log in and verify it
     // this runs when the app starts or a user just logged in
     React.useEffect(() => {
@@ -708,6 +760,9 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
         logout,
     ]);
 
+    // (step 4) get the user's settings
+    //          if the user is not onboarded, this will cause the onboarding screens to show
+    //          if the user is     onboarded, this will load step 5 right away
     React.useEffect(() => {
         if (
             apiSettings.isLoggedIn &&
@@ -745,6 +800,10 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
         setSettings,
         settings.serverLoaded,
     ]);
+
+    // (step 5) get app state variables
+    //          this runs separately from settings fetch since it requires the user's school
+    //          ** loading process complete **
 
     // this will run:
     // after logged in, after getting credentials, after loading settings
@@ -792,53 +851,26 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
         settings.userOnboarded,
     ]);
 
-    // auto app state updating
-    // React.useEffect(() => {
-    //     if (
-    //         apiSettings.ready &&
-    //         apiSettings.token &&
-    //         apiSettings.isLoggedIn &&
-    //         appState.needsUpdate
-    //     ) {
-    //         Promise.all([fetchAbsences(), fetchSettings(), getClassesToday()])
-    //             .then(([absences, newSettings, classesToday]) => {
-    //                 setAppState((oldAppState) => {
-    //                     const stateChanges = {
-    //                         ...oldAppState,
-    //                         needsUpdate: false,
-    //                     };
-    //                     if (absences !== null) stateChanges.absences = absences;
-    //                     if (classesToday !== null)
-    //                         stateChanges.blocksToday = classesToday;
-    //                     return stateChanges;
-    //                 });
-    //                 setSettings((oldSettings) => {
-    //                     const stateChanges = {
-    //                         ...oldSettings,
-    //                     };
-    //                     if (newSettings !== null) {
-    //                         stateChanges.uid = newSettings.uid;
-    //                         stateChanges.user = newSettings.user;
-    //                         stateChanges.schedule = newSettings.schedule;
-    //                     }
-    //                     return stateChanges;
-    //                 });
-    //             })
-    //             .catch((e) => {
-    //                 console.error('error fetching data on auto update', e);
-    //             });
-    //     }
-    // }, [
-    //     appState,
-    //     apiSettings.ready,
-    //     apiSettings.isLoggedIn,
-    //     apiSettings.token,
-    //     setAppState,
-    //     fetchAbsences,
-    //     getClassesToday,
-    //     fetchSettings,
-    //     setSettings,
-    // ]);
+    // auto state updating at midnight
+    // basically this should only run once the user is like super logged in and onboarded
+    React.useEffect(() => {
+        if (
+            apiSettings.isLoggedIn &&
+            settings.userOnboarded &&
+            settings.serverLoaded &&
+            // runs only when requested by AppStateContext updater
+            appState.needsUpdate
+        ) {
+            refreshData();
+        }
+    }, [
+        apiSettings.isLoggedIn,
+        settings.userOnboarded,
+        appState.needsUpdate,
+        settings.user.school,
+        refreshData,
+        settings.serverLoaded,
+    ]);
 
     const settingsProp: APIContextType = React.useMemo(
         () => ({
@@ -857,6 +889,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             saveAppSettings,
             saveFCMToken,
             deleteAccount,
+            refreshData,
         }),
         [
             apiSettings.ready,
@@ -874,6 +907,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             saveAppSettings,
             saveFCMToken,
             deleteAccount,
+            refreshData,
         ],
     );
 
