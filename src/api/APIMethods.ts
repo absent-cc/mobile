@@ -218,7 +218,7 @@ export async function fetchSettings(token: string): Promise<{
     const response = await getFromAPI(
         {
             method: 'GET',
-            path: '/users/me/info/',
+            path: '/users/me/',
             token,
         },
         'Fetch Settings',
@@ -258,46 +258,6 @@ export async function fetchSettings(token: string): Promise<{
                 DefaultAppSettings.sendNoAbsenceNotification,
         },
     };
-}
-
-export async function getClassesToday(
-    dateStr: string,
-    token: string,
-): Promise<Block[]> {
-    // const responseStr = await fetch(
-    //     url(
-    // `/teachers/classes?${new URLSearchParams({
-    //     date: dateStr,
-    // }).toString()}`,
-    //     ),
-    //     {
-    //         method: 'GET',
-    //         headers: getHeaders(token),
-    //     },
-    // );
-    // if (!responseStr.ok) {
-    //     throw new Error(
-    //         `getClassesToday failed with error ${
-    //             responseStr.status
-    //         }: ${await responseStr.text()}`,
-    //     );
-    // }
-
-    // const response = await responseStr.json();
-
-    // return response.classes;
-    const response = await getFromAPI(
-        {
-            method: 'GET',
-            path: `/teachers/classes?${new URLSearchParams({
-                date: dateStr,
-            }).toString()}`,
-            token,
-        },
-        'Fetch Classes Today',
-    );
-
-    return response.classes;
 }
 
 export async function fetchWeekSchedule(
@@ -408,7 +368,7 @@ export async function saveSettings(
     const response = await getFromAPI(
         {
             method: 'PUT',
-            path: '/users/me/update/',
+            path: '/users/me/',
             token,
             body: {
                 profile: convertedUserSettings,
@@ -501,7 +461,7 @@ export async function saveSchedule(
     const response = await getFromAPI(
         {
             method: 'PUT',
-            path: '/users/me/update/schedule/',
+            path: '/users/me/schedule/',
             token,
             body: convertedSchedule,
         },
@@ -570,7 +530,7 @@ export async function saveAppSettings(newSettings: AppSettings, token: string) {
     return getFromAPI(
         {
             method: 'PUT',
-            path: '/users/me/update/settings/',
+            path: '/users/me/settings/',
             token,
             body: convertedAppSettings,
         },
@@ -581,7 +541,7 @@ export async function saveAppSettings(newSettings: AppSettings, token: string) {
 export async function logout(token: string) {
     return getFromAPI(
         {
-            method: 'PUT',
+            method: 'DELETE',
             path: '/logout/',
             token,
         },
@@ -762,7 +722,7 @@ export async function saveFCMToken(fcmToken: string, token: string) {
     return getFromAPI(
         {
             method: 'PUT',
-            path: '/users/me/update/fcm/',
+            path: '/users/me/fcm/',
             token,
             body: {
                 token: fcmToken,
@@ -775,8 +735,8 @@ export async function saveFCMToken(fcmToken: string, token: string) {
 export async function deleteAccount(token: string) {
     return getFromAPI(
         {
-            method: 'PUT',
-            path: '/users/me/delete/',
+            method: 'DELETE',
+            path: '/users/me/',
             token,
         },
         'Delete Account',
