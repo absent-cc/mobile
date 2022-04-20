@@ -6,6 +6,7 @@ import PillButtons from '../components/button/PillButtons';
 import BlockCard from '../components/schedule/BlockCard';
 import { Block } from '../api/APITypes';
 import FullWeek from '../components/schedule/FullWeek';
+import PassingTimeCard from '../components/schedule/PassingTimeCard';
 
 function Schedule() {
     const [activeTab, setActiveTab] = React.useState(0);
@@ -16,13 +17,18 @@ function Schedule() {
         body = (
             <>
                 <BlockCard style={styles.blockCard} block={Block.A} />
+                <PassingTimeCard
+                    style={styles.blockCard}
+                    startTime="09:00:00"
+                    endTime="09:00:00"
+                />
                 <BlockCard style={styles.blockCard} block={Block.B} />
                 <BlockCard
                     style={styles.blockCard}
                     block={Block.C}
-                    isLunch
-                    isActive
-                    activeLunch={0}
+                    // isLunch
+                    // isActive
+                    // activeLunch={0}
                 />
                 <BlockCard style={styles.blockCard} block={Block.D} />
                 <BlockCard style={styles.blockCard} block={Block.E} />

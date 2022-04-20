@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
         padding: 4,
         aspectRatio: 1,
         marginRight: 20,
-        backgroundColor: Theme.primaryColor,
+        backgroundColor: Theme.lighterForeground,
         // backgroundColor: Theme.darkForeground,
         borderRadius: 20,
 
@@ -166,8 +166,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
 
-        borderWidth: 2,
-        borderColor: Theme.primaryColor,
+        // borderWidth: 2,
+        // borderColor: Theme.primaryColor,
     },
     activeBlockBox: {
         backgroundColor: Theme.primaryColor,
@@ -178,11 +178,11 @@ const styles = StyleSheet.create({
     },
     block: {
         fontFamily: Theme.strongFont,
-        color: Theme.foregroundAlternate,
+        color: Theme.darkForeground,
         fontSize: 50,
     },
     activeBlock: {
-        // color: Theme.foregroundAlternate,
+        color: Theme.foregroundAlternate,
     },
     adv: {
         fontFamily: Theme.strongFont,
