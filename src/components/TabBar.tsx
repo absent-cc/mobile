@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-    StyleSheet,
-    Text,
-    View,
-    Pressable,
-    TouchableOpacity,
-    Animated,
-} from 'react-native';
+import { StyleSheet, Text, View, Pressable, Animated } from 'react-native';
 import { Route } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -14,13 +7,13 @@ import Theme from '../Theme';
 
 function TabBar({
     state,
-    descriptors,
+    // descriptors,
     navigation,
     position,
     tabDisplay,
 }: {
     state: any;
-    descriptors: any;
+    // descriptors: any;
     navigation: any;
     position: Animated.AnimatedInterpolation;
     tabDisplay: Record<

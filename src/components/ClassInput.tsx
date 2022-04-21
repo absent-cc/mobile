@@ -5,7 +5,7 @@ import Theme from '../Theme';
 import { TeacherBlockFullNames } from '../Utils';
 import TextButton from './button/TextButton';
 import SwitchField from './input/Switch';
-import { Block, TeacherBlock } from '../api/APITypes';
+import { TeacherBlock } from '../api/APITypes';
 import TeacherField from './TeacherField';
 import ErrorCard from './card/ErrorCard';
 

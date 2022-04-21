@@ -5,7 +5,7 @@ import Theme from '../../Theme';
 import TextButton from '../../components/button/TextButton';
 import ClassInput from '../../components/ClassInput';
 import ExtraTeachers from '../../components/ExtraTeachers';
-import { Block, EditingSchedule, TeacherBlock } from '../../api/APITypes';
+import { EditingSchedule, TeacherBlock } from '../../api/APITypes';
 import { useSettings } from '../../state/SettingsContext';
 import { useAPI } from '../../api/APIContext';
 import { BlockIterator } from '../../Utils';

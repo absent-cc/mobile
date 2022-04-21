@@ -5,13 +5,11 @@ import { useAppState } from '../state/AppStateContext';
 import * as APIMethods from './APIMethods';
 import {
     AbsenceList,
-    Block,
     EditingSchedule,
     Schedule,
     UserSettings,
     WeekSchedule,
 } from './APITypes';
-import { formatISODate } from '../DateWordUtils';
 import {
     APIError,
     AuthenticationError,

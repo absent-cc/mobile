@@ -3,7 +3,7 @@ import { StyleSheet, Text, ScrollView } from 'react-native';
 import Theme from '../../Theme';
 import Divider from '../../components/Divider';
 import TextButton from '../../components/button/TextButton';
-import { Block, EditingSchedule, TeacherBlock } from '../../api/APITypes';
+import { EditingSchedule, TeacherBlock } from '../../api/APITypes';
 import { useSettings } from '../../state/SettingsContext';
 import { BlockIterator } from '../../Utils';
 import ErrorCard from '../../components/card/ErrorCard';

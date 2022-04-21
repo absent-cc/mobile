@@ -15,8 +15,8 @@ import RowButton from '../components/RowButton';
 import WithWaveHeader from '../components/header/WithWaveHeader';
 
 function Home({ navigation }: { navigation: any }) {
-    const { value: settings, setSettings } = useSettings();
-    const { value: appState, setAppState } = useAppState();
+    const { value: settings } = useSettings();
+    const { value: appState } = useAppState();
     const { refreshData } = useAPI();
 
     React.useEffect(() => {

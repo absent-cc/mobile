@@ -54,7 +54,7 @@ function Dropdown({
                 onPress={() => {
                     optionPress(index);
                 }}
-                key={index.toString()}
+                key={option}
             >
                 <Text style={[styles.optionText]}>{option}</Text>
             </Pressable>,

@@ -1,11 +1,7 @@
-import { Feather } from '@expo/vector-icons';
 import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
-import { AbsenceItem } from '../../AbsenceCalculator';
-import { Block } from '../../api/APITypes';
-import { toPrettyTime, toTimeString } from '../../DateWordUtils';
+import { toTimeString } from '../../DateWordUtils';
 import Theme from '../../Theme';
-import { TeacherBlockFullNames, ShortBlocks } from '../../Utils';
 
 function PassingTimeCard({
     style,

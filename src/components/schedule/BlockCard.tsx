@@ -1,14 +1,11 @@
-import { Feather } from '@expo/vector-icons';
 import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
-import { AbsenceItem } from '../../AbsenceCalculator';
-import { Block, DayBlock, LunchType, TeacherBlock } from '../../api/APITypes';
+import { DayBlock, LunchType } from '../../api/APITypes';
 import { toTimeString } from '../../DateWordUtils';
 import { TimeRelation } from '../../state/AppStateContext';
 import { useSettings } from '../../state/SettingsContext';
 import Theme from '../../Theme';
 import {
-    TeacherBlockFullNames,
     ShortBlocks,
     DayBlockFullNames,
     LunchNames,
@@ -167,26 +164,19 @@ const styles = StyleSheet.create({
     },
 
     blockBox: {
-        // width: 70,
-        // height: 70,
         flex: 1,
         padding: 4,
         aspectRatio: 1,
         marginRight: 20,
         backgroundColor: Theme.lighterForeground,
-        // backgroundColor: Theme.darkForeground,
         borderRadius: 20,
 
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-
-        // borderWidth: 2,
-        // borderColor: Theme.primaryColor,
     },
     activeBlockBox: {
         backgroundColor: Theme.primaryColor,
-        // borderColor: Theme.foregroundAlternate,
     },
     content: {
         flex: 4,
@@ -254,13 +244,8 @@ const styles = StyleSheet.create({
     midLunch: {
         marginHorizontal: 10,
     },
-    activeLunch: {
-        // backgroundColor: Theme.primaryColor,
-    },
+    activeLunch: {},
     currentLunch: {
-        // borderWidth: 2,
-        // borderColor: Theme.foregroundAlternate,
-        // borderColor: Theme.primaryColor,
         backgroundColor: Theme.primaryColor,
     },
     lunchDivider: {

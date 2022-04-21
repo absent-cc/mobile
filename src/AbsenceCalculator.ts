@@ -1,12 +1,10 @@
 import {
     AbsenceList,
     AbsentTeacher,
-    Block,
     Schedule,
     Teacher,
     TeacherBlock,
 } from './api/APITypes';
-import { isTeacherBlock } from './Utils';
 
 export type AbsenceItem = {
     block: TeacherBlock;

@@ -1,19 +1,10 @@
-import { Feather } from '@expo/vector-icons';
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
-import { AbsenceItem } from '../../AbsenceCalculator';
-import { Block, TeacherBlock } from '../../api/APITypes';
+import { View, StyleSheet } from 'react-native';
 import { TimeRelation, useAppState } from '../../state/AppStateContext';
-import Theme from '../../Theme';
-import {
-    TeacherBlockFullNames,
-    ShortBlocks,
-    DayBlockFullNames,
-} from '../../Utils';
 import BlockCard from './BlockCard';
 import PassingTimeCard from './PassingTimeCard';
 
-function TodaySchedule({ style }: { style?: any }) {
+function TodaySchedule(/* { style }: { style?: any } */) {
     const { value: appState } = useAppState();
 
     const body: React.ReactNode[] = [];

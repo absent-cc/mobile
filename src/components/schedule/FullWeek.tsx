@@ -1,12 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, Text, ActivityIndicator } from 'react-native';
-import { Block } from '../../api/APITypes';
-import {
-    sortTimeStrings,
-    timeBetweenTimeStrings,
-    toPrettyTime,
-    toTimeString,
-} from '../../DateWordUtils';
+import { toTimeString } from '../../DateWordUtils';
 import { useAppState } from '../../state/AppStateContext';
 import Theme from '../../Theme';
 import { ShortBlocks } from '../../Utils';
