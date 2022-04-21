@@ -15,8 +15,8 @@ function FullWeek({ style }: { style?: any }) {
     const { value: appState } = useAppState();
 
     const [tooSmall, setTooSmall] = React.useState<Record<string, number>>({});
-    const [minuteRatio, setMinuteRatio] = React.useState(1.2);
-    const [isLoading, setLoading] = React.useState(true);
+    const [minuteRatio, setMinuteRatio] = React.useState(1);
+    const [isLoading, setLoading] = React.useState(false);
     const minDiffToPx = (minDiff: number) => minDiff * minuteRatio;
 
     // const firstStartTime = sortTimeStrings(
@@ -102,22 +102,36 @@ function FullWeek({ style }: { style?: any }) {
                                 // so there's a little 2 pixel tolerance
                                 // for some reason, real height reads 120.5 while height is 120.25
                                 if (realHeight > height + 2) {
-                                    console.log(realHeight, height);
                                     if (tooSmall[blockKey] === 2) {
                                         // make everything bigger if we have to
-                                        setMinuteRatio(realHeight / minDiff);
+                                        console.log(
+                                            blockKey,
+                                            'had problem with',
+                                            realHeight,
+                                            height,
+                                        );
+                                        // setMinuteRatio(realHeight / minDiff);
+                                        setTimeout(() => {
+                                            setMinuteRatio(
+                                                realHeight / minDiff,
+                                            );
+                                        }, 3000);
                                     } else if (tooSmall[blockKey] === 1) {
                                         // try removing times
-                                        setTooSmall((newTooSmall) => ({
-                                            ...newTooSmall,
-                                            [blockKey]: 2,
-                                        }));
+                                        setTimeout(() => {
+                                            setTooSmall((newTooSmall) => ({
+                                                ...newTooSmall,
+                                                [blockKey]: 2,
+                                            }));
+                                        }, 3000);
                                     } else {
                                         // try making it small
-                                        setTooSmall((newTooSmall) => ({
-                                            ...newTooSmall,
-                                            [blockKey]: 1,
-                                        }));
+                                        setTimeout(() => {
+                                            setTooSmall((newTooSmall) => ({
+                                                ...newTooSmall,
+                                                [blockKey]: 1,
+                                            }));
+                                        }, 3000);
                                     }
                                 }
                             }}

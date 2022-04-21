@@ -59,7 +59,7 @@ const WithWaveHeader = React.forwardRef(
                                 appState.value.tallestWaveHeader +
                                     insets.top +
                                     scrollHeight +
-                                    20,
+                                    80,
                                 insets.top,
                             ),
                         },

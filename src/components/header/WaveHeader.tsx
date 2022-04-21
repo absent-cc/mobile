@@ -25,7 +25,7 @@ function WaveHeader({
                 style,
                 styles.container,
                 {
-                    minHeight: Math.max(250, appState.value.tallestWaveHeader),
+                    minHeight: Math.max(150, appState.value.tallestWaveHeader),
                 },
             ]}
             onLayout={(event: any) => {
@@ -71,7 +71,7 @@ function WaveHeader({
 const styles = StyleSheet.create({
     container: {
         width: '100%',
-        justifyContent: 'flex-end',
+        justifyContent: 'center',
     },
     wave: {
         width: '100%',
@@ -82,9 +82,9 @@ const styles = StyleSheet.create({
         fontFamily: Theme.headerFont,
         color: Theme.foregroundAlternate,
         fontSize: 38,
-        marginTop: 50,
+        marginTop: 20,
         marginHorizontal: 30,
-        marginBottom: 100,
+        marginBottom: 50,
     },
     headerWithRightIcon: {
         paddingRight: 30,

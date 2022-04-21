@@ -44,7 +44,7 @@ export const defaultState: AppStateType = {
     teacherBlocksToday: [],
     dayBlocksToday: [],
     lastUpdateTime: new Date(0),
-    tallestWaveHeader: 250,
+    tallestWaveHeader: 150,
     dateToday: formatISODate(new Date()),
     weekSchedule: {},
     current: {

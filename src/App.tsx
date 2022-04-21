@@ -14,6 +14,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as Updates from 'expo-updates';
 import messaging from '@react-native-firebase/messaging';
+import { Feather } from '@expo/vector-icons';
 import Welcome from './pages/Welcome';
 import Settings from './pages/Settings';
 import AppSettings from './pages/settings/AppSettings';
@@ -36,6 +37,7 @@ const Stack = createStackNavigator();
 
 function App() {
     const [fontsLoaded] = useFonts({
+        ...Feather.font,
         Inter_400Regular,
         Inter_700Bold,
         Inter_600SemiBold,
