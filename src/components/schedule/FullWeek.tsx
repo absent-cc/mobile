@@ -30,7 +30,7 @@ function FullWeek({ style }: { style?: any }) {
         Object.entries(appState.weekSchedule)
             // get start times
             .map(([, daySchedule]) => {
-                return daySchedule.schedule[0].startTime;
+                return daySchedule.schedule[0]?.startTime ?? 0;
             })
             // remove zeroes (broken times)
             .filter((el) => el !== 0)
@@ -48,8 +48,10 @@ function FullWeek({ style }: { style?: any }) {
         Object.entries(appState.weekSchedule)
             // get start times
             .map(([, daySchedule]) => {
-                return daySchedule.schedule[daySchedule.schedule.length - 1]
-                    .endTime;
+                return (
+                    daySchedule.schedule[daySchedule.schedule.length - 1]
+                        ?.endTime ?? 0
+                );
             })
             // remove zeroes (broken times)
             .filter((el) => el !== 0)
@@ -188,9 +190,9 @@ function FullWeek({ style }: { style?: any }) {
 
             if (dayBody.length === 0) {
                 dayBody = [
-                    <Text style={[styles.block]} key="noschool">
-                        No school.
-                    </Text>,
+                    <View style={[styles.noSchoolContainer]} key="noschool">
+                        <Text style={[styles.noSchool]}>No school.</Text>
+                    </View>,
                 ];
             }
 
@@ -293,6 +295,16 @@ const styles = StyleSheet.create({
         left: 0,
         backgroundColor: Theme.backgroundColor,
         paddingTop: 50,
+    },
+    noSchoolContainer: {
+        height: '100%',
+        borderBottomWidth: 2,
+        borderColor: blockLineColor,
+        padding: 5,
+    },
+    noSchool: {
+        fontFamily: Theme.regularFont,
+        fontSize: 16,
     },
 });
 
