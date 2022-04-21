@@ -223,6 +223,7 @@ const styles = StyleSheet.create({
         fontFamily: Theme.regularFont,
         // marginTop: 10,
         fontSize: 20,
+        color: Theme.darkForeground,
     },
     activeNote: {
         color: Theme.foregroundAlternate,
@@ -236,7 +237,7 @@ const styles = StyleSheet.create({
     lunchName: {
         fontFamily: Theme.strongFont,
         fontSize: 20,
-        color: Theme.foregroundColor,
+        color: Theme.darkForeground,
     },
     activeLunchName: {
         color: Theme.foregroundAlternate,
