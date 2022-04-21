@@ -82,7 +82,7 @@ export type DayBlock = {
     block: Block;
     startTime: number;
     endTime: number;
-    lunches: Lunch[];
+    lunches: Lunch[] | null;
 };
 
 export type DaySchedule = {

@@ -3,6 +3,7 @@ import {
     DaySchedule,
     EditingSchedule,
     Grade,
+    LunchType,
     Schedule,
     SchoolName,
     TeacherBlock,
@@ -46,8 +47,8 @@ export const ShortBlocks: Record<Block, string> = {
     G: 'G',
     ADVISORY: 'ADV',
     WIN: 'WIN',
-    LION: 'LI',
-    TIGER: 'TIG',
+    LION: 'LION',
+    TIGER: 'TIGR',
 };
 
 // used in the "the blocks today are" on the home page
@@ -78,6 +79,13 @@ export const DayBlockFullNames: Record<Block, string> = {
     WIN: 'WIN',
     LION: 'Lion',
     TIGER: 'Tiger',
+};
+
+// lunch names
+export const LunchNames: Record<LunchType, string> = {
+    L1: '1st',
+    L2: '2nd',
+    L3: '3rd',
 };
 
 export const EmptySchedule: Schedule = {
@@ -210,6 +218,10 @@ export const isTeacherBlock = (block: Block): boolean => {
     return block !== Block.WIN && block !== Block.LION && block !== Block.TIGER;
 };
 
+export const toTeacherBlockUnsafe = (block: Block): TeacherBlock => {
+    return block as unknown as TeacherBlock;
+};
+
 export const extractTeacherBlocks = (
     schedule: DaySchedule | undefined,
 ): TeacherBlock[] => {
@@ -231,4 +243,13 @@ export const extractDayBlocks = (
     if (!schedule) return [];
 
     return schedule.schedule.map(({ block }) => block);
+};
+
+export const isLongShortBlockName = (block: Block): boolean => {
+    return (
+        block === Block.WIN ||
+        block === Block.LION ||
+        block === Block.TIGER ||
+        block === Block.ADVISORY
+    );
 };

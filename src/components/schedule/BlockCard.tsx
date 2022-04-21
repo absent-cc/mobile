@@ -2,27 +2,45 @@ import { Feather } from '@expo/vector-icons';
 import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { AbsenceItem } from '../../AbsenceCalculator';
-import { Block, TeacherBlock } from '../../api/APITypes';
+import { Block, DayBlock, LunchType, TeacherBlock } from '../../api/APITypes';
+import { toTimeString } from '../../DateWordUtils';
+import { TimeRelation } from '../../state/AppStateContext';
+import { useSettings } from '../../state/SettingsContext';
 import Theme from '../../Theme';
 import {
     TeacherBlockFullNames,
     ShortBlocks,
     DayBlockFullNames,
+    LunchNames,
+    isLongShortBlockName,
+    isTeacherBlock,
+    toTeacherBlockUnsafe,
 } from '../../Utils';
 
 function BlockCard({
     style,
-    isLunch = false,
+    dayBlock,
     activeLunch,
     isActive = false,
-    block,
+    activeLunchRelation,
 }: {
     style?: any;
-    isLunch?: boolean;
-    activeLunch?: number;
-    isActive?: boolean;
-    block: Block;
+    dayBlock: DayBlock;
+    activeLunch: LunchType | null;
+    isActive: boolean;
+    activeLunchRelation: TimeRelation | null;
 }) {
+    const { value: settings } = useSettings();
+    let teacherName = null;
+    if (isTeacherBlock(dayBlock.block)) {
+        teacherName = settings.schedule[
+            toTeacherBlockUnsafe(dayBlock.block)
+        ].reduce(
+            (prev, curr) => `${prev}${prev.length > 0 ? '\n' : ''}${curr.name}`,
+            '',
+        );
+    }
+
     return (
         <View
             style={[
@@ -36,102 +54,91 @@ function BlockCard({
                     style={[styles.blockBox, isActive && styles.activeBlockBox]}
                 >
                     <Text
-                        style={[styles.block, isActive && styles.activeBlock]}
+                        style={[
+                            styles.block,
+                            isLongShortBlockName(dayBlock.block) &&
+                                styles.smallBlockName,
+                            isActive && styles.activeBlock,
+                        ]}
+                        allowFontScaling={false}
                     >
-                        {ShortBlocks[block]}
+                        {ShortBlocks[dayBlock.block]}
                     </Text>
                 </View>
                 <View style={styles.content}>
                     <Text style={[styles.name, isActive && styles.activeName]}>
-                        {DayBlockFullNames[block]}
+                        {DayBlockFullNames[dayBlock.block]}
                     </Text>
                     <Text style={[styles.time, isActive && styles.activeTime]}>
-                        9:00 - 10:15
+                        {toTimeString(dayBlock.startTime)}
+                        {' - '}
+                        {toTimeString(dayBlock.endTime)}
                     </Text>
-                    <Text style={[styles.note, isActive && styles.activeNote]}>
-                        Ryan Normandin
-                    </Text>
+                    {teacherName && (
+                        <Text
+                            style={[styles.note, isActive && styles.activeNote]}
+                        >
+                            {teacherName}
+                        </Text>
+                    )}
                 </View>
             </View>
-            {isLunch && (
+            {dayBlock.lunches && (
                 <View style={[styles.row, styles.lunchRow]}>
-                    <View
-                        style={[
-                            styles.lunchBox,
-                            isActive && styles.activeLunch,
-                            activeLunch === 0 && styles.currentLunch,
-                        ]}
-                    >
-                        <Text
-                            style={[
-                                styles.lunchName,
-                                activeLunch === 0 && styles.activeLunchName,
-                            ]}
-                        >
-                            1st
-                        </Text>
-                        <Text
-                            style={[
-                                styles.lunchTime,
-                                activeLunch === 0 && styles.activeLunchTime,
-                            ]}
-                        >
-                            9:00 - 10:15
-                        </Text>
-                    </View>
-                    <View style={[styles.lunchDivider]} />
-                    <View
-                        style={[
-                            styles.lunchBox,
-                            // styles.midLunch,
-                            isActive && styles.activeLunch,
-                            activeLunch === 1 && styles.currentLunch,
-                        ]}
-                    >
-                        <Text
-                            style={[
-                                styles.lunchName,
-                                activeLunch === 1 && styles.activeLunchName,
-                            ]}
-                        >
-                            2nd
-                        </Text>
-                        <Text
-                            style={[
-                                styles.lunchTime,
-                                activeLunch === 1 && styles.activeLunchTime,
-                            ]}
-                        >
-                            9:00 - 10:15
-                        </Text>
-                    </View>
-                    <View
-                        style={[styles.lunchDivider, styles.lunchDividerActive]}
-                    />
-                    <View
-                        style={[
-                            styles.lunchBox,
-                            isActive && styles.activeLunch,
-                            activeLunch === 2 && styles.currentLunch,
-                        ]}
-                    >
-                        <Text
-                            style={[
-                                styles.lunchName,
-                                activeLunch === 2 && styles.activeLunchName,
-                            ]}
-                        >
-                            3rd
-                        </Text>
-                        <Text
-                            style={[
-                                styles.lunchTime,
-                                activeLunch === 2 && styles.activeLunchTime,
-                            ]}
-                        >
-                            9:00 - 10:15
-                        </Text>
-                    </View>
+                    {dayBlock.lunches.map((lunch, index) => (
+                        <React.Fragment key={lunch.lunch}>
+                            <View
+                                style={[
+                                    styles.lunchBox,
+                                    isActive && styles.activeLunch,
+                                    activeLunch === lunch.lunch &&
+                                        activeLunchRelation ===
+                                            TimeRelation.Current &&
+                                        styles.currentLunch,
+                                ]}
+                            >
+                                <Text
+                                    style={[
+                                        styles.lunchName,
+                                        activeLunch === lunch.lunch &&
+                                            activeLunchRelation ===
+                                                TimeRelation.Current &&
+                                            styles.activeLunchName,
+                                    ]}
+                                >
+                                    {LunchNames[lunch.lunch]}
+                                </Text>
+                                <Text
+                                    style={[
+                                        styles.lunchTime,
+                                        activeLunch === lunch.lunch &&
+                                            activeLunchRelation ===
+                                                TimeRelation.Current &&
+                                            styles.activeLunchTime,
+                                    ]}
+                                >
+                                    {toTimeString(lunch.startTime)}
+                                    {' - '}
+                                    {toTimeString(lunch.endTime)}
+                                </Text>
+                            </View>
+
+                            {
+                                // the ?? 0 is so typescript doesn't complain about it being null
+                                index < (dayBlock.lunches?.length ?? 0) - 1 && (
+                                    <View
+                                        style={[
+                                            styles.lunchDivider,
+                                            activeLunch === lunch.lunch &&
+                                                activeLunchRelation ===
+                                                    TimeRelation.After &&
+                                                styles.lunchDividerActive,
+                                        ]}
+                                    />
+                                )
+                            }
+                        </React.Fragment>
+                    ))}
                 </View>
             )}
         </View>
@@ -192,9 +199,7 @@ const styles = StyleSheet.create({
     activeBlock: {
         color: Theme.foregroundAlternate,
     },
-    adv: {
-        fontFamily: Theme.strongFont,
-        color: Theme.foregroundAlternate,
+    smallBlockName: {
         fontSize: 25,
     },
     name: {

@@ -23,7 +23,9 @@ function TeacherCard({
         boxContent = <Feather name="plus" style={styles.icon} size={40} />;
     } else {
         boxContent = (
-            <Text style={styles.block}>{ShortBlocks[absenceItem.block]}</Text>
+            <Text style={styles.block} allowFontScaling={false}>
+                {ShortBlocks[absenceItem.block]}
+            </Text>
         );
     }
 

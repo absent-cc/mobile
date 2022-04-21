@@ -46,7 +46,6 @@ export interface APIContextType {
     logout: () => Promise<void>;
     login: (accessToken: string) => Promise<void>;
     searchTeachers: (searchString: string) => Promise<string[] | null>;
-    getClassesToday: () => Promise<Block[] | null>;
     fetchWeekSchedule: () => Promise<WeekSchedule | null>;
     isRealTeacher: (partialName: string) => Promise<{
         isReal: boolean;
@@ -73,7 +72,6 @@ const APIContext = React.createContext<APIContextType>({
     logout: async () => undefined,
     login: async () => undefined,
     searchTeachers: async () => null,
-    getClassesToday: async () => null,
     fetchWeekSchedule: async () => null,
     isRealTeacher: async () => null,
     saveSettings: async () => false,
@@ -561,28 +559,6 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
         [verifyToken, schoolName, parseError],
     );
 
-    const getClassesToday = React.useCallback(
-        async (hasRetried = false): Promise<Block[] | null> => {
-            const token = await verifyToken(hasRetried);
-            if (token === null) return null;
-
-            try {
-                return await APIMethods.getClassesToday(dateStr, token);
-            } catch (err: any) {
-                const shouldRetry = parseError(
-                    err,
-                    hasRetried,
-                    'Get Classes Today',
-                );
-                if (shouldRetry) {
-                    return getClassesToday(true);
-                }
-                return null;
-            }
-        },
-        [verifyToken, dateStr, parseError],
-    );
-
     const fetchWeekSchedule = React.useCallback(
         async (hasRetried = false): Promise<WeekSchedule | null> => {
             const token = await verifyToken(hasRetried);
@@ -692,7 +668,6 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                         ...oldAppState,
                         needsUpdate: false,
                     };
-                    console.log(weekSchedule);
                     if (absences !== null) stateChanges.absences = absences;
                     if (weekSchedule !== null)
                         stateChanges.weekSchedule = weekSchedule;
@@ -910,7 +885,6 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             logout,
             login,
             searchTeachers,
-            getClassesToday,
             isRealTeacher,
             saveSettings,
             saveSchedule,
@@ -929,7 +903,6 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             logout,
             login,
             searchTeachers,
-            getClassesToday,
             isRealTeacher,
             saveSettings,
             saveSchedule,

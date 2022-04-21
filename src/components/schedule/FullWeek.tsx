@@ -107,8 +107,8 @@ const SampleSched = {
 function FullWeek({ style }: { style?: any }) {
     const { value: appState } = useAppState();
 
-    const [tooSmall, setTooSmall] = React.useState<Record<string, boolean>>({});
-    const [minuteRatio, setMinuteRatio] = React.useState(1.5);
+    const [tooSmall, setTooSmall] = React.useState<Record<string, number>>({});
+    const [minuteRatio, setMinuteRatio] = React.useState(1.2);
     const [isLoading, setLoading] = React.useState(true);
     const minDiffToPx = (minDiff: number) => minDiff * minuteRatio;
 
@@ -195,31 +195,52 @@ function FullWeek({ style }: { style?: any }) {
                                 // so there's a little 2 pixel tolerance
                                 // for some reason, real height reads 120.5 while height is 120.25
                                 if (realHeight > height + 2) {
-                                    if (tooSmall[blockKey]) {
+                                    console.log(realHeight, height);
+                                    if (tooSmall[blockKey] === 2) {
+                                        // make everything bigger if we have to
                                         setMinuteRatio(realHeight / minDiff);
-                                    } else {
+                                    } else if (tooSmall[blockKey] === 1) {
+                                        // try removing times
                                         setTooSmall((newTooSmall) => ({
                                             ...newTooSmall,
-                                            [blockKey]: true,
+                                            [blockKey]: 2,
+                                        }));
+                                    } else {
+                                        // try making it small
+                                        setTooSmall((newTooSmall) => ({
+                                            ...newTooSmall,
+                                            [blockKey]: 1,
                                         }));
                                     }
                                 }
                             }}
                         >
                             <View style={styles.blockContent}>
-                                <Text style={styles.blockText}>
+                                <Text
+                                    style={[
+                                        styles.blockText,
+                                        tooSmall[blockKey] > 0 &&
+                                            styles.smallBlockText,
+                                    ]}
+                                >
                                     {ShortBlocks[block.block]}
                                 </Text>
-                                {!tooSmall[blockKey] && (
-                                    <Text style={styles.time}>
+                                {!(tooSmall[blockKey] === 2) && (
+                                    <Text
+                                        style={[
+                                            styles.time,
+                                            tooSmall[blockKey] > 0 &&
+                                                styles.smallTime,
+                                        ]}
+                                    >
                                         {toTimeString(block.startTime)}
                                         {' - '}
                                         {toTimeString(block.endTime)}
                                     </Text>
                                 )}
-                                {block.lunches && block.lunches?.length > 0 && (
+                                {/* {block.lunches && block.lunches?.length > 0 && (
                                     <Text style={styles.lunchLink}>Lunch</Text>
-                                )}
+                                )} */}
                             </View>
                         </View>
 
@@ -280,33 +301,35 @@ function FullWeek({ style }: { style?: any }) {
     );
 }
 
+const blockLineColor = Theme.primaryColor;
+
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: Theme.primaryColor,
+        backgroundColor: Theme.lighterForeground,
         flexDirection: 'row',
         alignItems: 'flex-start',
         borderWidth: 2,
         borderBottomWidth: 0,
         borderRightWidth: 0,
-        borderColor: Theme.primaryColor,
+        borderColor: blockLineColor,
     },
     day: {
-        borderColor: Theme.primaryColor,
+        borderColor: blockLineColor,
         flex: 1,
     },
     dayDivider: {
         width: 2,
         flex: 0,
-        backgroundColor: Theme.primaryColor,
+        backgroundColor: blockLineColor,
     },
     blockDivider: {
-        // borderTopWidth: 2,
-        // borderBottomWidth: 2,
-        borderColor: Theme.primaryColor,
+        borderTopWidth: 2,
+        borderBottomWidth: 2,
+        borderColor: blockLineColor,
     },
     blockFlexDivider: {
-        // borderTopWidth: 2,
-        borderColor: Theme.primaryColor,
+        borderTopWidth: 2,
+        borderColor: blockLineColor,
         flex: 1,
     },
     block: {
@@ -320,13 +343,19 @@ const styles = StyleSheet.create({
     blockText: {
         fontFamily: Theme.strongFont,
         color: Theme.foregroundColor,
-        fontSize: 22,
+        fontSize: 20,
+    },
+    smallBlockText: {
+        fontSize: 16,
     },
     time: {
         fontFamily: Theme.regularFont,
         fontSize: 16,
         color: Theme.darkForeground,
         marginTop: 0,
+    },
+    smallTime: {
+        fontSize: 13,
     },
     lunchLink: {
         fontFamily: Theme.regularFont,

@@ -301,7 +301,7 @@ export async function fetchWeekSchedule(
     const result: WeekSchedule = {};
 
     const convertSpecialBlocks = (block: string) => {
-        if (block === 'EXTRA')
+        if (block === 'CAT')
             return school === SchoolName.NSHS ? Block.LION : Block.TIGER;
 
         return block as Block;

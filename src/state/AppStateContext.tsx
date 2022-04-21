@@ -69,7 +69,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     React.useEffect(() => {
         // debug mode
         const loopStartTime = Date.now();
-        const virtualStartTime = new Date(2022, 3, 13, 23, 59, 45).getTime();
+        const virtualStartTime = new Date(2022, 3, 12, 16, 22, 45).getTime();
 
         const update = () => {
             setAppState((oldAppState) => {
@@ -79,7 +79,6 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
                     Date.now() - loopStartTime + virtualStartTime,
                 );
                 const nowMinRep = now.getHours() * 60 + now.getMinutes();
-                console.log('running loop at', now.toString(), nowMinRep);
 
                 const stateChanges: AppStateType = {
                     ...oldAppState,
@@ -128,7 +127,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
                         }
 
                         // keep moving up the lastBlockIndex until it's not applicable
-                        if (nowMinRep <= dayBlock.startTime) {
+                        if (nowMinRep >= dayBlock.startTime) {
                             lastBlockIndex = i;
 
                             // if we find it inside the block, then stop
@@ -159,7 +158,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
                                 const lunchBlock = currentBlock.lunches[i];
 
                                 // keep moving up the lastLunchIndex until it's not applicable
-                                if (nowMinRep <= lunchBlock.startTime) {
+                                if (nowMinRep >= lunchBlock.startTime) {
                                     lastLunchIndex = i;
 
                                     // if we find it inside the block, then stop
@@ -181,13 +180,11 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
                         lunch:
                             // get current lunch id but make it null if lastLunchIndex is wrong for some reason
                             lastLunchIndex > -1
-                                ? currentBlock.lunches[lastLunchIndex].lunch ??
-                                  null
+                                ? currentBlock.lunches?.[lastLunchIndex]
+                                      ?.lunch ?? null
                                 : null,
                         lunchRelation,
                     };
-
-                    console.log(stateChanges.current);
                 }
 
                 return stateChanges;

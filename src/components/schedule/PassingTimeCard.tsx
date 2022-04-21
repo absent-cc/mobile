@@ -3,7 +3,7 @@ import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { AbsenceItem } from '../../AbsenceCalculator';
 import { Block } from '../../api/APITypes';
-import { toPrettyTime } from '../../DateWordUtils';
+import { toPrettyTime, toTimeString } from '../../DateWordUtils';
 import Theme from '../../Theme';
 import { TeacherBlockFullNames, ShortBlocks } from '../../Utils';
 
@@ -13,14 +13,14 @@ function PassingTimeCard({
     endTime,
 }: {
     style?: any;
-    startTime: string;
-    endTime: string;
+    startTime: number;
+    endTime: number;
 }) {
     return (
         <View style={[style, styles.container]}>
             <Text style={styles.text}>Passing Time</Text>
             <Text style={styles.time}>
-                {toPrettyTime(startTime)} - {toPrettyTime(endTime)}
+                {toTimeString(startTime)} - {toTimeString(endTime)}
             </Text>
         </View>
     );
@@ -48,6 +48,7 @@ const styles = StyleSheet.create({
         color: Theme.lighterForeground,
         fontSize: 20,
         flex: 0,
+        marginLeft: 10,
     },
 });
 
