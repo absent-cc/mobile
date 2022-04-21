@@ -49,7 +49,7 @@ function Header({
 const styles = StyleSheet.create({
     container: {
         width: '100%',
-        minHeight: 180,
+        minHeight: 150,
         justifyContent: 'flex-end',
     },
     header: {

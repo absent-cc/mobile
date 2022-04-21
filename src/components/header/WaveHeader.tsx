@@ -82,9 +82,9 @@ const styles = StyleSheet.create({
         fontFamily: Theme.headerFont,
         color: Theme.foregroundAlternate,
         fontSize: 38,
-        marginTop: 20,
+        marginTop: 18,
         marginHorizontal: 30,
-        marginBottom: 50,
+        marginBottom: 52,
     },
     headerWithRightIcon: {
         paddingRight: 30,
