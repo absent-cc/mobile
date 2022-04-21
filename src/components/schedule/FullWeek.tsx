@@ -227,22 +227,23 @@ function FullWeek({ style }: { style?: any }) {
                 );
             });
 
+            const currentTime =
+                appState.lastUpdateTime.getHours() * 60 +
+                appState.lastUpdateTime.getMinutes();
             if (dayBody.length === 0) {
                 dayBody = [
                     <View style={[styles.noSchoolContainer]} key="noschool">
                         <Text style={[styles.noSchool]}>No school.</Text>
                     </View>,
                 ];
-            } else if (isTodayActive) {
-                const currentTime =
-                    appState.lastUpdateTime.getHours() * 60 +
-                    appState.lastUpdateTime.getMinutes();
-
+            } else if (isTodayActive && currentTime < lastBlockEndTime) {
                 dayBody.push(
                     <View
                         style={[
                             styles.timeIndicator,
-                            { top: minDiffToPx(currentTime - firstStartTime) },
+                            {
+                                top: minDiffToPx(currentTime - firstStartTime),
+                            },
                         ]}
                     />,
                 );
@@ -259,24 +260,16 @@ function FullWeek({ style }: { style?: any }) {
                     />,
                 );
             } else {
-                const currentTime =
-                    appState.lastUpdateTime.getHours() * 60 +
-                    appState.lastUpdateTime.getMinutes();
-
-                if (currentTime < lastBlockEndTime) {
-                    dayBody.push(
-                        <View
-                            style={[
-                                styles.fullTimeIndicator,
-                                {
-                                    top: minDiffToPx(
-                                        currentTime - firstStartTime,
-                                    ),
-                                },
-                            ]}
-                        />,
-                    );
-                }
+                dayBody.push(
+                    <View
+                        style={[
+                            styles.fullTimeIndicator,
+                            {
+                                top: minDiffToPx(currentTime - firstStartTime),
+                            },
+                        ]}
+                    />,
+                );
             }
 
             return (
