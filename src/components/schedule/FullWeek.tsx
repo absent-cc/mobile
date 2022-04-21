@@ -1,5 +1,11 @@
 import React from 'react';
-import { View, StyleSheet, Text, ActivityIndicator } from 'react-native';
+import {
+    View,
+    StyleSheet,
+    Text,
+    ActivityIndicator,
+    Dimensions,
+} from 'react-native';
 import { toTimeString } from '../../DateWordUtils';
 import { useAppState } from '../../state/AppStateContext';
 import Theme from '../../Theme';
@@ -8,17 +14,7 @@ import { ShortBlocks } from '../../Utils';
 function FullWeek({ style }: { style?: any }) {
     const { value: appState } = useAppState();
 
-    const [tooSmall, setTooSmall] = React.useState<Record<string, number>>({});
-    const [minuteRatio, setMinuteRatio] = React.useState(1);
-    const [isLoading, setLoading] = React.useState(false);
-    const minDiffToPx = (minDiff: number) => minDiff * minuteRatio;
-
-    // const firstStartTime = sortTimeStrings(
-    //     Object.entries(SampleSched).map(([, blocks]) => {
-    //         return blocks[0].startTime;
-    //     }),
-    //     true,
-    // )[0];
+    const windowHeight = Dimensions.get('window').height;
 
     const firstStartTime =
         Object.entries(appState.weekSchedule)
@@ -30,13 +26,6 @@ function FullWeek({ style }: { style?: any }) {
             .filter((el) => el !== 0)
             // sort ascending and get first
             .sort((a, b) => a - b)[0] ?? 0;
-
-    // const lastEndTime = sortTimeStrings(
-    //     Object.entries(SampleSched).map(([, blocks]) => {
-    //         return blocks[blocks.length - 1].endTime;
-    //     }),
-    //     false,
-    // )[0];
 
     const lastEndTime =
         Object.entries(appState.weekSchedule)
@@ -51,6 +40,27 @@ function FullWeek({ style }: { style?: any }) {
             .filter((el) => el !== 0)
             // sort descending and get first
             .sort((a, b) => b - a)[0] ?? 0;
+
+    // const [tooSmall, setTooSmall] = React.useState<Record<string, number>>({});
+    const tooSmall = React.useRef<Record<string, number>>({});
+    // the ideal ratio is about 0.7 of the screen
+    const [minuteRatio, setMinuteRatio] = React.useState(
+        (0.7 * windowHeight) / (lastEndTime - firstStartTime),
+    );
+    // const [minuteRatio, setMinuteRatio] = React.useState(1);
+    const [isLoading, setLoading] = React.useState(true);
+    const minDiffToPx = (minDiff: number) => minDiff * minuteRatio;
+
+    const [, forceUpdate] = React.useReducer((x) => x + 1, 0);
+    const renderTimeout = React.useRef<NodeJS.Timeout | null>(null);
+    const loadingTimeout = React.useRef<NodeJS.Timeout | null>(null);
+    const rerenderSchedule = () => {
+        forceUpdate();
+        if (loadingTimeout.current) {
+            clearTimeout(loadingTimeout.current);
+        }
+        loadingTimeout.current = setTimeout(() => setLoading(false), 50);
+    };
 
     const body = Object.entries(appState.weekSchedule).map(
         ([day, daySchedule]) => {
@@ -98,37 +108,28 @@ function FullWeek({ style }: { style?: any }) {
                                 // so there's a little 2 pixel tolerance
                                 // for some reason, real height reads 120.5 while height is 120.25
                                 if (realHeight > height + 2) {
-                                    if (tooSmall[blockKey] === 2) {
+                                    if (tooSmall.current[blockKey] === 2) {
                                         // make everything bigger if we have to
-                                        console.log(
-                                            blockKey,
-                                            'had problem with',
-                                            realHeight,
-                                            height,
-                                        );
-                                        // setMinuteRatio(realHeight / minDiff);
-                                        setTimeout(() => {
-                                            setMinuteRatio(
-                                                realHeight / minDiff,
-                                            );
-                                        }, 3000);
-                                    } else if (tooSmall[blockKey] === 1) {
+                                        setMinuteRatio(realHeight / minDiff);
+                                        tooSmall.current = {};
+                                    } else if (
+                                        tooSmall.current[blockKey] === 1
+                                    ) {
                                         // try removing times
-                                        setTimeout(() => {
-                                            setTooSmall((newTooSmall) => ({
-                                                ...newTooSmall,
-                                                [blockKey]: 2,
-                                            }));
-                                        }, 3000);
+                                        tooSmall.current[blockKey] = 2;
                                     } else {
                                         // try making it small
-                                        setTimeout(() => {
-                                            setTooSmall((newTooSmall) => ({
-                                                ...newTooSmall,
-                                                [blockKey]: 1,
-                                            }));
-                                        }, 3000);
+                                        tooSmall.current[blockKey] = 1;
                                     }
+
+                                    // once all the updates are done, rerender with the new values
+                                    if (renderTimeout.current) {
+                                        clearTimeout(renderTimeout.current);
+                                    }
+                                    renderTimeout.current = setTimeout(
+                                        rerenderSchedule,
+                                        5,
+                                    );
                                 }
                             }}
                         >
@@ -136,17 +137,17 @@ function FullWeek({ style }: { style?: any }) {
                                 <Text
                                     style={[
                                         styles.blockText,
-                                        tooSmall[blockKey] > 0 &&
+                                        tooSmall.current[blockKey] > 0 &&
                                             styles.smallBlockText,
                                     ]}
                                 >
                                     {ShortBlocks[block.block]}
                                 </Text>
-                                {!(tooSmall[blockKey] === 2) && (
+                                {!(tooSmall.current[blockKey] === 2) && (
                                     <Text
                                         style={[
                                             styles.time,
-                                            tooSmall[blockKey] > 0 &&
+                                            tooSmall.current[blockKey] > 0 &&
                                                 styles.smallTime,
                                         ]}
                                     >
@@ -198,10 +199,6 @@ function FullWeek({ style }: { style?: any }) {
             );
         },
     );
-
-    React.useEffect(() => {
-        setTimeout(() => setLoading(false), 150);
-    });
 
     return (
         <>
