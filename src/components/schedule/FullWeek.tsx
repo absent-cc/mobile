@@ -7,7 +7,7 @@ import {
     Dimensions,
 } from 'react-native';
 import { toTimeString } from '../../DateWordUtils';
-import { useAppState } from '../../state/AppStateContext';
+import { TimeRelation, useAppState } from '../../state/AppStateContext';
 import Theme from '../../Theme';
 import { ShortBlocks } from '../../Utils';
 
@@ -41,13 +41,11 @@ function FullWeek({ style }: { style?: any }) {
             // sort descending and get first
             .sort((a, b) => b - a)[0] ?? 0;
 
-    // const [tooSmall, setTooSmall] = React.useState<Record<string, number>>({});
     const tooSmall = React.useRef<Record<string, number>>({});
     // the ideal ratio is about 0.7 of the screen
     const [minuteRatio, setMinuteRatio] = React.useState(
         (0.7 * windowHeight) / (lastEndTime - firstStartTime),
     );
-    // const [minuteRatio, setMinuteRatio] = React.useState(1);
     const [isLoading, setLoading] = React.useState(true);
     const minDiffToPx = (minDiff: number) => minDiff * minuteRatio;
 
@@ -64,6 +62,8 @@ function FullWeek({ style }: { style?: any }) {
 
     const body = Object.entries(appState.weekSchedule).map(
         ([day, daySchedule]) => {
+            const isTodayActive = day === appState.dateToday;
+
             let lastBlockEndTime = firstStartTime;
 
             let dayBody = daySchedule.schedule.map((block, blockIndex) => {
@@ -78,6 +78,18 @@ function FullWeek({ style }: { style?: any }) {
 
                 lastBlockEndTime = block.endTime;
 
+                const isBlockActive =
+                    isTodayActive &&
+                    appState.current.block === block.block &&
+                    appState.current.blockRelation === TimeRelation.Current;
+
+                const shouldPrevDividerBeActive =
+                    isTodayActive &&
+                    blockIndex > 0 &&
+                    appState.current.block ===
+                        daySchedule.schedule[blockIndex - 1].block &&
+                    appState.current.blockRelation === TimeRelation.After;
+
                 return (
                     <React.Fragment key={block.block}>
                         {block.startTime !== firstStartTime && (
@@ -89,6 +101,8 @@ function FullWeek({ style }: { style?: any }) {
                                         // borderTopWidth:
                                         //     blockIndex === 0 ? 0 : 2,
                                     },
+                                    shouldPrevDividerBeActive &&
+                                        styles.activeDivider,
                                 ]}
                             />
                         )}
@@ -98,6 +112,7 @@ function FullWeek({ style }: { style?: any }) {
                                 {
                                     minHeight: height,
                                 },
+                                isBlockActive && styles.activeBlock,
                             ]}
                             // makes the minute ratio be the largest it should be
                             onLayout={(event: any) => {
@@ -133,10 +148,38 @@ function FullWeek({ style }: { style?: any }) {
                                 }
                             }}
                         >
+                            {block.lunches &&
+                                block.lunches.map((lunch, lunchIndex) => {
+                                    const lunchStartHeight = minDiffToPx(
+                                        lunch.startTime - block.startTime,
+                                    );
+                                    const lunchEndHeight = minDiffToPx(
+                                        lunch.endTime - block.startTime,
+                                    );
+
+                                    return (
+                                        <React.Fragment key={lunch.lunch}>
+                                            <View
+                                                style={[
+                                                    styles.lunchIndicator,
+                                                    isBlockActive &&
+                                                        styles.lunchIndicatorActive,
+                                                    {
+                                                        top: lunchStartHeight,
+                                                        height:
+                                                            lunchEndHeight -
+                                                            lunchStartHeight,
+                                                    },
+                                                ]}
+                                            />
+                                        </React.Fragment>
+                                    );
+                                })}
                             <View style={styles.blockContent}>
                                 <Text
                                     style={[
                                         styles.blockText,
+                                        isBlockActive && styles.activeBlockText,
                                         tooSmall.current[blockKey] > 0 &&
                                             styles.smallBlockText,
                                     ]}
@@ -147,6 +190,7 @@ function FullWeek({ style }: { style?: any }) {
                                     <Text
                                         style={[
                                             styles.time,
+                                            isBlockActive && styles.activeTime,
                                             tooSmall.current[blockKey] > 0 &&
                                                 styles.smallTime,
                                         ]}
@@ -189,6 +233,50 @@ function FullWeek({ style }: { style?: any }) {
                         <Text style={[styles.noSchool]}>No school.</Text>
                     </View>,
                 ];
+            } else if (isTodayActive) {
+                const currentTime =
+                    appState.lastUpdateTime.getHours() * 60 +
+                    appState.lastUpdateTime.getMinutes();
+
+                dayBody.push(
+                    <View
+                        style={[
+                            styles.timeIndicator,
+                            { top: minDiffToPx(currentTime - firstStartTime) },
+                        ]}
+                    />,
+                );
+                dayBody.push(
+                    <View
+                        style={[
+                            styles.timeIndicatorCircle,
+                            {
+                                top:
+                                    minDiffToPx(currentTime - firstStartTime) -
+                                    4,
+                            },
+                        ]}
+                    />,
+                );
+            } else {
+                const currentTime =
+                    appState.lastUpdateTime.getHours() * 60 +
+                    appState.lastUpdateTime.getMinutes();
+
+                if (currentTime < lastBlockEndTime) {
+                    dayBody.push(
+                        <View
+                            style={[
+                                styles.fullTimeIndicator,
+                                {
+                                    top: minDiffToPx(
+                                        currentTime - firstStartTime,
+                                    ),
+                                },
+                            ]}
+                        />,
+                    );
+                }
             }
 
             return (
@@ -215,7 +303,7 @@ function FullWeek({ style }: { style?: any }) {
     );
 }
 
-const blockLineColor = Theme.primaryColor;
+const blockLineColor = Theme.darkForeground;
 
 const styles = StyleSheet.create({
     container: {
@@ -241,6 +329,9 @@ const styles = StyleSheet.create({
         borderBottomWidth: 2,
         borderColor: blockLineColor,
     },
+    activeDivider: {
+        backgroundColor: Theme.primaryColor,
+    },
     blockFlexDivider: {
         borderTopWidth: 2,
         borderColor: blockLineColor,
@@ -251,6 +342,9 @@ const styles = StyleSheet.create({
         borderColor: Theme.primaryColor,
         backgroundColor: Theme.backgroundColor,
     },
+    activeBlock: {
+        backgroundColor: Theme.primaryColor,
+    },
     blockContent: {
         padding: 5,
     },
@@ -258,6 +352,9 @@ const styles = StyleSheet.create({
         fontFamily: Theme.strongFont,
         color: Theme.foregroundColor,
         fontSize: 20,
+    },
+    activeBlockText: {
+        color: Theme.foregroundAlternate,
     },
     smallBlockText: {
         fontSize: 16,
@@ -267,6 +364,9 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: Theme.darkForeground,
         marginTop: 0,
+    },
+    activeTime: {
+        color: Theme.lighterForeground,
     },
     smallTime: {
         fontSize: 13,
@@ -296,6 +396,42 @@ const styles = StyleSheet.create({
     noSchool: {
         fontFamily: Theme.regularFont,
         fontSize: 16,
+    },
+    fullTimeIndicator: {
+        position: 'absolute',
+        width: '100%',
+        right: 0,
+        height: 2,
+        backgroundColor: Theme.darkForeground,
+        opacity: 0.3,
+    },
+    timeIndicator: {
+        position: 'absolute',
+        width: '100%',
+        right: 0,
+        height: 2,
+        backgroundColor: Theme.foregroundAlternate,
+        opacity: 0.8,
+    },
+    timeIndicatorCircle: {
+        position: 'absolute',
+        width: 10,
+        height: 10,
+        right: -5,
+        backgroundColor: Theme.foregroundAlternate,
+        opacity: 1,
+        borderRadius: 5,
+    },
+    lunchIndicator: {
+        position: 'absolute',
+        width: '100%',
+        right: 0,
+        backgroundColor: Theme.darkForeground,
+        opacity: 0.1,
+    },
+    lunchIndicatorActive: {
+        backgroundColor: Theme.foregroundAlternate,
+        opacity: 0.1,
     },
 });
 
