@@ -9,7 +9,7 @@ import {
 import { toTimeString } from '../../DateWordUtils';
 import { TimeRelation, useAppState } from '../../state/AppStateContext';
 import Theme from '../../Theme';
-import { ShortBlocks } from '../../Utils';
+import { LunchNums, ShortBlocks } from '../../Utils';
 
 function FullWeek({ style }: { style?: any }) {
     const { value: appState } = useAppState();
@@ -157,8 +157,44 @@ function FullWeek({ style }: { style?: any }) {
                                         lunch.endTime - block.startTime,
                                     );
 
+                                    console.log(
+                                        lunchIndex <
+                                            (block.lunches?.length ?? 0) - 1,
+                                        minDiffToPx(
+                                            (block.lunches?.[lunchIndex + 1]
+                                                ?.startTime ?? 0) -
+                                                block.startTime,
+                                        ) - lunchEndHeight,
+                                    );
+
                                     return (
                                         <React.Fragment key={lunch.lunch}>
+                                            {/* {lunchIndex <
+                                                (block.lunches?.length ?? 0) -
+                                                    1 && (
+                                                <View
+                                                    style={[
+                                                        styles.lunchIndicator,
+                                                        isBlockActive &&
+                                                            styles.lunchIndicatorActive,
+                                                        {
+                                                            top: lunchEndHeight,
+                                                            height:
+                                                                minDiffToPx(
+                                                                    (block
+                                                                        .lunches?.[
+                                                                        lunchIndex +
+                                                                            1
+                                                                    ]
+                                                                        ?.startTime ??
+                                                                        0) -
+                                                                        block.startTime,
+                                                                ) -
+                                                                lunchEndHeight,
+                                                        },
+                                                    ]}
+                                                />
+                                            )} */}
                                             <View
                                                 style={[
                                                     styles.lunchIndicator,
@@ -172,6 +208,20 @@ function FullWeek({ style }: { style?: any }) {
                                                     },
                                                 ]}
                                             />
+                                            <Text
+                                                style={[
+                                                    styles.lunchIndicatorText,
+                                                    isBlockActive &&
+                                                        styles.lunchIndicatorActiveText,
+                                                    {
+                                                        top:
+                                                            lunchStartHeight +
+                                                            3,
+                                                    },
+                                                ]}
+                                            >
+                                                {LunchNums[lunch.lunch]}
+                                            </Text>
                                         </React.Fragment>
                                     );
                                 })}
@@ -311,6 +361,7 @@ const styles = StyleSheet.create({
     day: {
         borderColor: blockLineColor,
         flex: 1,
+        overflow: 'hidden',
     },
     dayDivider: {
         width: 2,
@@ -425,6 +476,16 @@ const styles = StyleSheet.create({
     lunchIndicatorActive: {
         backgroundColor: Theme.foregroundAlternate,
         opacity: 0.1,
+    },
+    lunchIndicatorText: {
+        fontFamily: Theme.regularFont,
+        fontSize: 10,
+        color: Theme.darkForeground,
+        position: 'absolute',
+        right: 3,
+    },
+    lunchIndicatorActiveText: {
+        color: Theme.lighterForeground,
     },
 });
 

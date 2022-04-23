@@ -69,7 +69,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     React.useEffect(() => {
         // debug mode
         const loopStartTime = Date.now();
-        const virtualStartTime = new Date(2022, 3, 12, 16, 22, 45).getTime();
+        const virtualStartTime = new Date(2022, 3, 12, 12, 40, 45).getTime();
 
         const update = () => {
             setAppState((oldAppState) => {

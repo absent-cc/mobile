@@ -88,6 +88,12 @@ export const LunchNames: Record<LunchType, string> = {
     L3: '3rd',
 };
 
+export const LunchNums: Record<LunchType, string> = {
+    L1: '1',
+    L2: '2',
+    L3: '3',
+};
+
 export const EmptySchedule: Schedule = {
     A: [],
     B: [],
