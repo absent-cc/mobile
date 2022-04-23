@@ -157,16 +157,6 @@ function FullWeek({ style }: { style?: any }) {
                                         lunch.endTime - block.startTime,
                                     );
 
-                                    console.log(
-                                        lunchIndex <
-                                            (block.lunches?.length ?? 0) - 1,
-                                        minDiffToPx(
-                                            (block.lunches?.[lunchIndex + 1]
-                                                ?.startTime ?? 0) -
-                                                block.startTime,
-                                        ) - lunchEndHeight,
-                                    );
-
                                     return (
                                         <React.Fragment key={lunch.lunch}>
                                             {/* {lunchIndex <
