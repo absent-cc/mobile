@@ -214,9 +214,6 @@ function FullWeek({ style }: { style?: any }) {
                                         {toTimeString(block.endTime)}
                                     </Text>
                                 )}
-                                {/* {block.lunches && block.lunches?.length > 0 && (
-                                    <Text style={styles.lunchLink}>Lunch</Text>
-                                )} */}
                             </View>
                         </View>
 
@@ -259,6 +256,7 @@ function FullWeek({ style }: { style?: any }) {
                                 top: minDiffToPx(currentTime - firstStartTime),
                             },
                         ]}
+                        key="timeindicator"
                     />,
                 );
                 dayBody.push(
@@ -271,6 +269,7 @@ function FullWeek({ style }: { style?: any }) {
                                     4,
                             },
                         ]}
+                        key="timeindicator-circle"
                     />,
                 );
             } else {
@@ -282,6 +281,7 @@ function FullWeek({ style }: { style?: any }) {
                                 top: minDiffToPx(currentTime - firstStartTime),
                             },
                         ]}
+                        key="timeindicator"
                     />,
                 );
             }
