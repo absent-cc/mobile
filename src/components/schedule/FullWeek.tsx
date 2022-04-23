@@ -149,7 +149,7 @@ function FullWeek({ style }: { style?: any }) {
                             }}
                         >
                             {block.lunches &&
-                                block.lunches.map((lunch, lunchIndex) => {
+                                block.lunches.map((lunch) => {
                                     const lunchStartHeight = minDiffToPx(
                                         lunch.startTime - block.startTime,
                                     );
@@ -159,32 +159,6 @@ function FullWeek({ style }: { style?: any }) {
 
                                     return (
                                         <React.Fragment key={lunch.lunch}>
-                                            {/* {lunchIndex <
-                                                (block.lunches?.length ?? 0) -
-                                                    1 && (
-                                                <View
-                                                    style={[
-                                                        styles.lunchIndicator,
-                                                        isBlockActive &&
-                                                            styles.lunchIndicatorActive,
-                                                        {
-                                                            top: lunchEndHeight,
-                                                            height:
-                                                                minDiffToPx(
-                                                                    (block
-                                                                        .lunches?.[
-                                                                        lunchIndex +
-                                                                            1
-                                                                    ]
-                                                                        ?.startTime ??
-                                                                        0) -
-                                                                        block.startTime,
-                                                                ) -
-                                                                lunchEndHeight,
-                                                        },
-                                                    ]}
-                                                />
-                                            )} */}
                                             <View
                                                 style={[
                                                     styles.lunchIndicator,
