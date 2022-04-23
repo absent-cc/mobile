@@ -18,7 +18,7 @@
         },
         "preview": {
             "distribution": "internal",
-            "releaseChannel": "preview",
+            "releaseChannel": "preview-v2",
             "ios": {
                 "cocoapods": "1.11.2"
             },
@@ -31,7 +31,7 @@
         },
         "production": {
             "distribution": "store",
-            "releaseChannel": "default",
+            "releaseChannel": "production-v2",
             "ios": {
                 "cocoapods": "1.11.2"
             },
