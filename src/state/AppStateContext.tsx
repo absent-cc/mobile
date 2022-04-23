@@ -37,15 +37,19 @@ export interface AppStateContextType {
     setAppState: React.Dispatch<React.SetStateAction<AppStateType>>;
 }
 
+const virtualStartTime = new Date(2022, 3, 12, 12, 40, 45).getTime();
+
 // Default settings
 export const defaultState: AppStateType = {
     serverLoaded: false,
     absences: [],
     teacherBlocksToday: [],
     dayBlocksToday: [],
-    lastUpdateTime: new Date(0),
+    // lastUpdateTime: new Date(),
+    lastUpdateTime: new Date(virtualStartTime),
     tallestWaveHeader: 150,
-    dateToday: formatISODate(new Date()),
+    // dateToday: formatISODate(new Date()),
+    dateToday: formatISODate(new Date(virtualStartTime)),
     weekSchedule: {},
     current: {
         block: null,
@@ -67,9 +71,11 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
 
     // state updater
     React.useEffect(() => {
+        // only start once the state gets loaded
+        if (!appState.serverLoaded) return () => undefined;
+
         // debug mode
         const loopStartTime = Date.now();
-        const virtualStartTime = new Date(2022, 3, 12, 12, 40, 45).getTime();
 
         const update = () => {
             setAppState((oldAppState) => {
@@ -79,15 +85,19 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
                     Date.now() - loopStartTime + virtualStartTime,
                 );
                 const nowMinRep = now.getHours() * 60 + now.getMinutes();
+                const dateToday = formatISODate(now);
 
                 const stateChanges: AppStateType = {
                     ...oldAppState,
                     lastUpdateTime: now,
-                    dateToday: formatISODate(now),
+                    dateToday,
                 };
 
                 // reset day
-                if (!isSameDay(lastStateUpdate, now)) {
+                if (
+                    lastStateUpdate.getTime() > 0 &&
+                    !isSameDay(lastStateUpdate, now)
+                ) {
                     stateChanges.absences = [];
 
                     // if it's a new week
@@ -99,6 +109,14 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
 
                     stateChanges.needsUpdate = true;
                 }
+
+                // process the blocks
+                stateChanges.teacherBlocksToday = extractTeacherBlocks(
+                    oldAppState.weekSchedule[dateToday],
+                );
+                stateChanges.dayBlocksToday = extractDayBlocks(
+                    oldAppState.weekSchedule[dateToday],
+                );
 
                 const todaySchedule =
                     stateChanges.weekSchedule[stateChanges.dateToday]?.schedule;
@@ -197,7 +215,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
         const interval = setInterval(update, 5 * 1000);
 
         return () => clearInterval(interval);
-    }, []);
+    }, [appState.serverLoaded]);
 
     React.useEffect(() => {
         setAppState((oldAppState) => ({

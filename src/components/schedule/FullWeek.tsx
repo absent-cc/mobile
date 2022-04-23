@@ -51,7 +51,9 @@ function FullWeek({ style }: { style?: any }) {
 
     const [, forceUpdate] = React.useReducer((x) => x + 1, 0);
     const renderTimeout = React.useRef<NodeJS.Timeout | null>(null);
-    const loadingTimeout = React.useRef<NodeJS.Timeout | null>(null);
+    const loadingTimeout = React.useRef<NodeJS.Timeout | null>(
+        setTimeout(() => setLoading(false), 50),
+    );
     const rerenderSchedule = () => {
         forceUpdate();
         if (loadingTimeout.current) {
