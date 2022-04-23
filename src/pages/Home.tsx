@@ -11,7 +11,6 @@ import { useAPI } from '../api/APIContext';
 import absenceCalculator from '../AbsenceCalculator';
 import { useAppState } from '../state/AppStateContext';
 import { dateFormatter, timeOfDay, toWords } from '../DateWordUtils';
-import RowButton from '../components/RowButton';
 import WithWaveHeader from '../components/header/WithWaveHeader';
 
 function Home({ navigation }: { navigation: any }) {
@@ -127,14 +126,6 @@ function Home({ navigation }: { navigation: any }) {
                         tomorrow!
                     </Text>
                 )}
-
-                <RowButton
-                    onPress={() => {
-                        navigation.navigate('FullList');
-                    }}
-                    label="See full absence list"
-                    style={{ marginTop: 10 }}
-                />
 
                 {teacherCards.length > 0 && (
                     <>
