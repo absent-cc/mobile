@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
         fontFamily: Theme.headerFont,
         color: Theme.foregroundAlternate,
         fontSize: 38,
-        marginTop: 18,
+        marginTop: 25,
         marginHorizontal: 30,
         marginBottom: 52,
     },
