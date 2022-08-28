@@ -34,10 +34,23 @@ function FullList({ navigation }: { navigation: any }) {
     }, [navigation]);
 
     const { value: appState } = useAppState();
-    let cards;
 
-    if (appState.dayBlocksToday && appState.dayBlocksToday.length > 0) {
-        cards = appState.absences
+    let body;
+
+    if (appState.dayBlocksToday?.length === 0) {
+        body = (
+            <Text style={styles.status}>
+                No school today! Enjoy your day! 🎉
+            </Text>
+        );
+    } else if (appState.absences?.length === 0) {
+        body = (
+            <Text style={styles.status}>
+                The absence list hasn't been posted yet, check back later! 🥱
+            </Text>
+        );
+    } else {
+        body = appState.absences
             ?.sort(
                 // sort alphabetically
                 (a, b) =>
@@ -54,12 +67,6 @@ function FullList({ navigation }: { navigation: any }) {
                     />
                 );
             });
-    } else {
-        cards = (
-            <Text style={styles.status}>
-                No school today! Enjoy your day! 🎉
-            </Text>
-        );
     }
 
     return (
@@ -69,7 +76,7 @@ function FullList({ navigation }: { navigation: any }) {
             reversed
             ref={scrollRef}
         >
-            {cards}
+            {body}
         </WithWaveHeader>
     );
 }
