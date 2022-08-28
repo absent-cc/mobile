@@ -1,5 +1,6 @@
-import { StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import React from 'react';
+import { useScrollToTop } from '@react-navigation/native';
 import Theme from '../Theme';
 import WithWaveHeader from '../components/header/WithWaveHeader';
 import PillButtons from '../components/button/PillButtons';
@@ -7,7 +8,7 @@ import FullWeek from '../components/schedule/FullWeek';
 import TodaySchedule from '../components/schedule/TodaySchedule';
 import { useDialog } from '../components/dialog/Dialog';
 
-function Schedule() {
+function Schedule({ navigation }: { navigation: any }) {
     const { close: closeDialog } = useDialog();
     const [activeTab, setActiveTab] = React.useState(0);
 
@@ -15,6 +16,32 @@ function Schedule() {
         closeDialog();
         setActiveTab(newTab);
     };
+
+    // scrolling
+    const scrollRef = React.useRef<ScrollView | null>(null);
+
+    // automatically close the dialog on side swipe and scroll to top
+    React.useEffect(() => {
+        const unsubscribe = navigation.addListener('blur', () => {
+            closeDialog();
+            if (scrollRef.current) {
+                scrollRef.current?.scrollTo({ y: 0, animated: true });
+            }
+        });
+
+        return unsubscribe;
+    }, [navigation, closeDialog]);
+
+    // scroll to top when focused
+    React.useEffect(() => {
+        const unsubscribe = navigation.addListener('tabPress', () => {
+            if (scrollRef.current && navigation.isFocused()) {
+                scrollRef.current?.scrollTo({ y: 0, animated: true });
+            }
+        });
+
+        return unsubscribe;
+    }, [navigation]);
 
     let body;
 
@@ -25,7 +52,11 @@ function Schedule() {
     }
 
     return (
-        <WithWaveHeader style={styles.pageView} text="Your Schedule">
+        <WithWaveHeader
+            style={styles.pageView}
+            text="Your Schedule"
+            ref={scrollRef}
+        >
             <PillButtons
                 buttons={[{ text: 'Today' }, { text: 'Week' }]}
                 defaultValue={0}

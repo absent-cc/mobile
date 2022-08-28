@@ -78,7 +78,7 @@ function FullWeek({ style }: { style?: any }) {
         if (loadingTimeout.current) {
             clearTimeout(loadingTimeout.current);
         }
-        loadingTimeout.current = setTimeout(finishedLoadingCb, 200);
+        loadingTimeout.current = setTimeout(finishedLoadingCb, 150);
     };
 
     const minDiffToPx = (minDiff: number) => minDiff * minuteRatio;

@@ -39,7 +39,7 @@ function TabBar({
                 const onPress = () => {
                     const event = navigation.emit({
                         type: 'tabPress',
-                        target: route.name,
+                        target: route.key,
                         canPreventDefault: true,
                     });
 
@@ -52,7 +52,7 @@ function TabBar({
                 const onLongPress = () => {
                     navigation.emit({
                         type: 'tabLongPress',
-                        target: route.name,
+                        target: route.key,
                     });
                 };
 

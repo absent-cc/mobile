@@ -1,7 +1,8 @@
-import { StyleSheet, Text, RefreshControl } from 'react-native';
+import { StyleSheet, Text, RefreshControl, ScrollView } from 'react-native';
 import React from 'react';
 import notifee from '@notifee/react-native';
 import messaging from '@react-native-firebase/messaging';
+import { useScrollToTop } from '@react-navigation/native';
 import Theme from '../Theme';
 import TeacherCard from '../components/card/TeacherCard';
 import Divider from '../components/Divider';
@@ -14,6 +15,31 @@ import { dateFormatter, timeOfDay, toWords } from '../DateWordUtils';
 import WithWaveHeader from '../components/header/WithWaveHeader';
 
 function Home({ navigation }: { navigation: any }) {
+    // scrolling
+    const scrollRef = React.useRef<ScrollView | null>(null);
+
+    // automatically close the dialog on side swipe and scroll to top
+    React.useEffect(() => {
+        const unsubscribe = navigation.addListener('blur', () => {
+            if (scrollRef.current) {
+                scrollRef.current?.scrollTo({ y: 0, animated: true });
+            }
+        });
+
+        return unsubscribe;
+    }, [navigation]);
+
+    // scroll to top when focused
+    React.useEffect(() => {
+        const unsubscribe = navigation.addListener('tabPress', () => {
+            if (scrollRef.current && navigation.isFocused()) {
+                scrollRef.current?.scrollTo({ y: 0, animated: true });
+            }
+        });
+
+        return unsubscribe;
+    }, [navigation]);
+
     const { value: settings } = useSettings();
     const { value: appState } = useAppState();
     const { refreshData } = useAPI();
@@ -169,6 +195,7 @@ function Home({ navigation }: { navigation: any }) {
                     ]}
                 />
             }
+            ref={scrollRef}
         >
             <Text style={styles.hello}>
                 Today is <Text style={styles.date}>{dateFormatter(now)}</Text>.
