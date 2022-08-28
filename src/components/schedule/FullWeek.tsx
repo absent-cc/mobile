@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/core';
 import React from 'react';
 import {
     View,
@@ -83,6 +84,20 @@ function FullWeek({ style }: { style?: any }) {
 
     const minDiffToPx = (minDiff: number) => minDiff * minuteRatio;
 
+    const [selectedBlock, setSelectedBlock] = React.useState<string | null>(
+        null,
+    );
+
+    // close selected block when navigating away
+    const navigation = useNavigation();
+    React.useEffect(() => {
+        const unsubscribe = navigation.addListener('blur', () => {
+            setSelectedBlock(null);
+        });
+
+        return unsubscribe;
+    }, [navigation]);
+
     const body = Object.entries(appState.weekSchedule).map(
         ([day, daySchedule]) => {
             const isTodayActive = day === appState.dateToday;
@@ -113,14 +128,24 @@ function FullWeek({ style }: { style?: any }) {
                         daySchedule.schedule[blockIndex - 1].block &&
                     appState.current.blockRelation === TimeRelation.After;
 
+                const closeBlockDialog = () => {
+                    setSelectedBlock(null);
+                    closeDialog();
+                };
                 const openBlockDialog = () => {
-                    openDialog(
-                        <BlockDialog
-                            close={closeDialog}
-                            dayBlock={block}
-                            isActive={isBlockActive}
-                        />,
-                    );
+                    // close block info if you tap it twice
+                    if (selectedBlock !== blockKey) {
+                        openDialog(
+                            <BlockDialog
+                                close={closeBlockDialog}
+                                dayBlock={block}
+                                isActive={isBlockActive}
+                            />,
+                        );
+                        setSelectedBlock(blockKey);
+                    } else {
+                        closeBlockDialog();
+                    }
                 };
 
                 return (
@@ -140,12 +165,21 @@ function FullWeek({ style }: { style?: any }) {
                             />
                         )}
                         <Pressable
-                            style={[
+                            style={({ pressed }) => [
                                 styles.block,
                                 {
                                     minHeight: height,
                                 },
                                 isBlockActive && styles.activeBlock,
+                                pressed && styles.blockPressed,
+                                pressed &&
+                                    isBlockActive &&
+                                    styles.blockPressedActive,
+                                selectedBlock === blockKey &&
+                                    styles.selectedBlock,
+                                selectedBlock === blockKey &&
+                                    isBlockActive &&
+                                    styles.selectedBlockActive,
                             ]}
                             // makes the minute ratio be the largest it should be
                             onLayout={(event: any) => {
@@ -387,6 +421,18 @@ const styles = StyleSheet.create({
         width: '100%',
         borderColor: Theme.primaryColor,
         backgroundColor: Theme.backgroundColor,
+    },
+    blockPressed: {
+        backgroundColor: Theme.lighterForeground,
+    },
+    blockPressedActive: {
+        backgroundColor: Theme.darkerPrimary,
+    },
+    selectedBlock: {
+        backgroundColor: Theme.lightForeground,
+    },
+    selectedBlockActive: {
+        backgroundColor: Theme.darkerPrimary,
     },
     activeBlock: {
         backgroundColor: Theme.primaryColor,
