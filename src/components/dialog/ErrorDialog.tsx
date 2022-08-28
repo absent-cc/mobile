@@ -113,6 +113,16 @@ const styles = StyleSheet.create({
         backgroundColor: Theme.primaryColor,
         padding: 40,
         paddingRight: 60,
+
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 0,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 8,
+
+        elevation: 5,
     },
     containerLight: {
         backgroundColor: Theme.lighterForeground,
