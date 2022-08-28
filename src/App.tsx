@@ -74,11 +74,17 @@ function App() {
                     );
                 });
 
-            return messaging().onTokenRefresh((token) => {
+            const unsubscribe = messaging().onTokenRefresh((token) => {
                 // console.log('Uploading messaging token from listener.');
                 saveFCMToken(token);
             });
+
+            console.log('hi', unsubscribe);
+
+            return unsubscribe;
         }
+
+        console.log('what');
         return () => undefined;
     }, [saveFCMToken, isLoggedIn, openDialog, closeDialog]);
 

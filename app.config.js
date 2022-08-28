@@ -15,6 +15,19 @@ module.exports = {
         'expo-splash-screen',
         '@react-native-firebase/app',
         'expo-updates',
+        [
+            'expo-build-properties',
+            {
+                android: {
+                    compileSdkVersion: 31,
+                    targetSdkVersion: 31,
+                    buildToolsVersion: '31.0.0',
+                },
+                ios: {
+                    useFrameworks: 'static',
+                },
+            },
+        ],
     ],
     orientation: 'portrait',
     icon: './assets/images/icon.png',
@@ -57,21 +70,24 @@ module.exports = {
     web: {
         favicon: './assets/images/icon.png',
     },
-    mods: {
-        android: {
-            projectBuildGradle: async (config) => {
-                console.log(
-                    '------------- MODIFYING ANDROID CONFIG -------------',
-                );
-                config.modResults.contents = config.modResults.contents.replace(
-                    'compileSdkVersion = 30',
-                    'compileSdkVersion = 31',
-                );
-                return config;
-            },
-        },
-    },
+    // mods: {
+    //     android: {
+    //         projectBuildGradle: async (config) => {
+    //             console.log(
+    //                 '------------- MODIFYING ANDROID CONFIG -------------',
+    //             );
+    //             config.modResults.contents = config.modResults.contents.replace(
+    //                 'compileSdkVersion = 30',
+    //                 'compileSdkVersion = 31',
+    //             );
+    //             return config;
+    //         },
+    //     },
+    // },
     extra: {
         isDevelopment: IS_DEV,
+        eas: {
+            projectId: '1f4bfaba-717d-42d1-b1e1-0fc723961a55',
+        },
     },
 };
