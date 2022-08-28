@@ -11,6 +11,7 @@ import { toTimeString } from '../../DateWordUtils';
 import { TimeRelation, useAppState } from '../../state/AppStateContext';
 import Theme from '../../Theme';
 import { LunchNums, ShortBlocks } from '../../Utils';
+import Anchor from '../Anchor';
 import { useDialog } from '../dialog/Dialog';
 import BlockDialog from './BlockDialog';
 
@@ -339,6 +340,10 @@ function FullWeek({ style }: { style?: any }) {
                     />
                 </View>
             )}
+            <Text style={[styles.nshsSitePlug]}>
+                Want a print schedule? Check out{' '}
+                <Anchor href="https://nshs.site">nshs.site</Anchor>.
+            </Text>
         </>
     );
 }
@@ -483,6 +488,13 @@ const styles = StyleSheet.create({
     },
     lunchIndicatorActiveText: {
         color: Theme.lighterForeground,
+    },
+    nshsSitePlug: {
+        marginTop: 10,
+        fontFamily: Theme.regularFont,
+        color: Theme.darkForeground,
+        fontSize: 16,
+        textAlign: 'center',
     },
 });
 
