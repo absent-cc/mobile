@@ -7,9 +7,27 @@ import RowButton from '../components/RowButton';
 import Anchor from '../components/Anchor';
 import { useAPI } from '../api/APIContext';
 import WithHeader from '../components/header/WithHeader';
+import { shuffleArray } from '../Utils';
 
 function Settings({ navigation }: { navigation: any }) {
     const api = useAPI();
+
+    const attributions = React.useRef(
+        shuffleArray([
+            <Anchor href="https://rkarim.xyz" style={styles.attribution}>
+                Roshan
+            </Anchor>,
+            <Anchor href="https://leah.vashevko.com" style={styles.attribution}>
+                Leah
+            </Anchor>,
+            <Anchor
+                href="https://github.com/bykevinyang/"
+                style={styles.attribution}
+            >
+                Kevin
+            </Anchor>,
+        ]),
+    ).current;
 
     return (
         <WithHeader
@@ -69,24 +87,7 @@ function Settings({ navigation }: { navigation: any }) {
             <Text style={styles.attribution}>
                 Thanks for using abSENT!{'\n\n'}
                 Created by{'\n'}
-                <Anchor href="https://rkarim.xyz" style={styles.attribution}>
-                    Roshan
-                </Anchor>
-                ,{' '}
-                <Anchor
-                    href="https://leah.vashevko.com"
-                    style={styles.attribution}
-                >
-                    Leah
-                </Anchor>
-                , and{' '}
-                <Anchor
-                    href="https://github.com/bykevinyang/"
-                    style={styles.attribution}
-                >
-                    Kevin
-                </Anchor>
-                .
+                {attributions[0]}, {attributions[1]}, and {attributions[2]}.
             </Text>
         </WithHeader>
     );
