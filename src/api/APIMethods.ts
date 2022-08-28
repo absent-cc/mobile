@@ -499,7 +499,7 @@ export async function saveUserSettings(
     return getFromAPI(
         {
             method: 'PUT',
-            path: '/users/me/update/profile/',
+            path: '/users/me/profile/',
             token,
             body: convertedUserSettings,
         },
