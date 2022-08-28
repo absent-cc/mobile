@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import React from 'react';
 import { AppState, AppStateStatus } from 'react-native';
-import AppLoading from 'expo-app-loading';
+import * as SplashScreen from 'expo-splash-screen';
 import {
     useFonts,
     Inter_700Bold,
@@ -35,6 +35,9 @@ import MainScreen from './MainScreen';
 
 const Stack = createStackNavigator();
 
+// Keep the splash screen visible until loaded
+SplashScreen.preventAutoHideAsync();
+
 function App() {
     const [fontsLoaded] = useFonts({
         ...Feather.font,
@@ -54,6 +57,7 @@ function App() {
         close: closeDialog,
     } = useDialog();
 
+    // manage FCM tokens
     React.useEffect(() => {
         if (isLoggedIn) {
             // console.log('Uploading messaging token.');
@@ -79,17 +83,15 @@ function App() {
                 saveFCMToken(token);
             });
 
-            console.log('hi', unsubscribe);
-
             return unsubscribe;
         }
 
-        console.log('what');
         return () => undefined;
     }, [saveFCMToken, isLoggedIn, openDialog, closeDialog]);
 
+    // update manager
     React.useEffect(() => {
-        return Updates.addListener((e) => {
+        const unsubscribe = Updates.addListener((e) => {
             if (e.type === Updates.UpdateEventType.UPDATE_AVAILABLE) {
                 if (isLoggedIn) {
                     openDialog(<UpdateDialog close={closeDialog} />);
@@ -98,9 +100,18 @@ function App() {
                     Updates.reloadAsync();
                 }
             }
-        });
+        }).remove;
+
+        return () => {
+            try {
+                unsubscribe();
+            } catch (err: any) {
+                // do nothing
+            }
+        };
     }, [openDialog, closeDialog, isLoggedIn]);
 
+    // fetch data from server when app opened
     const reactAppState = React.useRef(AppState.currentState);
     React.useEffect(() => {
         const listener = async (nextAppState: AppStateStatus) => {
@@ -145,10 +156,12 @@ function App() {
 
     // first, wait for everything to load from local
     if (!fontsLoaded || !apiReady) {
-        return <AppLoading />;
+        return null;
     }
+    // hide splash screen once loading is done
+    SplashScreen.hideAsync();
 
-    // then, if we are logged in, wait for a server update
+    // then, if we are logged in, wait for a server update and show normal loading screen
     if (isLoggedIn) {
         // app state only loads once the user onboards
         if (settings.userOnboarded) {

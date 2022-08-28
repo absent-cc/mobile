@@ -3467,10 +3467,9 @@ __metadata:
     eslint-plugin-react: ^7.28.0
     eslint-plugin-react-hooks: ^4.3.0
     expo: ^46.0.0
-    expo-app-loading: ~2.1.0
     expo-application: ~4.2.2
     expo-auth-session: ~3.7.1
-    expo-build-properties: ^0.3.0
+    expo-build-properties: ~0.3.0
     expo-constants: ~13.2.3
     expo-dev-client: ~1.2.1
     expo-font: ~10.2.0
@@ -5933,15 +5932,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-app-loading@npm:~2.1.0":
-  version: 2.1.0
-  resolution: "expo-app-loading@npm:2.1.0"
-  dependencies:
-    expo-splash-screen: ~0.16.0
-  checksum: 14463b35a275962b4c38d91099184a2a0ecc710b3030de1e928995b0651d6ba58cffedca388c54aa2ae8f28284d4a189736b66e4bd1d483ff6e03255a34671d9
-  languageName: node
-  linkType: hard
-
 "expo-application@npm:~4.2.2":
   version: 4.2.2
   resolution: "expo-application@npm:4.2.2"
@@ -5985,7 +5975,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-build-properties@npm:^0.3.0":
+"expo-build-properties@npm:~0.3.0":
   version: 0.3.0
   resolution: "expo-build-properties@npm:0.3.0"
   dependencies:
@@ -6202,7 +6192,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-splash-screen@npm:~0.16.0, expo-splash-screen@npm:~0.16.1":
+"expo-splash-screen@npm:~0.16.1":
   version: 0.16.2
   resolution: "expo-splash-screen@npm:0.16.2"
   dependencies:
