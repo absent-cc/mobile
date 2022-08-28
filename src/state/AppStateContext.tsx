@@ -29,6 +29,8 @@ export interface AppStateType {
         lunchRelation: TimeRelation;
     };
     needsUpdate: boolean;
+    fullWeekMinuteRatio: number;
+    fullWeekTooSmall: Record<string, number>;
 }
 
 export interface AppStateContextType {
@@ -58,6 +60,8 @@ export const defaultState: AppStateType = {
         lunchRelation: TimeRelation.Current,
     },
     needsUpdate: false,
+    fullWeekMinuteRatio: 0,
+    fullWeekTooSmall: {},
 };
 
 const AppStateContext = React.createContext<AppStateContextType>({

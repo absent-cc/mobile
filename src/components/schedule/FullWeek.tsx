@@ -5,14 +5,18 @@ import {
     Text,
     ActivityIndicator,
     Dimensions,
+    Pressable,
 } from 'react-native';
 import { toTimeString } from '../../DateWordUtils';
 import { TimeRelation, useAppState } from '../../state/AppStateContext';
 import Theme from '../../Theme';
 import { LunchNums, ShortBlocks } from '../../Utils';
+import { useDialog } from '../dialog/Dialog';
+import BlockDialog from './BlockDialog';
 
 function FullWeek({ style }: { style?: any }) {
-    const { value: appState } = useAppState();
+    const { value: appState, setAppState } = useAppState();
+    const { open: openDialog, close: closeDialog } = useDialog();
 
     const windowHeight = Dimensions.get('window').height;
 
@@ -41,26 +45,42 @@ function FullWeek({ style }: { style?: any }) {
             // sort descending and get first
             .sort((a, b) => b - a)[0] ?? 0;
 
-    const tooSmall = React.useRef<Record<string, number>>({});
+    // REMEMBER PREVIOUS CALCULATIONS
+    const usePreviousNumbers = appState.fullWeekMinuteRatio > 0;
+
+    const tooSmall = React.useRef<Record<string, number>>(
+        usePreviousNumbers ? appState.fullWeekTooSmall : {},
+    );
     // the ideal ratio is about 0.7 of the screen
     const [minuteRatio, setMinuteRatio] = React.useState(
-        (0.7 * windowHeight) / (lastEndTime - firstStartTime),
+        usePreviousNumbers
+            ? appState.fullWeekMinuteRatio
+            : (0.7 * windowHeight) / (lastEndTime - firstStartTime),
     );
-    const [isLoading, setLoading] = React.useState(true);
-    const minDiffToPx = (minDiff: number) => minDiff * minuteRatio;
 
+    const [isLoading, setLoading] = React.useState(!usePreviousNumbers);
     const [, forceUpdate] = React.useReducer((x) => x + 1, 0);
     const renderTimeout = React.useRef<NodeJS.Timeout | null>(null);
-    const loadingTimeout = React.useRef<NodeJS.Timeout | null>(
-        setTimeout(() => setLoading(false), 50),
-    );
+    const finishedLoadingCb = () => {
+        setLoading(false);
+        // propogate up calculations when done
+        setAppState((oldState) => ({
+            ...oldState,
+            fullWeekMinuteRatio: minuteRatio,
+            fullWeekTooSmall: tooSmall.current,
+        }));
+    };
+    const loadingTimeout = React.useRef<NodeJS.Timeout | null>(null);
+
     const rerenderSchedule = () => {
         forceUpdate();
         if (loadingTimeout.current) {
             clearTimeout(loadingTimeout.current);
         }
-        loadingTimeout.current = setTimeout(() => setLoading(false), 50);
+        loadingTimeout.current = setTimeout(finishedLoadingCb, 200);
     };
+
+    const minDiffToPx = (minDiff: number) => minDiff * minuteRatio;
 
     const body = Object.entries(appState.weekSchedule).map(
         ([day, daySchedule]) => {
@@ -92,6 +112,16 @@ function FullWeek({ style }: { style?: any }) {
                         daySchedule.schedule[blockIndex - 1].block &&
                     appState.current.blockRelation === TimeRelation.After;
 
+                const openBlockDialog = () => {
+                    openDialog(
+                        <BlockDialog
+                            close={closeDialog}
+                            dayBlock={block}
+                            isActive={isBlockActive}
+                        />,
+                    );
+                };
+
                 return (
                     <React.Fragment key={block.block}>
                         {block.startTime !== firstStartTime && (
@@ -108,7 +138,7 @@ function FullWeek({ style }: { style?: any }) {
                                 ]}
                             />
                         )}
-                        <View
+                        <Pressable
                             style={[
                                 styles.block,
                                 {
@@ -149,6 +179,7 @@ function FullWeek({ style }: { style?: any }) {
                                     );
                                 }
                             }}
+                            onPress={openBlockDialog}
                         >
                             {block.lunches &&
                                 block.lunches.map((lunch) => {
@@ -217,7 +248,7 @@ function FullWeek({ style }: { style?: any }) {
                                     </Text>
                                 )}
                             </View>
-                        </View>
+                        </Pressable>
 
                         {
                             // if it's the last block

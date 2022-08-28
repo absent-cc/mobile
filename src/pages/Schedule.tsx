@@ -5,9 +5,16 @@ import WithWaveHeader from '../components/header/WithWaveHeader';
 import PillButtons from '../components/button/PillButtons';
 import FullWeek from '../components/schedule/FullWeek';
 import TodaySchedule from '../components/schedule/TodaySchedule';
+import { useDialog } from '../components/dialog/Dialog';
 
 function Schedule() {
+    const { close: closeDialog } = useDialog();
     const [activeTab, setActiveTab] = React.useState(0);
+
+    const changeTab = (newTab: number) => {
+        closeDialog();
+        setActiveTab(newTab);
+    };
 
     let body;
 
@@ -22,7 +29,7 @@ function Schedule() {
             <PillButtons
                 buttons={[{ text: 'Today' }, { text: 'Week' }]}
                 defaultValue={0}
-                onPress={setActiveTab}
+                onPress={changeTab}
             />
             <View style={styles.content}>{body}</View>
         </WithWaveHeader>
