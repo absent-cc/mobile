@@ -189,6 +189,11 @@ export async function fetchAbsences(
                 tid: absence.teacher.tid,
                 school: absence.teacher.school,
                 name: joinName(absence.teacher.first, absence.teacher.last),
+                // reversed for easier
+                reversedSplitName: [
+                    absence.teacher.last,
+                    absence.teacher.first,
+                ],
             },
         };
     });

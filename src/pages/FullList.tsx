@@ -53,16 +53,22 @@ function FullList({ navigation }: { navigation: any }) {
             ?.sort(
                 // sort alphabetically
                 (a, b) =>
-                    splitName(a.teacher.name)[1].localeCompare(
-                        splitName(b.teacher.name)[1],
+                    a.teacher.reversedSplitName[0].localeCompare(
+                        b.teacher.reversedSplitName[0],
                     ),
             )
-            .map((absence) => {
+            .map((absence, index) => {
                 return (
                     <AllTeacherCard
                         teacher={absence}
                         key={absence.teacher.tid}
-                        style={styles.card}
+                        style={[
+                            styles.card,
+                            index === 0 && {
+                                marginTop: 10,
+                            },
+                        ]}
+                        last={index === appState.absences.length - 1}
                     />
                 );
             });
@@ -103,7 +109,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
     },
     card: {
-        marginBottom: 20,
+        // marginBottom: 15,
     },
     header: {
         color: Theme.foregroundColor,

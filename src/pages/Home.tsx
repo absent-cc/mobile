@@ -226,6 +226,7 @@ const styles = StyleSheet.create({
         color: Theme.foregroundColor,
         fontFamily: Theme.regularFont,
         fontSize: 20,
+        marginTop: 10,
     },
     blockList: {
         marginTop: 20,

@@ -42,6 +42,7 @@ export type Teacher = {
     tid: string;
     name: string;
     school: SchoolName;
+    reversedSplitName: string[];
 };
 
 export type Schedule = {
