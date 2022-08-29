@@ -1,6 +1,5 @@
 import { ScrollView, StyleSheet, Text } from 'react-native';
 import React from 'react';
-import { useScrollToTop } from '@react-navigation/native';
 import Theme from '../Theme';
 import { splitName } from '../Utils';
 import { useAppState } from '../state/AppStateContext';

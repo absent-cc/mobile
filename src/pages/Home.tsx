@@ -2,7 +2,6 @@ import { StyleSheet, Text, RefreshControl, ScrollView } from 'react-native';
 import React from 'react';
 import notifee from '@notifee/react-native';
 import messaging from '@react-native-firebase/messaging';
-import { useScrollToTop } from '@react-navigation/native';
 import Theme from '../Theme';
 import TeacherCard from '../components/card/TeacherCard';
 import Divider from '../components/Divider';

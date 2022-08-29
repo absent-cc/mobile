@@ -1,6 +1,5 @@
 import { ScrollView, StyleSheet, View } from 'react-native';
 import React from 'react';
-import { useScrollToTop } from '@react-navigation/native';
 import Theme from '../Theme';
 import WithWaveHeader from '../components/header/WithWaveHeader';
 import PillButtons from '../components/button/PillButtons';
