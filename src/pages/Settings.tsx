@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, Linking } from 'react-native';
+import Constants from 'expo-constants';
 import Theme from '../Theme';
 import Divider from '../components/Divider';
 import TextButton from '../components/button/TextButton';
@@ -57,6 +58,18 @@ function Settings({ navigation }: { navigation: any }) {
                 }}
                 label="App Options"
             />
+
+            {Constants.expoConfig?.extra?.isDevelopment && (
+                <>
+                    <Divider />
+                    <RowButton
+                        onPress={() => {
+                            navigation.navigate('DeveloperSettings');
+                        }}
+                        label="Developer Settings"
+                    />
+                </>
+            )}
             <Divider />
 
             <RowButton

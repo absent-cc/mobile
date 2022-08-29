@@ -1,4 +1,3 @@
-import Constants from 'expo-constants';
 import { timeStringToMinRep } from '../DateWordUtils';
 import { AppSettings } from '../state/SettingsContext';
 import {
@@ -28,9 +27,7 @@ import {
     WeekSchedule,
 } from './APITypes';
 
-const baseURL = Constants.expoConfig?.extra?.isDevelopment
-    ? 'https://api.absent.cc/v2'
-    : 'https://api.absent.cc/v2';
+const baseURLs = ['https://api.absent.cc/v2', 'https://dev.api.absent.cc/v2'];
 
 const headers = {
     'Accept': 'application/json',
@@ -44,17 +41,19 @@ const getHeaders = (token: string): Headers => {
     });
 };
 
-const url = (path: string): string => {
-    return `${baseURL}${path}`;
+const url = (backend: number, path: string): string => {
+    return `${baseURLs[backend]}${path}`;
 };
 
 const getFromAPI = async (
     {
+        backend,
         method,
         path,
         token,
         body,
     }: {
+        backend: number;
         method: string;
         path: string;
         token?: string;
@@ -72,7 +71,7 @@ const getFromAPI = async (
 
     let response: Response;
     try {
-        response = await fetch(url(path), {
+        response = await fetch(url(backend, path), {
             method,
             headers: token ? getHeaders(token) : headers,
             body: body ? JSON.stringify(body) : undefined,
@@ -164,6 +163,7 @@ const getFromAPI = async (
 };
 
 export async function fetchAbsences(
+    backend: number,
     token: string,
     dateStr: string,
     schoolName: SchoolName,
@@ -177,6 +177,7 @@ export async function fetchAbsences(
                 school: schoolName,
             }).toString()}`,
             token,
+            backend,
         },
         'Fetch Absences',
     );
@@ -214,7 +215,10 @@ export async function fetchAbsences(
     // return response;
 }
 
-export async function fetchSettings(token: string): Promise<{
+export async function fetchSettings(
+    backend: number,
+    token: string,
+): Promise<{
     uid: string;
     user: UserSettings;
     schedule: Schedule;
@@ -225,6 +229,7 @@ export async function fetchSettings(token: string): Promise<{
             method: 'GET',
             path: '/users/me/',
             token,
+            backend,
         },
         'Fetch Settings',
     );
@@ -268,6 +273,7 @@ export async function fetchSettings(token: string): Promise<{
 export async function fetchWeekSchedule(
     dateStr: string,
     school: SchoolName,
+    backend: number,
     token: string,
 ): Promise<WeekSchedule> {
     // const responseStr = await fetch(
@@ -299,6 +305,7 @@ export async function fetchWeekSchedule(
                 date: dateStr,
             }).toString()}`,
             token,
+            backend,
         },
         'Fetch Week Schedule',
     );
@@ -341,6 +348,7 @@ export async function saveSettings(
         schedule: EditingSchedule;
         app: AppSettings;
     },
+    backend: number,
     token: string,
 ): Promise<{ user: UserSettings; schedule: Schedule; app: AppSettings }> {
     // map over each element of the schedule
@@ -375,6 +383,7 @@ export async function saveSettings(
             method: 'PUT',
             path: '/users/me/',
             token,
+            backend,
             body: {
                 profile: convertedUserSettings,
                 schedule: convertedSchedule,
@@ -431,6 +440,7 @@ export async function saveSettings(
 
 export async function saveSchedule(
     newSettings: EditingSchedule,
+    backend: number,
     token: string,
 ): Promise<Schedule> {
     // map over each element of the schedule
@@ -468,6 +478,7 @@ export async function saveSchedule(
             method: 'PUT',
             path: '/users/me/schedule/',
             token,
+            backend,
             body: convertedSchedule,
         },
         'Save Schedule',
@@ -478,6 +489,7 @@ export async function saveSchedule(
 
 export async function saveUserSettings(
     newSettings: UserSettings,
+    backend: number,
     token: string,
 ) {
     const split = splitName(newSettings.name);
@@ -506,13 +518,18 @@ export async function saveUserSettings(
             method: 'PUT',
             path: '/users/me/profile/',
             token,
+            backend,
             body: convertedUserSettings,
         },
         'Save User Settings',
     );
 }
 
-export async function saveAppSettings(newSettings: AppSettings, token: string) {
+export async function saveAppSettings(
+    newSettings: AppSettings,
+    backend: number,
+    token: string,
+) {
     const convertedAppSettings = {
         showFreeAsAbsent: newSettings.showFreeBlocks,
         notify: newSettings.sendNotifications,
@@ -537,18 +554,20 @@ export async function saveAppSettings(newSettings: AppSettings, token: string) {
             method: 'PUT',
             path: '/users/me/settings/',
             token,
+            backend,
             body: convertedAppSettings,
         },
         'Save App Settings',
     );
 }
 
-export async function logout(token: string) {
+export async function logout(backend: number, token: string) {
     return getFromAPI(
         {
             method: 'DELETE',
             path: '/logout/',
             token,
+            backend,
         },
         'Logout',
     );
@@ -557,6 +576,7 @@ export async function logout(token: string) {
 export async function searchTeachers(
     searchString: string,
     school: SchoolName,
+    backend: number,
     token: string,
 ): Promise<string[]> {
     // const responseStr = await fetch(url('/teachers/autocomplete'), {
@@ -582,6 +602,7 @@ export async function searchTeachers(
             method: 'POST',
             path: '/teachers/autocomplete/',
             token,
+            backend,
             body: {
                 name: searchString,
                 school,
@@ -596,6 +617,7 @@ export async function searchTeachers(
 export async function isRealTeacher(
     partialName: string,
     school: SchoolName,
+    backend: number,
     token: string,
 ): Promise<{
     isReal: boolean;
@@ -624,6 +646,7 @@ export async function isRealTeacher(
             method: 'POST',
             path: '/teachers/validate/',
             token,
+            backend,
             body: {
                 name: partialName,
                 school,
@@ -640,7 +663,10 @@ export async function isRealTeacher(
     };
 }
 
-export async function login(accessToken: string): Promise<{
+export async function login(
+    backend: number,
+    accessToken: string,
+): Promise<{
     token: string;
     refresh: string;
     onboarded: boolean;
@@ -671,12 +697,17 @@ export async function login(accessToken: string): Promise<{
             body: {
                 token: accessToken,
             },
+            backend,
         },
         'Login',
     );
 }
 
-export async function refresh(refreshToken: string): Promise<{
+export async function refresh(
+    backend: number,
+    refreshToken: string,
+): Promise<{
+    backend: number;
     token: string;
     refresh: string;
     onboarded: boolean;
@@ -705,12 +736,17 @@ export async function refresh(refreshToken: string): Promise<{
             method: 'POST',
             path: '/refresh/',
             token: refreshToken,
+            backend,
         },
         'Refresh Token',
     );
 }
 
-export async function saveFCMToken(fcmToken: string, token: string) {
+export async function saveFCMToken(
+    fcmToken: string,
+    backend: number,
+    token: string,
+) {
     // const responseStr = await fetch(url('/users/me/update/profile'), {
     //     method: 'PUT',
     //     headers: getHeaders(token),
@@ -729,6 +765,7 @@ export async function saveFCMToken(fcmToken: string, token: string) {
             method: 'PUT',
             path: '/users/me/fcm/',
             token,
+            backend,
             body: {
                 token: fcmToken,
             },
@@ -737,12 +774,13 @@ export async function saveFCMToken(fcmToken: string, token: string) {
     );
 }
 
-export async function deleteAccount(token: string) {
+export async function deleteAccount(backend: number, token: string) {
     return getFromAPI(
         {
             method: 'DELETE',
             path: '/users/me/',
             token,
+            backend,
         },
         'Delete Account',
     );

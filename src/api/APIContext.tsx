@@ -1,5 +1,6 @@
 import React from 'react';
 import * as SecureStore from 'expo-secure-store';
+import Constants from 'expo-constants';
 import { AppSettings, useSettings } from '../state/SettingsContext';
 import { useAppState } from '../state/AppStateContext';
 import * as APIMethods from './APIMethods';
@@ -35,6 +36,7 @@ export interface APIDataType {
 export interface APIContextType {
     ready: boolean;
     isLoggedIn: boolean;
+    backend: number;
     fetchAbsences: () => Promise<AbsenceList | null>;
     fetchSettings: () => Promise<{
         user: UserSettings;
@@ -60,11 +62,13 @@ export interface APIContextType {
     saveFCMToken: (fcmToken: string) => Promise<void>;
     deleteAccount: () => Promise<void>;
     refreshData: () => Promise<void>;
+    switchBackend: (backend: number) => Promise<void>;
 }
 
 const APIContext = React.createContext<APIContextType>({
     ready: false,
     isLoggedIn: false,
+    backend: 0,
     fetchAbsences: async () => null,
     fetchSettings: async () => null,
     logout: async () => undefined,
@@ -79,6 +83,7 @@ const APIContext = React.createContext<APIContextType>({
     saveFCMToken: async () => undefined,
     deleteAccount: async () => undefined,
     refreshData: async () => undefined,
+    switchBackend: async () => undefined,
 });
 
 const defaultState: APIDataType = {
@@ -94,6 +99,12 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
     const [apiSettings, setAPISettings] =
         React.useState<APIDataType>(defaultState);
     const [apiServerLoaded, setAPIServerLoaded] = React.useState(false);
+
+    // allow changing backends
+    const [specifiedBackend, setSpecifiedBackend] = React.useState(0);
+    const backend = Constants.expoConfig?.extra?.isDevelopment
+        ? specifiedBackend
+        : 0;
 
     const { value: settings, setSettings, resetSettings } = useSettings();
     const { value: appState, setAppState, resetAppState } = useAppState();
@@ -249,6 +260,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             // send refresh token
             try {
                 const { token, onboarded } = await APIMethods.refresh(
+                    backend,
                     apiSettings.refresh,
                 );
 
@@ -273,6 +285,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             }
         },
         [
+            backend,
             apiSettings.lastTokenUpdate,
             setSettings,
             apiSettings.refresh,
@@ -287,7 +300,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             if (token === null) return;
 
             try {
-                await APIMethods.logout(token);
+                await APIMethods.logout(backend, token);
 
                 await simpleLogout();
             } catch (err: any) {
@@ -297,7 +310,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 }
             }
         },
-        [parseError, simpleLogout, verifyToken],
+        [backend, parseError, simpleLogout, verifyToken],
     );
 
     const fetchAbsences = React.useCallback(
@@ -307,6 +320,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
 
             try {
                 const response = await APIMethods.fetchAbsences(
+                    backend,
                     token,
                     dateStr,
                     schoolName,
@@ -325,7 +339,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 return null;
             }
         },
-        [dateStr, schoolName, parseError, verifyToken],
+        [backend, dateStr, schoolName, parseError, verifyToken],
     );
 
     const fetchSettings = React.useCallback(
@@ -341,7 +355,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             if (token === null) return null;
 
             try {
-                const response = await APIMethods.fetchSettings(token);
+                const response = await APIMethods.fetchSettings(backend, token);
 
                 return {
                     uid: response.uid,
@@ -361,7 +375,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 return null;
             }
         },
-        [parseError, verifyToken],
+        [backend, parseError, verifyToken],
     );
 
     const saveSettings = React.useCallback(
@@ -379,6 +393,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             try {
                 const response = await APIMethods.saveSettings(
                     newSettings,
+                    backend,
                     token,
                 );
 
@@ -404,7 +419,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             }
             return false;
         },
-        [parseError, setSettings, verifyToken],
+        [backend, parseError, setSettings, verifyToken],
     );
 
     const saveSchedule = React.useCallback(
@@ -415,6 +430,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             try {
                 const response = await APIMethods.saveSchedule(
                     newSettings,
+                    backend,
                     token,
                 );
 
@@ -435,7 +451,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 }
             }
         },
-        [parseError, setSettings, verifyToken],
+        [backend, parseError, setSettings, verifyToken],
     );
 
     const saveUserSettings = React.useCallback(
@@ -444,7 +460,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             if (token === null) return;
 
             try {
-                await APIMethods.saveUserSettings(newSettings, token);
+                await APIMethods.saveUserSettings(newSettings, backend, token);
 
                 // even though the api doesn't return it, we still need to set the new settings
                 setSettings((oldSettings) => {
@@ -464,7 +480,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 }
             }
         },
-        [parseError, verifyToken, setSettings],
+        [backend, parseError, verifyToken, setSettings],
     );
 
     const saveAppSettings = React.useCallback(
@@ -473,7 +489,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             if (token === null) return;
 
             try {
-                await APIMethods.saveAppSettings(newSettings, token);
+                await APIMethods.saveAppSettings(newSettings, backend, token);
 
                 // even though the api doesn't return it, we still need to set the new settings
                 setSettings((oldSettings) => {
@@ -493,7 +509,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 }
             }
         },
-        [parseError, verifyToken, setSettings],
+        [backend, parseError, verifyToken, setSettings],
     );
 
     const searchTeachers = React.useCallback(
@@ -508,6 +524,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 return await APIMethods.searchTeachers(
                     searchString,
                     schoolName,
+                    backend,
                     token,
                 );
             } catch (err: any) {
@@ -522,7 +539,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 return null;
             }
         },
-        [verifyToken, schoolName, parseError],
+        [backend, verifyToken, schoolName, parseError],
     );
 
     const isRealTeacher = React.useCallback(
@@ -540,6 +557,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 return await APIMethods.isRealTeacher(
                     partialName,
                     schoolName,
+                    backend,
                     token,
                 );
             } catch (err: any) {
@@ -554,7 +572,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 return null;
             }
         },
-        [verifyToken, schoolName, parseError],
+        [backend, verifyToken, schoolName, parseError],
     );
 
     const fetchWeekSchedule = React.useCallback(
@@ -566,6 +584,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 return await APIMethods.fetchWeekSchedule(
                     dateStr,
                     schoolName,
+                    backend,
                     token,
                 );
             } catch (err: any) {
@@ -580,7 +599,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 return null;
             }
         },
-        [verifyToken, dateStr, schoolName, parseError],
+        [backend, verifyToken, dateStr, schoolName, parseError],
     );
 
     // (step 2 **) only if the user hasn't logged in before
@@ -589,6 +608,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
         async (accessToken: string) => {
             try {
                 const { token, refresh, onboarded } = await APIMethods.login(
+                    backend,
                     accessToken,
                 );
                 const now = Date.now();
@@ -609,7 +629,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 parseError(err, true, 'Login');
             }
         },
-        [parseError, setSettings],
+        [backend, parseError, setSettings],
     );
 
     const saveFCMToken = React.useCallback(
@@ -618,7 +638,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             if (token === null) return;
 
             try {
-                await APIMethods.saveFCMToken(fcmToken, token);
+                await APIMethods.saveFCMToken(fcmToken, backend, token);
             } catch (err: any) {
                 const shouldRetry = parseError(
                     err,
@@ -630,7 +650,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 }
             }
         },
-        [verifyToken, parseError],
+        [backend, verifyToken, parseError],
     );
 
     const deleteAccount = React.useCallback(
@@ -639,7 +659,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             if (token === null) return;
 
             try {
-                await APIMethods.deleteAccount(token);
+                await APIMethods.deleteAccount(backend, token);
                 await simpleLogout();
             } catch (err: any) {
                 const shouldRetry = parseError(
@@ -652,7 +672,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 }
             }
         },
-        [verifyToken, simpleLogout, parseError],
+        [backend, verifyToken, simpleLogout, parseError],
     );
 
     const refreshData = React.useCallback(async (): Promise<void> => {
@@ -695,6 +715,14 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
         setAppState,
         setSettings,
     ]);
+
+    const switchBackend = React.useCallback(
+        async (newBackend: number): Promise<void> => {
+            await logout();
+            setSpecifiedBackend(newBackend);
+        },
+        [logout],
+    );
 
     // (step 1) read token from storage
     //          if it exists, we mark as ready but unverified
@@ -879,6 +907,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
         () => ({
             ready: apiSettings.ready,
             isLoggedIn: apiSettings.isLoggedIn,
+            backend,
             fetchAbsences,
             fetchSettings,
             logout,
@@ -893,10 +922,12 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             deleteAccount,
             refreshData,
             fetchWeekSchedule,
+            switchBackend,
         }),
         [
             apiSettings.ready,
             apiSettings.isLoggedIn,
+            backend,
             fetchAbsences,
             fetchSettings,
             logout,
@@ -911,6 +942,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             deleteAccount,
             refreshData,
             fetchWeekSchedule,
+            switchBackend,
         ],
     );
 

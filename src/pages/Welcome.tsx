@@ -1,13 +1,14 @@
 import React from 'react';
-import { StyleSheet, Image, Text, View } from 'react-native';
+import { StyleSheet, Image, Text, View, Pressable } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Constants from 'expo-constants';
 import * as Google from 'expo-auth-session/providers/google';
+import { Feather } from '@expo/vector-icons';
 import Theme from '../Theme';
 import GoogleSignIn from '../components/button/GoogleSignIn';
 import { useAPI } from '../api/APIContext';
 
-function Welcome() {
+function Welcome({ navigation }: { navigation: any }) {
     const googleOptions = Constants.expoConfig?.extra?.isDevelopment
         ? {
               expoClientId:
@@ -78,6 +79,20 @@ function Welcome() {
                         style={styles.button}
                     />
                 </View>
+                {Constants.expoConfig?.extra?.isDevelopment && (
+                    <Pressable
+                        style={styles.devButton}
+                        onPress={() => {
+                            navigation.navigate('DeveloperSettings');
+                        }}
+                    >
+                        <Feather
+                            style={{ color: Theme.lighterForeground }}
+                            name="terminal"
+                            size={30}
+                        />
+                    </Pressable>
+                )}
             </LinearGradient>
         </View>
     );
@@ -121,6 +136,17 @@ const styles = StyleSheet.create({
         fontFamily: Theme.regularFont,
         fontSize: 20,
         textAlign: 'center',
+    },
+    devButton: {
+        position: 'absolute',
+        borderRadius: 20,
+        backgroundColor: '#0006',
+        top: 50,
+        right: 20,
+        width: 60,
+        aspectRatio: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 });
 

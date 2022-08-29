@@ -15,6 +15,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as Updates from 'expo-updates';
 import messaging from '@react-native-firebase/messaging';
 import { Feather } from '@expo/vector-icons';
+import Constants from 'expo-constants';
 import Welcome from './pages/Welcome';
 import Settings from './pages/Settings';
 import AppSettings from './pages/settings/AppSettings';
@@ -31,6 +32,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 import UpdateDialog from './components/dialog/UpdateDialog';
 import ErrorDialog from './components/dialog/ErrorDialog';
 import MainScreen from './MainScreen';
+import DeveloperSettings from './pages/settings/DeveloperSettings';
 // import WelcomeLoading from './pages/WelcomeLoading';
 
 const Stack = createStackNavigator();
@@ -277,6 +279,12 @@ function App() {
                     )
                 ) : (
                     <Stack.Screen name="Welcome" component={Welcome} />
+                )}
+                {Constants.expoConfig?.extra?.isDevelopment && (
+                    <Stack.Screen
+                        name="DeveloperSettings"
+                        component={DeveloperSettings}
+                    />
                 )}
             </Stack.Navigator>
             {dialogDisplayer}
