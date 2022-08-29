@@ -59,14 +59,16 @@ function TeacherField({
     const throttledSearchInterval = 500; // ms
     const lastSearch = React.useRef(0);
     React.useEffect(() => {
+        // make sure we don't do state updates on unmounted components
         let isMounted = true;
 
         if (trimmedTextValue.length > 2) {
             const now = Date.now();
             if (now - lastSearch.current >= throttledSearchInterval) {
                 searchTeachers(trimmedTextValue).then((searchTeacherList) => {
-                    if (searchTeacherList && isMounted)
+                    if (searchTeacherList && isMounted) {
                         setTeacherList(searchTeacherList);
+                    }
                 });
                 lastSearch.current = now;
             }
@@ -83,6 +85,15 @@ function TeacherField({
             trimmedTextValue.length > 0 &&
             currentTeacher.length === 0
         ) {
+            // make sure we don't search too short strings
+            if (trimmedTextValue.length < 3) {
+                setTextValue({
+                    rawTextValue: '',
+                    trimmedTextValue: '',
+                });
+                return;
+            }
+
             isRealTeacher(trimmedTextValue).then((result) => {
                 if (!result) return;
 
