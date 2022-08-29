@@ -10,7 +10,7 @@ import { joinListWithCommas, ShortBlockFullNames, splitName } from '../Utils';
 import { useAPI } from '../api/APIContext';
 import absenceCalculator from '../AbsenceCalculator';
 import { useAppState } from '../state/AppStateContext';
-import { dateFormatter, timeOfDay, toWords } from '../DateWordUtils';
+import { dateFormatter, timeOfDay } from '../DateWordUtils';
 import WithWaveHeader from '../components/header/WithWaveHeader';
 
 function Home({ navigation }: { navigation: any }) {
@@ -95,9 +95,9 @@ function Home({ navigation }: { navigation: any }) {
             appState.absences,
             settings.app.showFreeBlocks,
         );
-        const numFrees = teachersAbsent.filter((teach) => teach.isFree).length;
-        const numTeachersAbsent =
-            teachersAbsent.length - numFrees + extraAbsent.length;
+        // const numFrees = teachersAbsent.filter((teach) => teach.isFree).length;
+        // const numTeachersAbsent =
+        //     teachersAbsent.length - numFrees + extraAbsent.length;
 
         const teacherCards = teachersAbsent.map((absenceItem) => (
             <TeacherCard
