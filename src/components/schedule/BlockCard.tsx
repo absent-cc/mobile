@@ -201,6 +201,7 @@ const styles = StyleSheet.create({
         fontFamily: Theme.strongFont,
         fontSize: 20,
         color: Theme.foregroundColor,
+        marginBottom: 5,
     },
     activeName: {
         color: Theme.foregroundAlternate,

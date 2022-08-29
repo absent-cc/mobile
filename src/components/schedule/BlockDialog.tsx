@@ -175,9 +175,9 @@ const styles = StyleSheet.create({
     },
     name: {
         fontFamily: Theme.strongFont,
-        fontSize: 20,
+        fontSize: 25,
         color: Theme.foregroundColor,
-        marginBottom: 10,
+        marginBottom: 5,
     },
     time: {
         fontFamily: Theme.italicFont,
