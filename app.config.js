@@ -40,6 +40,9 @@ module.exports = {
         fallbackToCacheTimeout: 0,
     },
     assetBundlePatterns: ['**/*'],
+    runtimeVersion: {
+        policy: 'sdkVersion',
+    },
     ios: {
         supportsTablet: true,
         bundleIdentifier: IS_DEV ? 'cc.absent.devclient' : 'cc.absent.client',
@@ -69,6 +72,10 @@ module.exports = {
     },
     web: {
         favicon: './assets/images/icon.png',
+    },
+    updates: {
+        fallbackToCacheTimeout: 0,
+        url: 'https://u.expo.dev/1f4bfaba-717d-42d1-b1e1-0fc723961a55',
     },
     // mods: {
     //     android: {

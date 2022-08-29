@@ -28,7 +28,7 @@ import {
     WeekSchedule,
 } from './APITypes';
 
-const baseURL = Constants.manifest?.extra?.isDevelopment
+const baseURL = Constants.expoConfig?.extra?.isDevelopment
     ? 'https://api.absent.cc/v2'
     : 'https://api.absent.cc/v2';
 

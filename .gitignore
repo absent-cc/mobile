@@ -20,5 +20,6 @@ npm-debug.*
 *.mobileprovision
 *.orig.*
 web-build/
+dist/
 
 .DS_Store

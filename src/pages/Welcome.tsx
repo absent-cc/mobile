@@ -8,7 +8,7 @@ import GoogleSignIn from '../components/button/GoogleSignIn';
 import { useAPI } from '../api/APIContext';
 
 function Welcome() {
-    const googleOptions = Constants.manifest?.extra?.isDevelopment
+    const googleOptions = Constants.expoConfig?.extra?.isDevelopment
         ? {
               expoClientId:
                   '349911558418-rusr95n8ttq00iujmk3je4q5fmkiib5t.apps.googleusercontent.com',

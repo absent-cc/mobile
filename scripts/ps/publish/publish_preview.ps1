@@ -1,6 +1,11 @@
+if($args.count -eq 0) {
+    Write-Host "Please provide an update message."
+    Exit 1
+}
+
 $oldValue = $Env:APP_VARIANT
 $Env:APP_VARIANT = "development"
 
-yarn expo publish --release-channel "preview-v2"
+eas update --branch "preview-v2" --message $args[0]
 
 $Env:APP_VARIANT = $oldValue
