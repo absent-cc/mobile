@@ -164,8 +164,12 @@ const styles = StyleSheet.create({
     },
 
     blockBox: {
-        flex: 1,
-        padding: 4,
+        // flex: 1,
+        flexBasis: 'auto',
+        flexShrink: 0,
+        flexGrow: 0,
+        // padding: 4,
+        minWidth: 60,
         aspectRatio: 1,
         marginRight: 20,
         backgroundColor: Theme.lighterForeground,
@@ -179,7 +183,8 @@ const styles = StyleSheet.create({
         backgroundColor: Theme.primaryColor,
     },
     content: {
-        flex: 4,
+        flexGrow: 4,
+        flexShrink: 1,
     },
     block: {
         fontFamily: Theme.strongFont,
