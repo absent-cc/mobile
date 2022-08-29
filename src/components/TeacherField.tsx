@@ -274,8 +274,8 @@ function TeacherField({
                         { zIndex: 2 },
                         {
                             // offset IOS by 5 from input
-                            top:
-                                Platform.OS !== 'android' ? inputHeight + 5 : 0,
+                            top: inputHeight + 5,
+                            // Platform.OS !== 'android' ? inputHeight + 5 : 0,
                         },
                     ]}
                 >
@@ -354,17 +354,18 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: Theme.lightForeground,
         maxHeight: 200,
-        ...Platform.select({
-            ios: {
-                position: 'absolute',
-                // borderWidth: 2,
-                // borderColor: Theme.lightForeground,
-            },
-            android: {
-                position: 'relative',
-                marginTop: 5,
-            },
-        }),
+        position: 'absolute',
+        // ...Platform.select({
+        //     ios: {
+        //         position: 'absolute',
+        //         // borderWidth: 2,
+        //         // borderColor: Theme.lightForeground,
+        //     },
+        //     android: {
+        //         position: 'relative',
+        //         marginTop: 5,
+        //     },
+        // }),
         width: '100%',
         backgroundColor: Theme.backgroundColor,
     },
