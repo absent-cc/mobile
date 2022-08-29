@@ -193,6 +193,7 @@ export const apiResponseToSchedule = (
                 tid: teacher.tid,
                 name: joinName(teacher.first, teacher.last),
                 school: strToSchool(teacher.school),
+                reversedSplitName: [teacher.last, teacher.first],
             }));
         } else {
             schedule[block] = [];
@@ -203,7 +204,7 @@ export const apiResponseToSchedule = (
 };
 
 export const joinListWithCommas = (list: any[]) => {
-    let result = '';
+    let result: any[] = [];
     for (let i = 0; i < list.length; i += 1) {
         let joiner;
         if (i === list.length - 1) {
@@ -214,7 +215,7 @@ export const joinListWithCommas = (list: any[]) => {
         } else {
             joiner = ', ';
         }
-        result += `${list[i]}${joiner}`;
+        result = result.concat(list[i], joiner);
     }
 
     return result;

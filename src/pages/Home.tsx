@@ -121,7 +121,7 @@ function Home({ navigation }: { navigation: any }) {
 
         body = (
             <>
-                {numTeachersAbsent + numFrees > 0 ? (
+                {/* {numTeachersAbsent + numFrees > 0 ? (
                     <Text style={styles.status}>
                         You have{' '}
                         {numTeachersAbsent > 0 && (
@@ -150,6 +150,16 @@ function Home({ navigation }: { navigation: any }) {
                         You have no cancelled classes today. Check back
                         tomorrow!
                     </Text>
+                )} */}
+
+                {teacherCards.length + extraCards.length === 0 && (
+                    <>
+                        <Divider />
+                        <Text style={styles.status}>
+                            You have <Text style={styles.boldStatus}>no</Text>{' '}
+                            cancelled classes today. Check back tomorrow!
+                        </Text>
+                    </>
                 )}
 
                 {teacherCards.length > 0 && (
@@ -201,16 +211,18 @@ function Home({ navigation }: { navigation: any }) {
             </Text>
             {appState.dayBlocksToday?.length > 0 && (
                 <Text style={styles.blockList}>
-                    The blocks today are{' '}
+                    The blocks are{' '}
                     {joinListWithCommas(
-                        appState.dayBlocksToday.map(
-                            (block) => ShortBlockFullNames[block],
-                        ),
+                        appState.dayBlocksToday.map((block) => (
+                            <Text style={styles.blockName}>
+                                {ShortBlockFullNames[block]}
+                            </Text>
+                        )),
                     )}
                     .
                 </Text>
             )}
-            <Divider />
+            {/* <Divider /> */}
             {body}
         </WithWaveHeader>
     );
@@ -241,9 +253,17 @@ const styles = StyleSheet.create({
         fontFamily: Theme.strongFont,
     },
     status: {
+        // marginTop: 40,
         color: Theme.foregroundColor,
         fontFamily: Theme.regularFont,
         fontSize: 20,
+    },
+    boldStatus: {
+        fontFamily: Theme.strongFont,
+    },
+    blockName: {
+        fontFamily: Theme.strongFont,
+        // backgroundColor: 'green',
     },
     card: {
         marginTop: 20,
@@ -251,8 +271,9 @@ const styles = StyleSheet.create({
     header: {
         color: Theme.foregroundColor,
         fontFamily: Theme.headerFont,
-        fontSize: 30,
-        marginTop: 20,
+        fontSize: 27,
+        marginTop: 30,
+        marginBottom: -5,
     },
 });
 
