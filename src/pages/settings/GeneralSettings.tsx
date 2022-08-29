@@ -86,7 +86,6 @@ function GeneralSettings({ navigation }: { navigation: any }) {
                     text: 'Delete',
                     onPress: () => {
                         api.deleteAccount();
-                        api.logout();
                     },
                     style: 'destructive',
                 },

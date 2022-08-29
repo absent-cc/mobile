@@ -640,6 +640,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
 
             try {
                 await APIMethods.deleteAccount(token);
+                await simpleLogout();
             } catch (err: any) {
                 const shouldRetry = parseError(
                     err,
@@ -651,7 +652,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 }
             }
         },
-        [verifyToken, parseError],
+        [verifyToken, simpleLogout, parseError],
     );
 
     const refreshData = React.useCallback(async (): Promise<void> => {
