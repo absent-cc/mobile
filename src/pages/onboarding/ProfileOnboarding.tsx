@@ -79,6 +79,7 @@ function ProfileOnboarding({ navigation }: { navigation: any }) {
             iconClick={() => {
                 api.logout();
             }}
+            saveHeaderSize={false}
         >
             <Text style={styles.text}>Let's set up your account.</Text>
             <Divider />

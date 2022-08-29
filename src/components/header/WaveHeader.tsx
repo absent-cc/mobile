@@ -11,12 +11,14 @@ function WaveHeader({
     text,
     style,
     isLeft = false,
+    saveHeaderSize,
 }: {
     iconName?: keyof typeof Feather.glyphMap;
     iconClick?: () => void;
     text: string;
     style?: any;
     isLeft?: boolean;
+    saveHeaderSize: boolean;
 }) {
     const appState = useAppState();
     return (
@@ -30,7 +32,10 @@ function WaveHeader({
             ]}
             onLayout={(event: any) => {
                 const { height } = event.nativeEvent.layout;
-                if (height > appState.value.tallestWaveHeader) {
+                if (
+                    saveHeaderSize &&
+                    height > appState.value.tallestWaveHeader
+                ) {
                     appState.setAppState((oldState) => ({
                         ...oldState,
                         tallestWaveHeader: height,
@@ -91,6 +96,8 @@ const styles = StyleSheet.create({
     },
     headerWithLeftIcon: {
         paddingRight: 30,
+        marginTop: 80,
+        marginBottom: 70,
     },
     icon: {
         position: 'absolute',

@@ -127,6 +127,8 @@ function ScheduleOnboarding({ navigation }: { navigation: any }) {
             }}
             ref={scrollViewRef}
             largeBottom
+            reversed
+            saveHeaderSize={false}
         >
             <Text style={styles.text}>
                 You're almost done, just a few more steps!

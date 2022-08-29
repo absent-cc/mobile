@@ -21,6 +21,7 @@ const WithWaveHeader = React.forwardRef(
             reversed = false,
             footer,
             largeBottom = false,
+            saveHeaderSize = true,
         }: {
             children: React.ReactNode;
             style?: any;
@@ -32,6 +33,7 @@ const WithWaveHeader = React.forwardRef(
             reversed?: boolean;
             footer?: React.ReactElement;
             largeBottom?: boolean;
+            saveHeaderSize?: boolean;
         },
         ref: React.ForwardedRef<ScrollView | null>,
     ) => {
@@ -89,6 +91,7 @@ const WithWaveHeader = React.forwardRef(
                         iconClick={iconClick}
                         text={text}
                         isLeft={isLeft}
+                        saveHeaderSize={saveHeaderSize}
                     />
                     <View
                         style={[
