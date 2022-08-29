@@ -104,6 +104,7 @@ const styles = StyleSheet.create({
         fontFamily: Theme.strongFont,
     },
     status: {
+        marginTop: 10,
         color: Theme.foregroundColor,
         fontFamily: Theme.regularFont,
         fontSize: 20,

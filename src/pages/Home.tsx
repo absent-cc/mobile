@@ -78,15 +78,22 @@ function Home({ navigation }: { navigation: any }) {
 
     if (appState.dayBlocksToday?.length === 0) {
         body = (
-            <Text style={styles.status}>
-                No school today! Enjoy your day! 🎉
-            </Text>
+            <>
+                <Divider />
+                <Text style={styles.status}>
+                    No school today! Enjoy your day! 🎉
+                </Text>
+            </>
         );
     } else if (appState.absences?.length === 0) {
         body = (
-            <Text style={styles.status}>
-                The absence list hasn't been posted yet, check back later! 🥱
-            </Text>
+            <>
+                <Divider />
+                <Text style={styles.status}>
+                    The absence list hasn't been posted yet, check back later!
+                    🥱
+                </Text>
+            </>
         );
     } else {
         const { teachersAbsent, extraAbsent } = absenceCalculator(
