@@ -20,7 +20,10 @@ function AllTeacherCard({
         <View style={[style, styles.container]}>
             <View style={[styles.topRow]}>
                 <Text style={[styles.name]}>
-                    {splitTeacherName[0].toUpperCase()}, {splitTeacherName[1]}
+                    <Text style={[styles.nameBold]}>
+                        {splitTeacherName[0].toUpperCase()}
+                    </Text>
+                    , {splitTeacherName[1]}
                 </Text>
                 {teacher.time && teacher.time.trim().length > 0 ? (
                     <Text style={[styles.time]}>{teacher.time.trim()}</Text>
@@ -51,9 +54,12 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     name: {
-        fontFamily: Theme.strongFont,
+        fontFamily: Theme.regularFont,
         fontSize: 20,
         flexShrink: 1,
+    },
+    nameBold: {
+        fontFamily: Theme.strongFont,
     },
     time: {
         fontFamily: Theme.italicFont,
