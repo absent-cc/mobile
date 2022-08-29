@@ -5,7 +5,7 @@ import {
     View,
     Pressable,
     ScrollView,
-    Platform,
+    // Platform,
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import Theme from '../../Theme';

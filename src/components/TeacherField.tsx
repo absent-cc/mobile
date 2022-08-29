@@ -7,7 +7,7 @@ import {
     TextInput,
     ScrollView,
     Keyboard,
-    Platform,
+    // Platform,
     HostComponent,
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';

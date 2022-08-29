@@ -2,7 +2,7 @@ import { Feather } from '@expo/vector-icons';
 import React from 'react';
 import { View, StyleSheet, Text, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { DayBlock, LunchType } from '../../api/APITypes';
+import { DayBlock } from '../../api/APITypes';
 import { toTimeString } from '../../DateWordUtils';
 import { TimeRelation, useAppState } from '../../state/AppStateContext';
 import { useSettings } from '../../state/SettingsContext';

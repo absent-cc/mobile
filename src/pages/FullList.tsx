@@ -1,7 +1,6 @@
 import { ScrollView, StyleSheet, Text } from 'react-native';
 import React from 'react';
 import Theme from '../Theme';
-import { splitName } from '../Utils';
 import { useAppState } from '../state/AppStateContext';
 import AllTeacherCard from '../components/card/AllTeacherCard';
 import WithWaveHeader from '../components/header/WithWaveHeader';
