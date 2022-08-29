@@ -214,7 +214,7 @@ function Home({ navigation }: { navigation: any }) {
                     The blocks are{' '}
                     {joinListWithCommas(
                         appState.dayBlocksToday.map((block) => (
-                            <Text style={styles.blockName}>
+                            <Text style={styles.blockName} key={block}>
                                 {ShortBlockFullNames[block]}
                             </Text>
                         )),
