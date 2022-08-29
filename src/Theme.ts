@@ -9,6 +9,7 @@ export default {
     strongFont: 'Inter_600SemiBold',
     headerFont: 'Inter_Display_600SemiBold',
     monospaceFont: 'RobotoMono_400Regular',
+    italicFont: 'Inter_400Regular_Italic',
     waveAmplitude: 0.2,
     lighterForeground: '#EEEEEE',
     lightForeground: '#CCCCCC',

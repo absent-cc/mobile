@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     time: {
-        fontFamily: Theme.regularFont,
+        fontFamily: Theme.italicFont,
         color: Theme.darkForeground,
         marginTop: 0,
         fontSize: 20,
@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
         color: Theme.foregroundAlternate,
     },
     lunchTime: {
-        fontFamily: Theme.regularFont,
+        fontFamily: Theme.italicFont,
         color: Theme.darkForeground,
         marginTop: 0,
         fontSize: 16,

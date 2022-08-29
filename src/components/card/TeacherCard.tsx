@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
     },
     time: {
-        fontFamily: Theme.regularFont,
+        fontFamily: Theme.italicFont,
         color: Theme.darkForeground,
         marginTop: 0,
         fontSize: 20,
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     },
     freeNote: {
         color: Theme.darkForeground,
-        fontFamily: Theme.regularFont,
+        fontFamily: Theme.italicFont,
         marginTop: 0,
         fontSize: 20,
     },

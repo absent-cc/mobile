@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     time: {
-        fontFamily: Theme.regularFont,
+        fontFamily: Theme.italicFont,
         color: Theme.lighterForeground,
         fontSize: 20,
         flex: 0,

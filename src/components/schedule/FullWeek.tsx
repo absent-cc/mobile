@@ -452,7 +452,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     time: {
-        fontFamily: Theme.regularFont,
+        fontFamily: Theme.italicFont,
         fontSize: 16,
         color: Theme.darkForeground,
         marginTop: 0,

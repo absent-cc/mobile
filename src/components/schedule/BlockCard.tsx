@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
         color: Theme.foregroundAlternate,
     },
     time: {
-        fontFamily: Theme.regularFont,
+        fontFamily: Theme.italicFont,
         color: Theme.darkForeground,
         marginTop: 0,
         fontSize: 20,

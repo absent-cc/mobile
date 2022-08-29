@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
         flexShrink: 1,
     },
     time: {
-        fontFamily: Theme.regularFont,
+        fontFamily: Theme.italicFont,
         color: Theme.darkForeground,
         marginTop: 0,
         fontSize: 20,

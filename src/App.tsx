@@ -47,6 +47,8 @@ function App() {
         RobotoMono_400Regular,
         // eslint-disable-next-line global-require, import/extensions
         Inter_Display_600SemiBold: require('../assets/fonts/InterDisplay-SemiBold.otf'),
+        // eslint-disable-next-line global-require, import/extensions
+        Inter_400Regular_Italic: require('../assets/fonts/Inter-Italic.otf'),
     });
     const { value: appState } = useAppState();
     const { value: settings } = useSettings();
