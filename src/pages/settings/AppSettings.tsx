@@ -147,7 +147,7 @@ function AppSettings({ navigation }: { navigation: any }) {
 
             <SwitchField
                 style={styles.inputField}
-                label="Send notification even if no teachers are absent"
+                label="Send notifications even if no teachers are absent"
                 onChange={(newValue: boolean) => {
                     // setAppSettings((oldSettings) => ({
                     //     ...oldSettings,
