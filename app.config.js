@@ -1,7 +1,7 @@
 const IS_DEV = process.env.APP_VARIANT === 'development';
 
-const appVersion = '2.0.1';
-const androidVersion = 4;
+const appVersion = '2.0.2';
+const androidVersion = 5;
 
 module.exports = {
     name: IS_DEV ? 'abSENT (Dev)' : 'abSENT',
