@@ -1,18 +1,20 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
 import { TimeRelation, useAppState } from '../../state/AppStateContext';
+import Theme from '../../Theme';
 import BlockCard from './BlockCard';
 import PassingTimeCard from './PassingTimeCard';
 
 function TodaySchedule(/* { style }: { style?: any } */) {
     const { value: appState } = useAppState();
 
-    const body: React.ReactNode[] = [];
+    let body: React.ReactNode[] = [];
 
     if (
         appState.weekSchedule &&
         appState.dateToday &&
-        appState.weekSchedule[appState.dateToday]
+        appState.weekSchedule[appState.dateToday] &&
+        appState.weekSchedule[appState.dateToday].schedule.length > 0
     ) {
         const todaySchedule =
             appState.weekSchedule[appState.dateToday].schedule;
@@ -46,6 +48,12 @@ function TodaySchedule(/* { style }: { style?: any } */) {
                 );
             }
         });
+    } else {
+        body = (
+            <Text style={styles.status}>
+                No school today! Enjoy your day! 🎉
+            </Text>
+        );
     }
 
     return <View>{body}</View>;
@@ -55,6 +63,12 @@ const styles = StyleSheet.create({
     container: {},
     blockCard: {
         marginBottom: 20,
+    },
+    status: {
+        // marginTop: 10,
+        color: Theme.foregroundColor,
+        fontFamily: Theme.regularFont,
+        fontSize: 20,
     },
 });
 
