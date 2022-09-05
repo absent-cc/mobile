@@ -303,6 +303,7 @@ export async function fetchWeekSchedule(
             method: 'GET',
             path: `/info/schedule/week?${new URLSearchParams({
                 date: dateStr,
+                school,
             }).toString()}`,
             token,
             backend,
