@@ -19,9 +19,11 @@ function DeveloperSettings({ navigation }: { navigation: any }) {
 
     const { goBack } = navigation;
     React.useEffect(() => {
-        if (saving && settings.current.backend !== selectedBackend) {
-            switchBackend(settings.current.backend);
-            hasUnsavedChanges.current = false;
+        if (saving) {
+            if (settings.current.backend !== selectedBackend) {
+                switchBackend(settings.current.backend);
+                hasUnsavedChanges.current = false;
+            }
             goBack();
         }
     }, [saving, switchBackend, selectedBackend, goBack]);
