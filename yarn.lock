@@ -2936,22 +2936,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-navigation/core@npm:^6.3.0":
-  version: 6.3.0
-  resolution: "@react-navigation/core@npm:6.3.0"
-  dependencies:
-    "@react-navigation/routers": ^6.1.2
-    escape-string-regexp: ^4.0.0
-    nanoid: ^3.1.23
-    query-string: ^7.0.0
-    react-is: ^16.13.0
-    use-latest-callback: ^0.1.5
-  peerDependencies:
-    react: "*"
-  checksum: cdfda8055b89ab1f3c0714779644d51e8cce31545fbfe16cd10f540f142c9093abd5d7b9199836aa283eb8c9305f9a9fcdcc7dcdbfa08d3100d9b5421a1bc0ee
-  languageName: node
-  linkType: hard
-
 "@react-navigation/elements@npm:^1.3.3":
   version: 1.3.3
   resolution: "@react-navigation/elements@npm:1.3.3"
@@ -3001,15 +2985,6 @@ __metadata:
   dependencies:
     nanoid: ^3.1.23
   checksum: 08a4ad5d8ee132cd3901f07a39da8bbbd9f9359f6da669b1fc8d9cf57f1422d9297dce85545e7639a4d8b679291255ceb93392ff1df474dff219644435a4c22c
-  languageName: node
-  linkType: hard
-
-"@react-navigation/routers@npm:^6.1.2":
-  version: 6.1.2
-  resolution: "@react-navigation/routers@npm:6.1.2"
-  dependencies:
-    nanoid: ^3.1.23
-  checksum: 5512a93733b040a988b741f56dc859f1cb1b78dc429e09652d42f378b2fbfc8ccc37d8dbdf470e479a2427ab72a1fb579678778eb025d5d49c6f5df7a6dfb7c4
   languageName: node
   linkType: hard
 
@@ -3440,9 +3415,9 @@ __metadata:
   linkType: hard
 
 "@xmldom/xmldom@npm:~0.7.0":
-  version: 0.7.5
-  resolution: "@xmldom/xmldom@npm:0.7.5"
-  checksum: 8d7ec35c1ef6183b4f621df08e01d7e61f244fb964a4719025e65fe6ac06fac418919be64fb40fe5908e69158ef728f2d936daa082db326fe04603012b5f2a84
+  version: 0.7.6
+  resolution: "@xmldom/xmldom@npm:0.7.6"
+  checksum: 3c31dcd909aaefd65090033bd45e0aca42d636a9ae43c7313f4be87de570d046abba28362810d63c0718d6f08a9ce5f8da27b87437afc24d2290b6d4e75a6eee
   languageName: node
   linkType: hard
 
@@ -3475,7 +3450,6 @@ __metadata:
     "@react-native-async-storage/async-storage": ~1.17.3
     "@react-native-firebase/app": ^15.4.0
     "@react-native-firebase/messaging": ^15.4.0
-    "@react-navigation/core": ^6.3.0
     "@react-navigation/material-top-tabs": ^6.2.1
     "@react-navigation/native": ^6.0.6
     "@react-navigation/stack": ^6.2.1
@@ -12312,13 +12286,6 @@ __metadata:
     querystringify: ^2.1.1
     requires-port: ^1.0.0
   checksum: fbdba6b1d83336aca2216bbdc38ba658d9cfb8fc7f665eb8b17852de638ff7d1a162c198a8e4ed66001ddbf6c9888d41e4798912c62b4fd777a31657989f7bdf
-  languageName: node
-  linkType: hard
-
-"use-latest-callback@npm:^0.1.5":
-  version: 0.1.5
-  resolution: "use-latest-callback@npm:0.1.5"
-  checksum: a7af3275985b7918c3e0e7a57bb5fc8ad678b21673fc618fe778d111992bdabb4f9592cd3e0286e032a7c956ee3c9d1aba39801c13f32d68bc4c4a008e38783b
   languageName: node
   linkType: hard
 
