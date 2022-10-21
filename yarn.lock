@@ -2936,22 +2936,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-navigation/core@npm:^6.3.0":
-  version: 6.3.0
-  resolution: "@react-navigation/core@npm:6.3.0"
-  dependencies:
-    "@react-navigation/routers": ^6.1.2
-    escape-string-regexp: ^4.0.0
-    nanoid: ^3.1.23
-    query-string: ^7.0.0
-    react-is: ^16.13.0
-    use-latest-callback: ^0.1.5
-  peerDependencies:
-    react: "*"
-  checksum: cdfda8055b89ab1f3c0714779644d51e8cce31545fbfe16cd10f540f142c9093abd5d7b9199836aa283eb8c9305f9a9fcdcc7dcdbfa08d3100d9b5421a1bc0ee
-  languageName: node
-  linkType: hard
-
 "@react-navigation/elements@npm:^1.3.3":
   version: 1.3.3
   resolution: "@react-navigation/elements@npm:1.3.3"
@@ -3001,15 +2985,6 @@ __metadata:
   dependencies:
     nanoid: ^3.1.23
   checksum: 08a4ad5d8ee132cd3901f07a39da8bbbd9f9359f6da669b1fc8d9cf57f1422d9297dce85545e7639a4d8b679291255ceb93392ff1df474dff219644435a4c22c
-  languageName: node
-  linkType: hard
-
-"@react-navigation/routers@npm:^6.1.2":
-  version: 6.1.2
-  resolution: "@react-navigation/routers@npm:6.1.2"
-  dependencies:
-    nanoid: ^3.1.23
-  checksum: 5512a93733b040a988b741f56dc859f1cb1b78dc429e09652d42f378b2fbfc8ccc37d8dbdf470e479a2427ab72a1fb579678778eb025d5d49c6f5df7a6dfb7c4
   languageName: node
   linkType: hard
 
@@ -3214,7 +3189,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-native@npm:~0.69.1":
+"@types/react-dom@npm:^17":
+  version: 17.0.17
+  resolution: "@types/react-dom@npm:17.0.17"
+  dependencies:
+    "@types/react": ^17
+  checksum: 23caf98aa03e968811560f92a2c8f451694253ebe16b670929b24eaf0e7fa62ba549abe9db0ac028a9d8a9086acd6ab9c6c773f163fa21224845edbc00ba6232
+  languageName: node
+  linkType: hard
+
+"@types/react-native@npm:0.69.5":
   version: 0.69.5
   resolution: "@types/react-native@npm:0.69.5"
   dependencies:
@@ -3234,14 +3218,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:~18.0.0":
-  version: 18.0.17
-  resolution: "@types/react@npm:18.0.17"
+"@types/react@npm:^17":
+  version: 17.0.50
+  resolution: "@types/react@npm:17.0.50"
   dependencies:
     "@types/prop-types": "*"
     "@types/scheduler": "*"
     csstype: ^3.0.2
-  checksum: 18cae64f5bfd6bb58fbd8ee2ba52ec82de844f114254e26de7b513e4b86621f643f9b71d7066958cd571b0d78cb86cbceda449c5289f9349ca573df29ab69252
+  checksum: b5629dff7c2f3e9fcba95a19b2b3bfd78d7cacc33ba5fc26413dba653d34afcac3b93ddabe563e8062382688a1eac7db68e93739bb8e712d27637a03aaafbbb8
   languageName: node
   linkType: hard
 
@@ -3475,13 +3459,13 @@ __metadata:
     "@react-native-async-storage/async-storage": ~1.17.3
     "@react-native-firebase/app": ^15.4.0
     "@react-native-firebase/messaging": ^15.4.0
-    "@react-navigation/core": ^6.3.0
     "@react-navigation/material-top-tabs": ^6.2.1
     "@react-navigation/native": ^6.0.6
     "@react-navigation/stack": ^6.2.1
     "@types/lodash-es": ^4.17.6
-    "@types/react": ~18.0.0
-    "@types/react-native": ~0.69.1
+    "@types/react": ^17
+    "@types/react-dom": ^17
+    "@types/react-native": 0.69.5
     "@typescript-eslint/eslint-plugin": ^5.9.0
     "@typescript-eslint/parser": ^5.9.0
     eslint: ^8.8.0
@@ -3505,6 +3489,7 @@ __metadata:
     expo-secure-store: ~11.3.0
     expo-splash-screen: ~0.16.1
     expo-status-bar: ~1.4.0
+    expo-system-ui: ~1.3.0
     expo-updates: ~0.14.5
     husky: ^7.0.4
     lint-staged: ^12.1.7
@@ -6241,6 +6226,19 @@ __metadata:
   version: 2.2.1
   resolution: "expo-structured-headers@npm:2.2.1"
   checksum: 633efd60c8f8a32ef3e5a3aecf73be1d83d19fc48e302b6cca7a40a9b268704f4e4c0c901d13987e3ad4ae1b435e178432760b858f07aa86f8d590e2d380323b
+  languageName: node
+  linkType: hard
+
+"expo-system-ui@npm:~1.3.0":
+  version: 1.3.0
+  resolution: "expo-system-ui@npm:1.3.0"
+  dependencies:
+    "@expo/config-plugins": ~5.0.0
+    "@react-native/normalize-color": ^2.0.0
+    debug: ^4.3.2
+  peerDependencies:
+    expo: "*"
+  checksum: 086f8a0d15e44f6f8f544ba454cfb7a6c2d7f929797ce88c0db4701408e11f6ce5ff9de289c257c8f2c3f2b3cd614964f7790253351e04666d678e53f13ff97d
   languageName: node
   linkType: hard
 
@@ -12312,13 +12310,6 @@ __metadata:
     querystringify: ^2.1.1
     requires-port: ^1.0.0
   checksum: fbdba6b1d83336aca2216bbdc38ba658d9cfb8fc7f665eb8b17852de638ff7d1a162c198a8e4ed66001ddbf6c9888d41e4798912c62b4fd777a31657989f7bdf
-  languageName: node
-  linkType: hard
-
-"use-latest-callback@npm:^0.1.5":
-  version: 0.1.5
-  resolution: "use-latest-callback@npm:0.1.5"
-  checksum: a7af3275985b7918c3e0e7a57bb5fc8ad678b21673fc618fe778d111992bdabb4f9592cd3e0286e032a7c956ee3c9d1aba39801c13f32d68bc4c4a008e38783b
   languageName: node
   linkType: hard
 
