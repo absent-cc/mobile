@@ -145,7 +145,7 @@ function Welcome({ navigation }: { navigation: any }) {
                         }}
                     >
                         <Feather
-                            style={{ color: Theme.lighterForeground }}
+                            style={{ color: '#eee' }}
                             name="terminal"
                             size={30}
                         />

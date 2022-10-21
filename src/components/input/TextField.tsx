@@ -39,6 +39,7 @@ function TextField({
                     fontSize: 16,
                     marginLeft: 20,
                     marginBottom: 5,
+                    color: Theme.foregroundColor,
                 },
                 clear: {
                     color: Theme.lightForeground,

@@ -26,6 +26,7 @@ function RowButton({
                 },
                 label: {
                     fontFamily: Theme.regularFont,
+                    color: Theme.foregroundColor,
                     fontSize: 20,
                     flex: 1,
                 },

@@ -57,6 +57,7 @@ function Dropdown({
                     fontSize: 16,
                     marginLeft: 20,
                     marginBottom: 5,
+                    color: Theme.foregroundColor,
                 },
                 button: {
                     color: Theme.lightForeground,

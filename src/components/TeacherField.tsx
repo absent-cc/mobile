@@ -46,7 +46,7 @@ function TeacherField({
                     fontSize: 20,
                     fontFamily: Theme.regularFont,
                     borderRadius: 50,
-
+                    color: Theme.foregroundColor,
                     flex: 1,
                 },
                 inputContainer: {

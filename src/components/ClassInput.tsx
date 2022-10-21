@@ -53,6 +53,7 @@ function ClassInput({
                 },
                 teachers: {
                     fontFamily: Theme.strongFont,
+                    color: Theme.foregroundColor,
                     fontSize: 16,
                     marginTop: 16,
                 },

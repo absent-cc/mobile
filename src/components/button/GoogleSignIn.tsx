@@ -25,19 +25,19 @@ function GoogleSignIn({
                     flexDirection: 'row',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    backgroundColor: Theme.backgroundColor,
-                    borderColor: Theme.primaryColor,
+                    backgroundColor: '#FFFFFF',
+                    borderColor: '#EF4344',
                     borderWidth: 2,
                 },
                 pressed: {
-                    backgroundColor: Theme.lighterForeground,
+                    backgroundColor: '#EEEEEE',
                 },
                 text: {
                     flex: 1,
                     fontSize: 20,
                     fontFamily: Theme.strongFont,
                     textAlign: 'center',
-                    color: Theme.primaryColor,
+                    color: '#EF4344',
                 },
                 icon: {
                     marginRight: 24,
