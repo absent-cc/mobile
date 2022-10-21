@@ -1,11 +1,50 @@
 import { ScrollView, StyleSheet, Text } from 'react-native';
 import React from 'react';
-import Theme from '../Theme';
 import { useAppState } from '../state/AppStateContext';
 import AllTeacherCard from '../components/card/AllTeacherCard';
 import WithWaveHeader from '../components/header/WithWaveHeader';
+import { useTheme } from '../theme/ThemeContext';
 
 function FullList({ navigation }: { navigation: any }) {
+    const { value: Theme } = useTheme();
+
+    const styles = React.useMemo(
+        () =>
+            StyleSheet.create({
+                pageView: {
+                    flex: 1,
+                    width: '100%',
+                    backgroundColor: Theme.backgroundColor,
+                },
+                hello: {
+                    color: Theme.foregroundColor,
+                    fontFamily: Theme.regularFont,
+                    fontSize: 20,
+                },
+                date: {
+                    fontFamily: Theme.strongFont,
+                },
+                count: {
+                    fontFamily: Theme.strongFont,
+                },
+                status: {
+                    marginTop: 10,
+                    color: Theme.foregroundColor,
+                    fontFamily: Theme.regularFont,
+                    fontSize: 20,
+                },
+                card: {
+                    // marginBottom: 15,
+                },
+                header: {
+                    color: Theme.foregroundColor,
+                    fontFamily: Theme.headerFont,
+                    fontSize: 30,
+                },
+            }),
+        [Theme],
+    );
+
     // scrolling
     const scrollRef = React.useRef<ScrollView | null>(null);
 
@@ -84,38 +123,5 @@ function FullList({ navigation }: { navigation: any }) {
         </WithWaveHeader>
     );
 }
-
-const styles = StyleSheet.create({
-    pageView: {
-        flex: 1,
-        width: '100%',
-        backgroundColor: Theme.backgroundColor,
-    },
-    hello: {
-        color: Theme.foregroundColor,
-        fontFamily: Theme.regularFont,
-        fontSize: 20,
-    },
-    date: {
-        fontFamily: Theme.strongFont,
-    },
-    count: {
-        fontFamily: Theme.strongFont,
-    },
-    status: {
-        marginTop: 10,
-        color: Theme.foregroundColor,
-        fontFamily: Theme.regularFont,
-        fontSize: 20,
-    },
-    card: {
-        // marginBottom: 15,
-    },
-    header: {
-        color: Theme.foregroundColor,
-        fontFamily: Theme.headerFont,
-        fontSize: 30,
-    },
-});
 
 export default FullList;

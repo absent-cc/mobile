@@ -1,7 +1,6 @@
 import React from 'react';
 import { Alert, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Theme from '../../Theme';
 import SwitchField from '../../components/input/Switch';
 import { useSettings } from '../../state/SettingsContext';
 import TextButton from '../../components/button/TextButton';
@@ -9,16 +8,68 @@ import LoadingCard from '../../components/card/LoadingCard';
 import ErrorCard from '../../components/card/ErrorCard';
 import { useAPI } from '../../api/APIContext';
 import WithHeader from '../../components/header/WithHeader';
+import { useTheme } from '../../theme/ThemeContext';
+import { ThemeList } from '../../theme/Themes';
+import Dropdown from '../../components/input/Dropdown';
 
 function AppSettings({ navigation }: { navigation: any }) {
     const insets = useSafeAreaInsets();
 
     const api = useAPI();
     const settings = useSettings();
+    const { value: Theme, selection: selectedThemeOld, setTheme } = useTheme();
+
+    const styles = React.useMemo(
+        () =>
+            StyleSheet.create({
+                pageView: {
+                    flex: 1,
+                    width: '100%',
+                    backgroundColor: Theme.backgroundColor,
+                },
+                note: {
+                    color: Theme.foregroundColor,
+                    fontFamily: Theme.regularFont,
+                    fontSize: 18,
+                    // marginBottom: 16,
+                },
+                inputField: {
+                    marginTop: 10,
+                    zIndex: 6,
+                },
+                save: {
+                    marginTop: 40,
+                },
+                validation: {
+                    marginVertical: 20,
+                },
+                saveValidation: {
+                    marginBottom: 20,
+                },
+                savePanel: {
+                    position: 'absolute',
+                    bottom: 0,
+                    width: '100%',
+                    backgroundColor: Theme.backgroundColor,
+                    padding: 20,
+                    borderTopWidth: 2,
+                    borderColor: Theme.lightForeground,
+                },
+                sectionHeader: {
+                    color: Theme.foregroundColor,
+                    fontFamily: Theme.strongFont,
+                    fontSize: 28,
+                    marginBottom: 8,
+                    marginTop: 24,
+                },
+            }),
+        [Theme],
+    );
 
     // TODO: change this to be a deep copy someday for safety
     const defaultValue = { ...settings.value.app };
     const appSettings = React.useRef(defaultValue);
+    const selectedTheme = React.useRef(selectedThemeOld);
 
     const [saving, setSaving] = React.useState(false);
     const [saveError, setSaveError] = React.useState(false);
@@ -26,6 +77,7 @@ function AppSettings({ navigation }: { navigation: any }) {
     const { navigate } = navigation;
     React.useEffect(() => {
         if (saving) {
+            setTheme(selectedTheme.current);
             api.saveAppSettings(appSettings.current)
                 .then(() => {
                     hasUnsavedChanges.current = false;
@@ -35,7 +87,7 @@ function AppSettings({ navigation }: { navigation: any }) {
                     setSaveError(true);
                 });
         }
-    }, [saving, api, navigate]);
+    }, [saving, api, navigate, setTheme]);
 
     // reset screen on exit
     // React.useEffect(() => {
@@ -117,6 +169,7 @@ function AppSettings({ navigation }: { navigation: any }) {
             }
         >
             <Text style={styles.note}>Edit app options.</Text>
+            <Text style={styles.sectionHeader}>Behavior</Text>
             <SwitchField
                 style={styles.inputField}
                 label="Show free blocks as absent teachers"
@@ -158,44 +211,21 @@ function AppSettings({ navigation }: { navigation: any }) {
                 }}
                 defaultValue={appSettings.current.sendNoAbsenceNotification}
             />
+
+            <Text style={styles.sectionHeader}>Appearance</Text>
+
+            <Dropdown
+                label="Theme"
+                onChange={(newValue: number) => {
+                    selectedTheme.current = ThemeList[newValue];
+                }}
+                style={[styles.inputField, { zIndex: 2 }]}
+                placeholder="Select a backend"
+                options={['Use System Theme', 'Light', 'Dark']}
+                defaultValue={ThemeList.indexOf(selectedTheme.current)}
+            />
         </WithHeader>
     );
 }
-
-const styles = StyleSheet.create({
-    pageView: {
-        flex: 1,
-        width: '100%',
-        backgroundColor: Theme.backgroundColor,
-    },
-    note: {
-        color: Theme.foregroundColor,
-        fontFamily: Theme.regularFont,
-        fontSize: 18,
-        marginBottom: 16,
-    },
-    inputField: {
-        marginTop: 10,
-        zIndex: 6,
-    },
-    save: {
-        marginTop: 40,
-    },
-    validation: {
-        marginVertical: 20,
-    },
-    saveValidation: {
-        marginBottom: 20,
-    },
-    savePanel: {
-        position: 'absolute',
-        bottom: 0,
-        width: '100%',
-        backgroundColor: Theme.backgroundColor,
-        padding: 20,
-        borderTopWidth: 2,
-        borderColor: Theme.lightForeground,
-    },
-});
 
 export default AppSettings;

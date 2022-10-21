@@ -1,7 +1,7 @@
 import React from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import Theme from '../../Theme';
+import { useTheme } from '../../theme/ThemeContext';
 
 function IconButton({
     style,
@@ -14,6 +14,40 @@ function IconButton({
     onPress: () => void;
     iconName: keyof typeof Feather.glyphMap;
 }) {
+    const { value: Theme } = useTheme();
+
+    const styles = React.useMemo(
+        () =>
+            StyleSheet.create({
+                base: {
+                    borderRadius: 50,
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: 40,
+                    width: 40,
+                },
+                filled: {
+                    backgroundColor: Theme.primaryColor,
+                },
+                outline: {},
+                pressedFilled: {
+                    backgroundColor: Theme.darkerPrimary,
+                    borderColor: Theme.darkerPrimary,
+                },
+                pressedOutline: {},
+
+                icon: {},
+                filledIcon: {
+                    color: Theme.foregroundAlternate,
+                },
+                outlineIcon: {
+                    color: Theme.primaryColor,
+                },
+            }),
+        [Theme],
+    );
+
     return (
         <Pressable
             style={({ pressed }) => [
@@ -40,33 +74,5 @@ function IconButton({
         </Pressable>
     );
 }
-
-const styles = StyleSheet.create({
-    base: {
-        borderRadius: 50,
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: 40,
-        width: 40,
-    },
-    filled: {
-        backgroundColor: Theme.primaryColor,
-    },
-    outline: {},
-    pressedFilled: {
-        backgroundColor: Theme.darkerPrimary,
-        borderColor: Theme.darkerPrimary,
-    },
-    pressedOutline: {},
-
-    icon: {},
-    filledIcon: {
-        color: Theme.foregroundAlternate,
-    },
-    outlineIcon: {
-        color: Theme.primaryColor,
-    },
-});
 
 export default IconButton;

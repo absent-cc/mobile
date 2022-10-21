@@ -1,13 +1,13 @@
 import React from 'react';
 import { StyleSheet, Text, View, Pressable, ScrollView } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import Theme from '../Theme';
 import { TeacherBlockFullNames } from '../Utils';
 import TextButton from './button/TextButton';
 import SwitchField from './input/Switch';
 import { TeacherBlock } from '../api/APITypes';
 import TeacherField from './TeacherField';
 import ErrorCard from './card/ErrorCard';
+import { useTheme } from '../theme/ThemeContext';
 
 function ClassInput({
     block,
@@ -24,6 +24,53 @@ function ClassInput({
     defaultValue: string[];
     scrollRef: React.MutableRefObject<ScrollView | null>;
 }) {
+    const { value: Theme } = useTheme();
+
+    const styles = React.useMemo(
+        () =>
+            StyleSheet.create({
+                closeIcon: {
+                    color: Theme.lightForeground,
+                    marginRight: 3,
+                },
+                title: {
+                    fontFamily: Theme.strongFont,
+                    fontSize: 24,
+                    flex: 1,
+                    color: Theme.foregroundColor,
+                },
+                invalidTitle: {
+                    color: Theme.primaryColor,
+                },
+                invalidIcon: {
+                    color: Theme.primaryColor,
+                    marginRight: 3,
+                },
+                content: {
+                    width: '90%',
+                    marginHorizontal: '5%',
+                    marginTop: 20,
+                },
+                teachers: {
+                    fontFamily: Theme.strongFont,
+                    fontSize: 16,
+                    marginTop: 16,
+                },
+                inputField: {
+                    marginTop: 10,
+                },
+                header: {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'flex-start',
+                },
+                teacherInput: {
+                    marginTop: 10,
+                },
+            }),
+        [Theme],
+    );
+
     const changeFunc = React.useRef(onChange);
     React.useEffect(() => {
         changeFunc.current = onChange;
@@ -192,46 +239,5 @@ function ClassInput({
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    closeIcon: {
-        color: Theme.lightForeground,
-        marginRight: 3,
-    },
-    title: {
-        fontFamily: Theme.strongFont,
-        fontSize: 24,
-        flex: 1,
-        color: Theme.foregroundColor,
-    },
-    invalidTitle: {
-        color: Theme.primaryColor,
-    },
-    invalidIcon: {
-        color: Theme.primaryColor,
-        marginRight: 3,
-    },
-    content: {
-        width: '90%',
-        marginHorizontal: '5%',
-        marginTop: 20,
-    },
-    teachers: {
-        fontFamily: Theme.strongFont,
-        fontSize: 16,
-        marginTop: 16,
-    },
-    inputField: {
-        marginTop: 10,
-    },
-    header: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-    },
-    teacherInput: {
-        marginTop: 10,
-    },
-});
 
 export default ClassInput;

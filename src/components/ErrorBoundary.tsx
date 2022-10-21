@@ -48,7 +48,7 @@ class ErrorBoundary extends React.Component {
                     style={{
                         flex: 1,
                         width: '100%',
-                        backgroundColor: Theme.backgroundColor,
+                        backgroundColor: '#FFF',
                         alignItems: 'center',
                         justifyContent: 'center',
                         padding: 50,
@@ -57,8 +57,8 @@ class ErrorBoundary extends React.Component {
                     <StatusBar style="dark" />
                     <Text
                         style={{
-                            fontFamily: Theme.regularFont,
-                            color: Theme.foregroundColor,
+                            fontFamily: 'Inter_400Regular',
+                            color: '#000',
                             fontSize: 20,
                         }}
                     >
@@ -73,8 +73,8 @@ class ErrorBoundary extends React.Component {
                         <Text
                             style={{
                                 marginTop: 10,
-                                fontFamily: Theme.monospaceFont,
-                                color: Theme.foregroundColor,
+                                fontFamily: 'RobotoMono_400Regular',
+                                color: '#000',
                                 fontSize: 20,
                             }}
                         >
@@ -84,8 +84,8 @@ class ErrorBoundary extends React.Component {
                         <Text
                             style={{
                                 marginTop: 5,
-                                fontFamily: Theme.regularFont,
-                                color: Theme.foregroundColor,
+                                fontFamily: 'Inter_400Regular',
+                                color: '#000',
                                 fontSize: 20,
                                 textDecorationLine: 'underline',
                             }}

@@ -3,7 +3,7 @@ import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { AbsenceItem } from '../../AbsenceCalculator';
 import { Block, TeacherBlock } from '../../api/APITypes';
-import Theme from '../../Theme';
+import { useTheme } from '../../theme/ThemeContext';
 import { ShortBlocks } from '../../Utils';
 
 function TeacherCard({
@@ -13,6 +13,78 @@ function TeacherCard({
     absenceItem: AbsenceItem;
     style?: any;
 }) {
+    const { value: Theme } = useTheme();
+
+    const styles = React.useMemo(
+        () =>
+            StyleSheet.create({
+                container: {
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                },
+                blockBox: {
+                    // width: 70,
+                    // height: 70,
+                    flex: 1,
+                    padding: 4,
+                    aspectRatio: 1,
+                    marginRight: 20,
+                    backgroundColor: Theme.primaryColor,
+                    borderRadius: 20,
+
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                },
+                content: {
+                    flex: 4,
+                },
+                block: {
+                    fontFamily: Theme.strongFont,
+                    color: Theme.foregroundAlternate,
+                    fontSize: 50,
+                },
+                adv: {
+                    fontFamily: Theme.strongFont,
+                    color: Theme.foregroundAlternate,
+                    fontSize: 25,
+                },
+                icon: {
+                    color: Theme.foregroundAlternate,
+                },
+                name: {
+                    fontFamily: Theme.strongFont,
+                    fontSize: 20,
+                    color: Theme.foregroundColor,
+                },
+                time: {
+                    fontFamily: Theme.italicFont,
+                    color: Theme.darkForeground,
+                    marginTop: 0,
+                    fontSize: 20,
+                },
+                note: {
+                    fontFamily: Theme.regularFont,
+                    // marginTop: 10,
+                    fontSize: 20,
+                    color: Theme.foregroundColor,
+                },
+                free: {
+                    fontFamily: Theme.strongFont,
+                    fontSize: 20,
+                    color: Theme.foregroundColor,
+                },
+                freeNote: {
+                    color: Theme.darkForeground,
+                    fontFamily: Theme.italicFont,
+                    marginTop: 0,
+                    fontSize: 20,
+                },
+            }),
+        [Theme],
+    );
+
     let boxContent;
 
     if (absenceItem.block === TeacherBlock.ADVISORY) {
@@ -63,68 +135,5 @@ function TeacherCard({
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    blockBox: {
-        // width: 70,
-        // height: 70,
-        flex: 1,
-        padding: 4,
-        aspectRatio: 1,
-        marginRight: 20,
-        backgroundColor: Theme.primaryColor,
-        borderRadius: 20,
-
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    content: {
-        flex: 4,
-    },
-    block: {
-        fontFamily: Theme.strongFont,
-        color: Theme.foregroundAlternate,
-        fontSize: 50,
-    },
-    adv: {
-        fontFamily: Theme.strongFont,
-        color: Theme.foregroundAlternate,
-        fontSize: 25,
-    },
-    icon: {
-        color: Theme.foregroundAlternate,
-    },
-    name: {
-        fontFamily: Theme.strongFont,
-        fontSize: 20,
-    },
-    time: {
-        fontFamily: Theme.italicFont,
-        color: Theme.darkForeground,
-        marginTop: 0,
-        fontSize: 20,
-    },
-    note: {
-        fontFamily: Theme.regularFont,
-        // marginTop: 10,
-        fontSize: 20,
-    },
-    free: {
-        fontFamily: Theme.strongFont,
-        fontSize: 20,
-    },
-    freeNote: {
-        color: Theme.darkForeground,
-        fontFamily: Theme.italicFont,
-        marginTop: 0,
-        fontSize: 20,
-    },
-});
 
 export default TeacherCard;

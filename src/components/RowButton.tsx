@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, Pressable } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import Theme from '../Theme';
+import { useTheme } from '../theme/ThemeContext';
 
 function RowButton({
     label,
@@ -12,6 +12,31 @@ function RowButton({
     style?: any;
     onPress: () => void;
 }) {
+    const { value: Theme } = useTheme();
+
+    const styles = React.useMemo(
+        () =>
+            StyleSheet.create({
+                container: {
+                    paddingVertical: 8,
+                    width: '100%',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'flex-end',
+                },
+                label: {
+                    fontFamily: Theme.regularFont,
+                    fontSize: 20,
+                    flex: 1,
+                },
+                button: {
+                    color: Theme.lightForeground,
+                    flex: 0,
+                },
+            }),
+        [Theme],
+    );
+
     return (
         <View style={style}>
             <Pressable style={[styles.container]} onPress={onPress}>
@@ -26,24 +51,5 @@ function RowButton({
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        paddingVertical: 8,
-        width: '100%',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'flex-end',
-    },
-    label: {
-        fontFamily: Theme.regularFont,
-        fontSize: 20,
-        flex: 1,
-    },
-    button: {
-        color: Theme.lightForeground,
-        flex: 0,
-    },
-});
 
 export default RowButton;

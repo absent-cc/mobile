@@ -4,9 +4,9 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
-import Theme from '../../Theme';
 import WaveHeader from './WaveHeader';
 import { useAppState } from '../../state/AppStateContext';
+import { useTheme } from '../../theme/ThemeContext';
 
 const WithWaveHeader = React.forwardRef(
     (
@@ -37,6 +37,41 @@ const WithWaveHeader = React.forwardRef(
         },
         ref: React.ForwardedRef<ScrollView | null>,
     ) => {
+        const { value: Theme } = useTheme();
+
+        const styles = React.useMemo(
+            () =>
+                StyleSheet.create({
+                    container: {
+                        width: '100%',
+                        flex: 1,
+                        backgroundColor: Theme.backgroundColor,
+                    },
+                    scroller: {
+                        width: '100%',
+                    },
+                    contentContainer: {
+                        width: '100%',
+                    },
+                    gradientBg: {
+                        width: '100%',
+                        position: 'absolute',
+                        top: 0,
+                    },
+                    content: {
+                        paddingHorizontal: 30,
+                        paddingTop: 15,
+                        paddingBottom: 50,
+                        backgroundColor: Theme.backgroundColor,
+                        flex: 1,
+                    },
+                    contentLargeBottom: {
+                        paddingBottom: 450,
+                    },
+                }),
+            [Theme],
+        );
+
         const insets = useSafeAreaInsets();
         const appState = useAppState();
         const [scrollHeight, setScrollHeight] = React.useState(0);
@@ -107,34 +142,5 @@ const WithWaveHeader = React.forwardRef(
         );
     },
 );
-
-const styles = StyleSheet.create({
-    container: {
-        width: '100%',
-        flex: 1,
-        backgroundColor: Theme.backgroundColor,
-    },
-    scroller: {
-        width: '100%',
-    },
-    contentContainer: {
-        width: '100%',
-    },
-    gradientBg: {
-        width: '100%',
-        position: 'absolute',
-        top: 0,
-    },
-    content: {
-        paddingHorizontal: 30,
-        paddingTop: 15,
-        paddingBottom: 50,
-        backgroundColor: Theme.backgroundColor,
-        flex: 1,
-    },
-    contentLargeBottom: {
-        paddingBottom: 450,
-    },
-});
 
 export default WithWaveHeader;

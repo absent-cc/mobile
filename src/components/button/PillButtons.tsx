@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import Theme from '../../Theme';
+import { useTheme } from '../../theme/ThemeContext';
 
 function PillButtons({
     buttons,
@@ -12,6 +12,53 @@ function PillButtons({
     onPress: (index: number) => void;
 }) {
     const [active, setActive] = React.useState(defaultValue);
+
+    const { value: Theme } = useTheme();
+
+    const styles = React.useMemo(
+        () =>
+            StyleSheet.create({
+                container: {
+                    flexDirection: 'row',
+                    borderRadius: 50,
+                    borderWidth: 2,
+                    borderColor: Theme.primaryColor,
+                    overflow: 'hidden',
+                },
+                base: {
+                    flex: 1,
+                    padding: 8,
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                },
+                active: {
+                    backgroundColor: Theme.primaryColor,
+                },
+                inactive: {
+                    backgroundColor: Theme.backgroundColor,
+                },
+                pressedActive: {
+                    backgroundColor: Theme.darkerPrimary,
+                },
+                pressedInactive: {
+                    backgroundColor: Theme.lighterForeground,
+                },
+
+                text: {
+                    fontSize: 20,
+                    fontFamily: Theme.strongFont,
+                    textAlign: 'center',
+                },
+                activeText: {
+                    color: Theme.foregroundAlternate,
+                },
+                inactiveText: {
+                    color: Theme.primaryColor,
+                },
+            }),
+        [Theme],
+    );
 
     return (
         <View style={styles.container}>
@@ -49,46 +96,5 @@ function PillButtons({
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flexDirection: 'row',
-        borderRadius: 50,
-        borderWidth: 2,
-        borderColor: Theme.primaryColor,
-        overflow: 'hidden',
-    },
-    base: {
-        flex: 1,
-        padding: 8,
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    active: {
-        backgroundColor: Theme.primaryColor,
-    },
-    inactive: {
-        backgroundColor: Theme.backgroundColor,
-    },
-    pressedActive: {
-        backgroundColor: Theme.darkerPrimary,
-    },
-    pressedInactive: {
-        backgroundColor: Theme.lighterForeground,
-    },
-
-    text: {
-        fontSize: 20,
-        fontFamily: Theme.strongFont,
-        textAlign: 'center',
-    },
-    activeText: {
-        color: Theme.foregroundAlternate,
-    },
-    inactiveText: {
-        color: Theme.primaryColor,
-    },
-});
 
 export default PillButtons;

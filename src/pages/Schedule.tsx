@@ -1,13 +1,41 @@
 import { ScrollView, StyleSheet, View } from 'react-native';
 import React from 'react';
-import Theme from '../Theme';
 import WithWaveHeader from '../components/header/WithWaveHeader';
 import PillButtons from '../components/button/PillButtons';
 import FullWeek from '../components/schedule/FullWeek';
 import TodaySchedule from '../components/schedule/TodaySchedule';
 import { useDialog } from '../components/dialog/Dialog';
+import { useTheme } from '../theme/ThemeContext';
 
 function Schedule({ navigation }: { navigation: any }) {
+    const { value: Theme } = useTheme();
+
+    const styles = React.useMemo(
+        () =>
+            StyleSheet.create({
+                pageView: {
+                    flex: 1,
+                    width: '100%',
+                    backgroundColor: Theme.backgroundColor,
+                },
+                status: {
+                    color: Theme.foregroundColor,
+                    fontFamily: Theme.regularFont,
+                    fontSize: 20,
+                },
+                withMargin: {
+                    marginBottom: 10,
+                },
+                special: {
+                    fontFamily: Theme.strongFont,
+                },
+                content: {
+                    marginTop: 30,
+                },
+            }),
+        [Theme],
+    );
+
     const { close: closeDialog } = useDialog();
     const [activeTab, setActiveTab] = React.useState(0);
 
@@ -65,27 +93,5 @@ function Schedule({ navigation }: { navigation: any }) {
         </WithWaveHeader>
     );
 }
-
-const styles = StyleSheet.create({
-    pageView: {
-        flex: 1,
-        width: '100%',
-        backgroundColor: Theme.backgroundColor,
-    },
-    status: {
-        color: Theme.foregroundColor,
-        fontFamily: Theme.regularFont,
-        fontSize: 20,
-    },
-    withMargin: {
-        marginBottom: 10,
-    },
-    special: {
-        fontFamily: Theme.strongFont,
-    },
-    content: {
-        marginTop: 30,
-    },
-});
 
 export default Schedule;

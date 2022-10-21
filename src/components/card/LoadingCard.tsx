@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, Text, ActivityIndicator } from 'react-native';
-import Theme from '../../Theme';
+import { useTheme } from '../../theme/ThemeContext';
 
 function LoadingCard({
     children,
@@ -9,6 +9,31 @@ function LoadingCard({
     children: React.ReactNode;
     style?: any;
 }) {
+    const { value: Theme } = useTheme();
+
+    const styles = React.useMemo(
+        () =>
+            StyleSheet.create({
+                container: {
+                    paddingHorizontal: 20,
+                    paddingVertical: 10,
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                },
+                icon: {
+                    marginRight: 20,
+                },
+                text: {
+                    fontFamily: Theme.strongFont,
+                    fontSize: 18,
+                    color: Theme.foregroundColor,
+                    flex: 1,
+                },
+            }),
+        [Theme],
+    );
+
     return (
         <View style={[style, styles.container]}>
             <ActivityIndicator
@@ -20,24 +45,5 @@ function LoadingCard({
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        paddingHorizontal: 20,
-        paddingVertical: 10,
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    icon: {
-        marginRight: 20,
-    },
-    text: {
-        fontFamily: Theme.strongFont,
-        fontSize: 18,
-        color: Theme.foregroundColor,
-        flex: 1,
-    },
-});
 
 export default LoadingCard;

@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Pressable, Animated } from 'react-native';
 import { Route } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Theme from '../Theme';
+import { useTheme } from '../theme/ThemeContext';
 
 function TabBar({
     state,
@@ -21,6 +21,50 @@ function TabBar({
         { label: string; icon: keyof typeof Feather.glyphMap }
     >;
 }) {
+    const { value: Theme } = useTheme();
+
+    const styles = React.useMemo(
+        () =>
+            StyleSheet.create({
+                button: {
+                    flex: 1,
+                    justifyContent: 'center',
+                    backgroundColor: Theme.backgroundColor,
+                },
+                fixedTab: {
+                    paddingTop: 12,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                },
+                floatingTab: {
+                    position: 'absolute',
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    paddingTop: 12,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                },
+                tabText: {
+                    textAlign: 'center',
+                    color: Theme.darkForeground,
+                    fontFamily: Theme.regularFont,
+                    fontSize: 15,
+                },
+                activeTabText: {
+                    color: Theme.primaryColor,
+                },
+                icon: {
+                    color: Theme.darkForeground,
+                    marginBottom: 8,
+                },
+                activeIcon: {
+                    color: Theme.primaryColor,
+                },
+            }),
+        [Theme],
+    );
+
     const insets = useSafeAreaInsets();
 
     return (
@@ -125,43 +169,5 @@ function TabBar({
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    button: {
-        flex: 1,
-        justifyContent: 'center',
-        backgroundColor: Theme.backgroundColor,
-    },
-    fixedTab: {
-        paddingTop: 12,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    floatingTab: {
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        paddingTop: 12,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    tabText: {
-        textAlign: 'center',
-        color: Theme.darkForeground,
-        fontFamily: Theme.regularFont,
-        fontSize: 15,
-    },
-    activeTabText: {
-        color: Theme.primaryColor,
-    },
-    icon: {
-        color: Theme.darkForeground,
-        marginBottom: 8,
-    },
-    activeIcon: {
-        color: Theme.primaryColor,
-    },
-});
 
 export default TabBar;

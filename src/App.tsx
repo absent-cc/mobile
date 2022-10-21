@@ -23,6 +23,7 @@ import GeneralSettings from './pages/settings/GeneralSettings';
 import TeacherSettings from './pages/settings/TeacherSettings';
 import { AppStateProvider, useAppState } from './state/AppStateContext';
 import { SettingsProvider, useSettings } from './state/SettingsContext';
+import { ThemeProvider } from './theme/ThemeContext';
 import { APIProvider, useAPI } from './api/APIContext';
 import ScheduleOnboarding from './pages/onboarding/ScheduleOnboarding';
 import ProfileOnboarding from './pages/onboarding/ProfileOnboarding';
@@ -33,7 +34,6 @@ import UpdateDialog from './components/dialog/UpdateDialog';
 import ErrorDialog from './components/dialog/ErrorDialog';
 import MainScreen from './MainScreen';
 import DeveloperSettings from './pages/settings/DeveloperSettings';
-// import WelcomeLoading from './pages/WelcomeLoading';
 
 const Stack = createStackNavigator();
 
@@ -187,51 +187,6 @@ function App() {
         }
     }
 
-    // let navigationContent;
-    // if (
-    //     isLoggedIn &&
-    //     (!appState.value.serverLoaded || !settings.serverLoaded)
-    // ) {
-    //     <Stack.Screen name="Loading" component={WelcomeLoading} />;
-    // } else if (isLoggedIn) {
-    //     if (settings.userOnboarded) {
-    //         // navigationContent = (
-    //         //     <>
-    //         //         <Stack.Screen name="Home" component={Home} />
-    //         //         <Stack.Screen name="FullList" component={FullList} />
-    //         //         <Stack.Screen name="Settings" component={Settings} />
-    //         //         <Stack.Screen
-    //         //             name="GeneralSettings"
-    //         //             component={GeneralSettings}
-    //         //         />
-    //         //         <Stack.Screen name="AppSettings" component={AppSettings} />
-    //         //         <Stack.Screen
-    //         //             name="TeacherSettings"
-    //         //             component={TeacherSettings}
-    //         //         />
-    //         //     </>
-    //         // );
-    //         navigationContent = <Stack.Screen name="Home" component={Home} />;
-    //     } else {
-    //         navigationContent = (
-    //             <>
-    //                 <Stack.Screen
-    //                     name="ProfileOnboarding"
-    //                     component={ProfileOnboarding}
-    //                 />
-    //                 <Stack.Screen
-    //                     name="ScheduleOnboarding"
-    //                     component={ScheduleOnboarding}
-    //                 />
-    //             </>
-    //         );
-    //     }
-    // } else {
-    //     navigationContent = <Stack.Screen name="Welcome" component={Welcome} />;
-    // }
-
-    // console.log(navigationContent);
-
     return (
         <>
             <Stack.Navigator
@@ -311,7 +266,9 @@ export default function AppRoot() {
                         <SettingsProvider>
                             <AppStateProvider>
                                 <APIProvider>
-                                    <App />
+                                    <ThemeProvider>
+                                        <App />
+                                    </ThemeProvider>
                                 </APIProvider>
                             </AppStateProvider>
                         </SettingsProvider>

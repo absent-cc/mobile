@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { AbsentTeacher } from '../../api/APITypes';
-import Theme from '../../Theme';
+import { useTheme } from '../../theme/ThemeContext';
 import Divider from '../Divider';
 
 function AllTeacherCard({
@@ -13,6 +13,52 @@ function AllTeacherCard({
     style?: any;
     last: boolean;
 }) {
+    const { value: Theme } = useTheme();
+
+    const styles = React.useMemo(
+        () =>
+            StyleSheet.create({
+                container: {
+                    // borderRadius: 20,
+                    // backgroundColor: Theme.lighterForeground,
+                    // overflow: 'hidden',
+                    // padding: 20,
+                },
+                even: {
+                    // backgroundColor: Theme.lightForeground,
+                },
+                topRow: {
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                },
+                name: {
+                    fontFamily: Theme.regularFont,
+                    color: Theme.foregroundColor,
+                    fontSize: 20,
+                    flexShrink: 1,
+                },
+                nameBold: {
+                    fontFamily: Theme.strongFont,
+                },
+                time: {
+                    fontFamily: Theme.italicFont,
+                    color: Theme.darkForeground,
+                    marginTop: 0,
+                    fontSize: 20,
+                },
+                note: {
+                    fontFamily: Theme.regularFont,
+                    color: Theme.foregroundColor,
+                    marginTop: 10,
+                    fontSize: 20,
+                },
+                divider: {
+                    marginVertical: 25,
+                },
+            }),
+        [Theme],
+    );
+
     // reverse it so last name comes first, and if there's only one name, use it as last
     const splitTeacherName = teacher.teacher.reversedSplitName;
 
@@ -38,43 +84,5 @@ function AllTeacherCard({
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        // borderRadius: 20,
-        // backgroundColor: Theme.lighterForeground,
-        // overflow: 'hidden',
-        // padding: 20,
-    },
-    even: {
-        // backgroundColor: Theme.lightForeground,
-    },
-    topRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-    },
-    name: {
-        fontFamily: Theme.regularFont,
-        fontSize: 20,
-        flexShrink: 1,
-    },
-    nameBold: {
-        fontFamily: Theme.strongFont,
-    },
-    time: {
-        fontFamily: Theme.italicFont,
-        color: Theme.darkForeground,
-        marginTop: 0,
-        fontSize: 20,
-    },
-    note: {
-        fontFamily: Theme.regularFont,
-        marginTop: 10,
-        fontSize: 20,
-    },
-    divider: {
-        marginVertical: 25,
-    },
-});
 
 export default AllTeacherCard;

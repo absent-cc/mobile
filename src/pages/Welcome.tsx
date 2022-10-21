@@ -4,11 +4,69 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Constants from 'expo-constants';
 import * as Google from 'expo-auth-session/providers/google';
 import { Feather } from '@expo/vector-icons';
-import Theme from '../Theme';
 import GoogleSignIn from '../components/button/GoogleSignIn';
 import { useAPI } from '../api/APIContext';
+import { useTheme } from '../theme/ThemeContext';
 
 function Welcome({ navigation }: { navigation: any }) {
+    const { value: Theme } = useTheme();
+
+    const styles = React.useMemo(
+        () =>
+            StyleSheet.create({
+                container: {
+                    flex: 1,
+                    width: '100%',
+                    backgroundColor: Theme.backgroundColor,
+                },
+                gradientBg: {
+                    flex: 1,
+                    width: '100%',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                },
+                subarea: {
+                    width: 300,
+                },
+                ctaSubarea: {
+                    position: 'absolute',
+                    bottom: 120,
+                },
+                logo: {
+                    width: '100%',
+                    height: 100,
+                    resizeMode: 'contain',
+                },
+                subtitle: {
+                    color: Theme.foregroundAlternate,
+                    fontFamily: Theme.strongFont,
+                    fontSize: 20,
+                    textAlign: 'center',
+                },
+                button: {
+                    marginTop: 15,
+                },
+                nps: {
+                    color: Theme.foregroundAlternate,
+                    fontFamily: Theme.regularFont,
+                    fontSize: 20,
+                    textAlign: 'center',
+                },
+                devButton: {
+                    position: 'absolute',
+                    borderRadius: 20,
+                    backgroundColor: '#0006',
+                    top: 50,
+                    right: 20,
+                    width: 60,
+                    aspectRatio: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                },
+            }),
+        [Theme],
+    );
+
     const googleOptions = Constants.expoConfig?.extra?.isDevelopment
         ? {
               expoClientId:
@@ -97,57 +155,5 @@ function Welcome({ navigation }: { navigation: any }) {
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        width: '100%',
-        backgroundColor: Theme.backgroundColor,
-    },
-    gradientBg: {
-        flex: 1,
-        width: '100%',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    subarea: {
-        width: 300,
-    },
-    ctaSubarea: {
-        position: 'absolute',
-        bottom: 120,
-    },
-    logo: {
-        width: '100%',
-        height: 100,
-        resizeMode: 'contain',
-    },
-    subtitle: {
-        color: Theme.foregroundAlternate,
-        fontFamily: Theme.strongFont,
-        fontSize: 20,
-        textAlign: 'center',
-    },
-    button: {
-        marginTop: 15,
-    },
-    nps: {
-        color: Theme.foregroundAlternate,
-        fontFamily: Theme.regularFont,
-        fontSize: 20,
-        textAlign: 'center',
-    },
-    devButton: {
-        position: 'absolute',
-        borderRadius: 20,
-        backgroundColor: '#0006',
-        top: 50,
-        right: 20,
-        width: 60,
-        aspectRatio: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-});
 
 export default Welcome;

@@ -6,6 +6,6 @@ if($args.count -eq 0) {
 $oldValue = $Env:APP_VARIANT
 $Env:APP_VARIANT = "production"
 
-eas update --branch "production-v2" --message $args[0]
+eas update --branch "production-v3" --message $args[0]
 
 $Env:APP_VARIANT = $oldValue

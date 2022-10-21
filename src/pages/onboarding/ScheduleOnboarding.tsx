@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet, Text, ScrollView } from 'react-native';
-import Theme from '../../Theme';
 import Divider from '../../components/Divider';
 import TextButton from '../../components/button/TextButton';
 import { EditingSchedule, TeacherBlock } from '../../api/APITypes';
@@ -12,8 +11,47 @@ import ExtraTeachers from '../../components/ExtraTeachers';
 import { useAPI } from '../../api/APIContext';
 import LoadingCard from '../../components/card/LoadingCard';
 import WithWaveHeader from '../../components/header/WithWaveHeader';
+import { useTheme } from '../../theme/ThemeContext';
 
 function ScheduleOnboarding({ navigation }: { navigation: any }) {
+    const { value: Theme } = useTheme();
+
+    const styles = React.useMemo(
+        () =>
+            StyleSheet.create({
+                pageView: {
+                    flex: 1,
+                    width: '100%',
+                    backgroundColor: Theme.backgroundColor,
+                },
+                text: {
+                    color: Theme.foregroundColor,
+                    fontFamily: Theme.regularFont,
+                    fontSize: 20,
+                },
+                note: {
+                    color: Theme.foregroundColor,
+                    fontFamily: Theme.regularFont,
+                    fontSize: 16,
+                    marginBottom: 16,
+                },
+                header: {
+                    color: Theme.foregroundColor,
+                    fontFamily: Theme.headerFont,
+                    fontSize: 30,
+                    marginBottom: 3,
+                },
+                classInput: {
+                    marginTop: 10,
+                    marginBottom: 20,
+                },
+                validation: {
+                    marginBottom: 20,
+                },
+            }),
+        [Theme],
+    );
+
     const api = useAPI();
     const settings = useSettings();
 
@@ -254,37 +292,5 @@ function ScheduleOnboarding({ navigation }: { navigation: any }) {
         </WithWaveHeader>
     );
 }
-
-const styles = StyleSheet.create({
-    pageView: {
-        flex: 1,
-        width: '100%',
-        backgroundColor: Theme.backgroundColor,
-    },
-    text: {
-        color: Theme.foregroundColor,
-        fontFamily: Theme.regularFont,
-        fontSize: 20,
-    },
-    note: {
-        color: Theme.foregroundColor,
-        fontFamily: Theme.regularFont,
-        fontSize: 16,
-        marginBottom: 16,
-    },
-    header: {
-        color: Theme.foregroundColor,
-        fontFamily: Theme.headerFont,
-        fontSize: 30,
-        marginBottom: 3,
-    },
-    classInput: {
-        marginTop: 10,
-        marginBottom: 20,
-    },
-    validation: {
-        marginBottom: 20,
-    },
-});
 
 export default ScheduleOnboarding;

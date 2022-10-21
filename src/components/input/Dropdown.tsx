@@ -8,7 +8,7 @@ import {
     // Platform,
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import Theme from '../../Theme';
+import { useTheme } from '../../theme/ThemeContext';
 
 function Dropdown({
     label,
@@ -25,6 +25,95 @@ function Dropdown({
     onChange: (val: number) => void;
     options: any[];
 }) {
+    const { value: Theme } = useTheme();
+
+    const styles = React.useMemo(
+        () =>
+            StyleSheet.create({
+                input: {
+                    borderWidth: 2,
+                    borderColor: Theme.lightForeground,
+                    paddingVertical: 8,
+                    paddingHorizontal: 20,
+                    borderRadius: 50,
+                    width: '100%',
+                    backgroundColor: Theme.backgroundColor,
+                },
+                inputPressed: {
+                    backgroundColor: Theme.lighterForeground,
+                },
+                inputText: {
+                    fontSize: 20,
+                    fontFamily: Theme.regularFont,
+                    color: Theme.foregroundColor,
+                },
+                placeholder: {
+                    fontSize: 20,
+                    fontFamily: Theme.regularFont,
+                    color: Theme.lightForeground,
+                },
+                label: {
+                    fontFamily: Theme.strongFont,
+                    fontSize: 16,
+                    marginLeft: 20,
+                    marginBottom: 5,
+                },
+                button: {
+                    color: Theme.lightForeground,
+                    position: 'relative',
+                    marginLeft: -42,
+                    marginTop: 2,
+                },
+                inputFieldContainer: {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                },
+                optionsListContainer: {
+                    borderRadius: 20,
+                    overflow: 'hidden',
+                    borderWidth: 2,
+                    borderColor: Theme.lightForeground,
+                    maxHeight: 200,
+                    position: 'absolute',
+                    // ...Platform.select({
+                    //     ios: {
+                    //         position: 'absolute',
+                    //         // borderWidth: 2,
+                    //         // borderColor: Theme.lightForeground,
+                    //     },
+                    //     android: {
+                    //         position: 'relative',
+                    //         marginTop: 5,
+                    //     },
+                    // }),
+                    width: '100%',
+                    backgroundColor: Theme.backgroundColor,
+                },
+                option: {
+                    paddingVertical: 8,
+                    paddingHorizontal: 20,
+                    backgroundColor: Theme.backgroundColor,
+                    position: 'relative',
+                },
+                optionPressed: {
+                    backgroundColor: Theme.lighterForeground,
+                },
+                optionSelected: {
+                    backgroundColor: Theme.lightForeground,
+                },
+                optionText: {
+                    fontSize: 20,
+                    fontFamily: Theme.regularFont,
+                    color: Theme.foregroundColor,
+                },
+                withBorder: {
+                    borderBottomColor: Theme.lightForeground,
+                    borderBottomWidth: 2,
+                },
+            }),
+        [Theme],
+    );
+
     const [value, setValue] = React.useState(defaultValue);
     const [isOpen, setIsOpen] = React.useState(false);
     const toggleMenu = () => {
@@ -104,88 +193,5 @@ function Dropdown({
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    input: {
-        borderWidth: 2,
-        borderColor: Theme.lightForeground,
-        paddingVertical: 8,
-        paddingHorizontal: 20,
-        borderRadius: 50,
-        width: '100%',
-        backgroundColor: Theme.backgroundColor,
-    },
-    inputPressed: {
-        backgroundColor: Theme.lighterForeground,
-    },
-    inputText: {
-        fontSize: 20,
-        fontFamily: Theme.regularFont,
-        color: Theme.foregroundColor,
-    },
-    placeholder: {
-        fontSize: 20,
-        fontFamily: Theme.regularFont,
-        color: Theme.lightForeground,
-    },
-    label: {
-        fontFamily: Theme.strongFont,
-        fontSize: 16,
-        marginLeft: 20,
-        marginBottom: 5,
-    },
-    button: {
-        color: Theme.lightForeground,
-        position: 'relative',
-        marginLeft: -42,
-        marginTop: 2,
-    },
-    inputFieldContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    optionsListContainer: {
-        borderRadius: 20,
-        overflow: 'hidden',
-        borderWidth: 2,
-        borderColor: Theme.lightForeground,
-        maxHeight: 200,
-        position: 'absolute',
-        // ...Platform.select({
-        //     ios: {
-        //         position: 'absolute',
-        //         // borderWidth: 2,
-        //         // borderColor: Theme.lightForeground,
-        //     },
-        //     android: {
-        //         position: 'relative',
-        //         marginTop: 5,
-        //     },
-        // }),
-        width: '100%',
-        backgroundColor: Theme.backgroundColor,
-    },
-    option: {
-        paddingVertical: 8,
-        paddingHorizontal: 20,
-        backgroundColor: Theme.backgroundColor,
-        position: 'relative',
-    },
-    optionPressed: {
-        backgroundColor: Theme.lighterForeground,
-    },
-    optionSelected: {
-        backgroundColor: Theme.lightForeground,
-    },
-    optionText: {
-        fontSize: 20,
-        fontFamily: Theme.regularFont,
-        color: Theme.foregroundColor,
-    },
-    withBorder: {
-        borderBottomColor: Theme.lightForeground,
-        borderBottomWidth: 2,
-    },
-});
 
 export default Dropdown;

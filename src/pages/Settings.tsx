@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, Linking } from 'react-native';
 import Constants from 'expo-constants';
-import Theme from '../Theme';
 import Divider from '../components/Divider';
 import TextButton from '../components/button/TextButton';
 import RowButton from '../components/RowButton';
@@ -9,8 +8,57 @@ import Anchor from '../components/Anchor';
 import { useAPI } from '../api/APIContext';
 import WithHeader from '../components/header/WithHeader';
 import { shuffleArray } from '../Utils';
+import { useTheme } from '../theme/ThemeContext';
 
 function Settings({ navigation }: { navigation: any }) {
+    const { value: Theme } = useTheme();
+
+    const styles = React.useMemo(
+        () =>
+            StyleSheet.create({
+                pageView: {
+                    flex: 1,
+                    width: '100%',
+                    backgroundColor: Theme.backgroundColor,
+                },
+                text: {
+                    color: Theme.foregroundColor,
+                    fontFamily: Theme.regularFont,
+                    fontSize: 20,
+                },
+                note: {
+                    color: Theme.foregroundColor,
+                    fontFamily: Theme.regularFont,
+                    fontSize: 16,
+                    marginBottom: 16,
+                },
+                header: {
+                    color: Theme.foregroundColor,
+                    fontFamily: Theme.strongFont,
+                    fontSize: 30,
+                    marginBottom: 3,
+                },
+                inputField: {
+                    marginTop: 10,
+                    zIndex: 6,
+                },
+                dropdown: {
+                    zIndex: 7,
+                },
+                classInput: {
+                    marginBottom: 30,
+                },
+                attribution: {
+                    textAlign: 'center',
+                    fontSize: 20,
+                    fontFamily: Theme.regularFont,
+                    marginTop: 50,
+                    color: Theme.darkForeground,
+                },
+            }),
+        [Theme],
+    );
+
     const api = useAPI();
 
     const attributions = React.useRef(
@@ -105,47 +153,5 @@ function Settings({ navigation }: { navigation: any }) {
         </WithHeader>
     );
 }
-
-const styles = StyleSheet.create({
-    pageView: {
-        flex: 1,
-        width: '100%',
-        backgroundColor: Theme.backgroundColor,
-    },
-    text: {
-        color: Theme.foregroundColor,
-        fontFamily: Theme.regularFont,
-        fontSize: 20,
-    },
-    note: {
-        color: Theme.foregroundColor,
-        fontFamily: Theme.regularFont,
-        fontSize: 16,
-        marginBottom: 16,
-    },
-    header: {
-        color: Theme.foregroundColor,
-        fontFamily: Theme.strongFont,
-        fontSize: 30,
-        marginBottom: 3,
-    },
-    inputField: {
-        marginTop: 10,
-        zIndex: 6,
-    },
-    dropdown: {
-        zIndex: 7,
-    },
-    classInput: {
-        marginBottom: 30,
-    },
-    attribution: {
-        textAlign: 'center',
-        fontSize: 20,
-        fontFamily: Theme.regularFont,
-        marginTop: 50,
-        color: Theme.darkForeground,
-    },
-});
 
 export default Settings;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import Theme from '../../Theme';
+import { useTheme } from '../../theme/ThemeContext';
 
 function Header({
     iconName,
@@ -16,6 +16,46 @@ function Header({
     style?: any;
     isLeft?: boolean;
 }) {
+    const { value: Theme } = useTheme();
+
+    const styles = React.useMemo(
+        () =>
+            StyleSheet.create({
+                container: {
+                    width: '100%',
+                    minHeight: 150,
+                    justifyContent: 'flex-end',
+                },
+                header: {
+                    fontFamily: Theme.headerFont,
+                    color: Theme.foregroundColor,
+                    fontSize: 38,
+                    marginTop: 50,
+                    marginHorizontal: 30,
+                    marginBottom: 20,
+                },
+                headerWithRightIcon: {
+                    paddingRight: 30,
+                },
+                headerWithLeftIcon: {
+                    paddingRight: 30,
+                },
+                icon: {
+                    position: 'absolute',
+                    top: 20,
+                    right: 20,
+                    color: Theme.primaryColor,
+                },
+                iconLeft: {
+                    left: 20,
+                },
+                iconRight: {
+                    right: 20,
+                },
+            }),
+        [Theme],
+    );
+
     return (
         <View style={[style, styles.container]}>
             <Text
@@ -45,39 +85,5 @@ function Header({
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        width: '100%',
-        minHeight: 150,
-        justifyContent: 'flex-end',
-    },
-    header: {
-        fontFamily: Theme.headerFont,
-        color: Theme.foregroundColor,
-        fontSize: 38,
-        marginTop: 50,
-        marginHorizontal: 30,
-        marginBottom: 20,
-    },
-    headerWithRightIcon: {
-        paddingRight: 30,
-    },
-    headerWithLeftIcon: {
-        paddingRight: 30,
-    },
-    icon: {
-        position: 'absolute',
-        top: 20,
-        right: 20,
-        color: Theme.primaryColor,
-    },
-    iconLeft: {
-        left: 20,
-    },
-    iconRight: {
-        right: 20,
-    },
-});
 
 export default Header;

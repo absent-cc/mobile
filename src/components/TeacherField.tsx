@@ -11,9 +11,9 @@ import {
     HostComponent,
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import Theme from '../Theme';
 import { useAPI } from '../api/APIContext';
 import IconButton from './button/IconButton';
+import { useTheme } from '../theme/ThemeContext';
 
 function TeacherField({
     defaultValue = '',
@@ -32,6 +32,119 @@ function TeacherField({
     onDelete?: () => void;
     scrollRef: React.MutableRefObject<ScrollView | null>;
 }) {
+    const { value: Theme } = useTheme();
+
+    const styles = React.useMemo(
+        () =>
+            StyleSheet.create({
+                // input field and delete button
+                input: {
+                    borderWidth: 2,
+                    borderColor: Theme.lightForeground,
+                    paddingVertical: 8,
+                    paddingHorizontal: 20,
+                    fontSize: 20,
+                    fontFamily: Theme.regularFont,
+                    borderRadius: 50,
+
+                    flex: 1,
+                },
+                inputContainer: {
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                },
+                teacherInputDelete: {
+                    flex: 0,
+                    marginLeft: 10,
+                },
+                // autocomplete
+                optionsListContainer: {
+                    borderRadius: 20,
+                    overflow: 'hidden',
+                    borderWidth: 2,
+                    borderColor: Theme.lightForeground,
+                    maxHeight: 200,
+                    position: 'absolute',
+                    // ...Platform.select({
+                    //     ios: {
+                    //         position: 'absolute',
+                    //         // borderWidth: 2,
+                    //         // borderColor: Theme.lightForeground,
+                    //     },
+                    //     android: {
+                    //         position: 'relative',
+                    //         marginTop: 5,
+                    //     },
+                    // }),
+                    width: '100%',
+                    backgroundColor: Theme.backgroundColor,
+                },
+                option: {
+                    paddingVertical: 8,
+                    paddingHorizontal: 20,
+                    backgroundColor: Theme.backgroundColor,
+                    position: 'relative',
+                },
+                optionPressed: {
+                    backgroundColor: Theme.lighterForeground,
+                },
+                optionText: {
+                    fontSize: 20,
+                    fontFamily: Theme.regularFont,
+                    color: Theme.foregroundColor,
+                },
+                withBorder: {
+                    borderBottomColor: Theme.lightForeground,
+                    borderBottomWidth: 2,
+                },
+                // bad teacher
+                badTeacher: {
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'flex-start',
+                    marginTop: 10,
+                    marginBottom: 20,
+                },
+                badTeacherIcon: {
+                    color: Theme.warning,
+                    marginRight: 20,
+                },
+                badTeacherContent: {
+                    flex: 1,
+                },
+                badTeacherText: {
+                    color: Theme.foregroundColor,
+                    fontFamily: Theme.strongFont,
+                    fontSize: 16,
+                },
+                badTeacherOption: {
+                    paddingVertical: 8,
+                    paddingHorizontal: 20,
+                    fontFamily: Theme.regularFont,
+                    borderRadius: 50,
+                    marginTop: 10,
+                },
+                badTeacherOptionText: {
+                    fontSize: 16,
+                },
+                badTeacherKnown: {
+                    backgroundColor: Theme.lighterForeground,
+                },
+                badTeacherKnownPressed: {
+                    backgroundColor: Theme.lightForeground,
+                },
+                badTeacherCustom: {
+                    borderColor: Theme.warning,
+                    borderWidth: 2,
+                },
+                badTeacherCustomPressed: {
+                    backgroundColor: Theme.lighterForeground,
+                },
+            }),
+        [Theme],
+    );
+
     const changeFunc = React.useRef(onChange);
 
     // default text is teacher name or nothing
@@ -335,112 +448,5 @@ function TeacherField({
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    // input field and delete button
-    input: {
-        borderWidth: 2,
-        borderColor: Theme.lightForeground,
-        paddingVertical: 8,
-        paddingHorizontal: 20,
-        fontSize: 20,
-        fontFamily: Theme.regularFont,
-        borderRadius: 50,
-
-        flex: 1,
-    },
-    inputContainer: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    teacherInputDelete: {
-        flex: 0,
-        marginLeft: 10,
-    },
-    // autocomplete
-    optionsListContainer: {
-        borderRadius: 20,
-        overflow: 'hidden',
-        borderWidth: 2,
-        borderColor: Theme.lightForeground,
-        maxHeight: 200,
-        position: 'absolute',
-        // ...Platform.select({
-        //     ios: {
-        //         position: 'absolute',
-        //         // borderWidth: 2,
-        //         // borderColor: Theme.lightForeground,
-        //     },
-        //     android: {
-        //         position: 'relative',
-        //         marginTop: 5,
-        //     },
-        // }),
-        width: '100%',
-        backgroundColor: Theme.backgroundColor,
-    },
-    option: {
-        paddingVertical: 8,
-        paddingHorizontal: 20,
-        backgroundColor: Theme.backgroundColor,
-        position: 'relative',
-    },
-    optionPressed: {
-        backgroundColor: Theme.lighterForeground,
-    },
-    optionText: {
-        fontSize: 20,
-        fontFamily: Theme.regularFont,
-        color: Theme.foregroundColor,
-    },
-    withBorder: {
-        borderBottomColor: Theme.lightForeground,
-        borderBottomWidth: 2,
-    },
-    // bad teacher
-    badTeacher: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'flex-start',
-        marginTop: 10,
-        marginBottom: 20,
-    },
-    badTeacherIcon: {
-        color: Theme.warning,
-        marginRight: 20,
-    },
-    badTeacherContent: {
-        flex: 1,
-    },
-    badTeacherText: {
-        color: Theme.foregroundColor,
-        fontFamily: Theme.strongFont,
-        fontSize: 16,
-    },
-    badTeacherOption: {
-        paddingVertical: 8,
-        paddingHorizontal: 20,
-        fontFamily: Theme.regularFont,
-        borderRadius: 50,
-        marginTop: 10,
-    },
-    badTeacherOptionText: {
-        fontSize: 16,
-    },
-    badTeacherKnown: {
-        backgroundColor: Theme.lighterForeground,
-    },
-    badTeacherKnownPressed: {
-        backgroundColor: Theme.lightForeground,
-    },
-    badTeacherCustom: {
-        borderColor: Theme.warning,
-        borderWidth: 2,
-    },
-    badTeacherCustomPressed: {
-        backgroundColor: Theme.lighterForeground,
-    },
-});
 
 export default TeacherField;

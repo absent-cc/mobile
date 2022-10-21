@@ -1,13 +1,63 @@
 import React from 'react';
 import { Alert, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Theme from '../../Theme';
 import TextButton from '../../components/button/TextButton';
 import { useAPI } from '../../api/APIContext';
 import WithHeader from '../../components/header/WithHeader';
 import Dropdown from '../../components/input/Dropdown';
+import { useTheme } from '../../theme/ThemeContext';
 
 function DeveloperSettings({ navigation }: { navigation: any }) {
+    const { value: Theme } = useTheme();
+
+    const styles = React.useMemo(
+        () =>
+            StyleSheet.create({
+                pageView: {
+                    flex: 1,
+                    width: '100%',
+                    backgroundColor: Theme.backgroundColor,
+                },
+                note: {
+                    color: Theme.foregroundColor,
+                    fontFamily: Theme.regularFont,
+                    fontSize: 18,
+                    marginBottom: 16,
+                },
+                note2: {
+                    color: Theme.darkForeground,
+                    fontFamily: Theme.italicFont,
+                    fontSize: 18,
+                    marginBottom: 16,
+                    marginTop: 10,
+                    marginHorizontal: 20,
+                },
+                inputField: {
+                    marginTop: 10,
+                    zIndex: 6,
+                },
+                save: {
+                    marginTop: 40,
+                },
+                validation: {
+                    marginVertical: 20,
+                },
+                saveValidation: {
+                    marginBottom: 20,
+                },
+                savePanel: {
+                    position: 'absolute',
+                    bottom: 0,
+                    width: '100%',
+                    backgroundColor: Theme.backgroundColor,
+                    padding: 20,
+                    borderTopWidth: 2,
+                    borderColor: Theme.lightForeground,
+                },
+            }),
+        [Theme],
+    );
+
     const insets = useSafeAreaInsets();
 
     const { backend: selectedBackend, switchBackend } = useAPI();
@@ -117,49 +167,5 @@ function DeveloperSettings({ navigation }: { navigation: any }) {
         </WithHeader>
     );
 }
-
-const styles = StyleSheet.create({
-    pageView: {
-        flex: 1,
-        width: '100%',
-        backgroundColor: Theme.backgroundColor,
-    },
-    note: {
-        color: Theme.foregroundColor,
-        fontFamily: Theme.regularFont,
-        fontSize: 18,
-        marginBottom: 16,
-    },
-    note2: {
-        color: Theme.darkForeground,
-        fontFamily: Theme.italicFont,
-        fontSize: 18,
-        marginBottom: 16,
-        marginTop: 10,
-        marginHorizontal: 20,
-    },
-    inputField: {
-        marginTop: 10,
-        zIndex: 6,
-    },
-    save: {
-        marginTop: 40,
-    },
-    validation: {
-        marginVertical: 20,
-    },
-    saveValidation: {
-        marginBottom: 20,
-    },
-    savePanel: {
-        position: 'absolute',
-        bottom: 0,
-        width: '100%',
-        backgroundColor: Theme.backgroundColor,
-        padding: 20,
-        borderTopWidth: 2,
-        borderColor: Theme.lightForeground,
-    },
-});
 
 export default DeveloperSettings;

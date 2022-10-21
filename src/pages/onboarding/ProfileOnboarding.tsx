@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet, Text } from 'react-native';
-import Theme from '../../Theme';
 import Divider from '../../components/Divider';
 import TextField from '../../components/input/TextField';
 import Dropdown from '../../components/input/Dropdown';
@@ -16,8 +15,46 @@ import ErrorCard from '../../components/card/ErrorCard';
 import { useAPI } from '../../api/APIContext';
 import { SchoolName } from '../../api/APITypes';
 import WithWaveHeader from '../../components/header/WithWaveHeader';
+import { useTheme } from '../../theme/ThemeContext';
 
 function ProfileOnboarding({ navigation }: { navigation: any }) {
+    const { value: Theme } = useTheme();
+
+    const styles = React.useMemo(
+        () =>
+            StyleSheet.create({
+                pageView: {
+                    flex: 1,
+                    width: '100%',
+                    backgroundColor: Theme.backgroundColor,
+                },
+                text: {
+                    color: Theme.foregroundColor,
+                    fontFamily: Theme.regularFont,
+                    fontSize: 20,
+                },
+                note: {
+                    color: Theme.foregroundColor,
+                    fontFamily: Theme.regularFont,
+                    fontSize: 16,
+                    marginBottom: 16,
+                },
+                header: {
+                    color: Theme.foregroundColor,
+                    fontFamily: Theme.headerFont,
+                    fontSize: 30,
+                    marginBottom: 3,
+                },
+                inputField: {
+                    marginVertical: 5,
+                },
+                validation: {
+                    marginBottom: 20,
+                },
+            }),
+        [Theme],
+    );
+
     const api = useAPI();
     const settings = useSettings();
 
@@ -166,36 +203,5 @@ function ProfileOnboarding({ navigation }: { navigation: any }) {
         </WithWaveHeader>
     );
 }
-
-const styles = StyleSheet.create({
-    pageView: {
-        flex: 1,
-        width: '100%',
-        backgroundColor: Theme.backgroundColor,
-    },
-    text: {
-        color: Theme.foregroundColor,
-        fontFamily: Theme.regularFont,
-        fontSize: 20,
-    },
-    note: {
-        color: Theme.foregroundColor,
-        fontFamily: Theme.regularFont,
-        fontSize: 16,
-        marginBottom: 16,
-    },
-    header: {
-        color: Theme.foregroundColor,
-        fontFamily: Theme.headerFont,
-        fontSize: 30,
-        marginBottom: 3,
-    },
-    inputField: {
-        marginVertical: 5,
-    },
-    validation: {
-        marginBottom: 20,
-    },
-});
 
 export default ProfileOnboarding;

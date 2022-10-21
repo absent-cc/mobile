@@ -2,7 +2,6 @@ import { StyleSheet, Text, RefreshControl, ScrollView } from 'react-native';
 import React from 'react';
 import notifee from '@notifee/react-native';
 import messaging from '@react-native-firebase/messaging';
-import Theme from '../Theme';
 import TeacherCard from '../components/card/TeacherCard';
 import Divider from '../components/Divider';
 import { useSettings } from '../state/SettingsContext';
@@ -12,8 +11,64 @@ import absenceCalculator from '../AbsenceCalculator';
 import { useAppState } from '../state/AppStateContext';
 import { dateFormatter, timeOfDay } from '../DateWordUtils';
 import WithWaveHeader from '../components/header/WithWaveHeader';
+import { useTheme } from '../theme/ThemeContext';
 
 function Home({ navigation }: { navigation: any }) {
+    const { value: Theme } = useTheme();
+
+    const styles = React.useMemo(
+        () =>
+            StyleSheet.create({
+                pageView: {
+                    flex: 1,
+                    width: '100%',
+                    // backgroundColor: Theme.backgroundColor,
+                },
+                hello: {
+                    color: Theme.foregroundColor,
+                    fontFamily: Theme.regularFont,
+                    fontSize: 20,
+                    marginTop: 10,
+                },
+                blockList: {
+                    marginTop: 20,
+                    color: Theme.foregroundColor,
+                    fontFamily: Theme.regularFont,
+                    fontSize: 20,
+                },
+                date: {
+                    fontFamily: Theme.strongFont,
+                },
+                count: {
+                    fontFamily: Theme.strongFont,
+                },
+                status: {
+                    // marginTop: 40,
+                    color: Theme.foregroundColor,
+                    fontFamily: Theme.regularFont,
+                    fontSize: 20,
+                },
+                boldStatus: {
+                    fontFamily: Theme.strongFont,
+                },
+                blockName: {
+                    fontFamily: Theme.strongFont,
+                    // backgroundColor: 'green',
+                },
+                card: {
+                    marginTop: 20,
+                },
+                header: {
+                    color: Theme.foregroundColor,
+                    fontFamily: Theme.headerFont,
+                    fontSize: 27,
+                    marginTop: 30,
+                    marginBottom: -5,
+                },
+            }),
+        [Theme],
+    );
+
     // scrolling
     const scrollRef = React.useRef<ScrollView | null>(null);
 
@@ -234,54 +289,5 @@ function Home({ navigation }: { navigation: any }) {
         </WithWaveHeader>
     );
 }
-
-const styles = StyleSheet.create({
-    pageView: {
-        flex: 1,
-        width: '100%',
-        // backgroundColor: Theme.backgroundColor,
-    },
-    hello: {
-        color: Theme.foregroundColor,
-        fontFamily: Theme.regularFont,
-        fontSize: 20,
-        marginTop: 10,
-    },
-    blockList: {
-        marginTop: 20,
-        color: Theme.foregroundColor,
-        fontFamily: Theme.regularFont,
-        fontSize: 20,
-    },
-    date: {
-        fontFamily: Theme.strongFont,
-    },
-    count: {
-        fontFamily: Theme.strongFont,
-    },
-    status: {
-        // marginTop: 40,
-        color: Theme.foregroundColor,
-        fontFamily: Theme.regularFont,
-        fontSize: 20,
-    },
-    boldStatus: {
-        fontFamily: Theme.strongFont,
-    },
-    blockName: {
-        fontFamily: Theme.strongFont,
-        // backgroundColor: 'green',
-    },
-    card: {
-        marginTop: 20,
-    },
-    header: {
-        color: Theme.foregroundColor,
-        fontFamily: Theme.headerFont,
-        fontSize: 27,
-        marginTop: 30,
-        marginBottom: -5,
-    },
-});
 
 export default Home;

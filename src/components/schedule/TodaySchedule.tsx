@@ -1,11 +1,30 @@
 import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { TimeRelation, useAppState } from '../../state/AppStateContext';
-import Theme from '../../Theme';
+import { useTheme } from '../../theme/ThemeContext';
 import BlockCard from './BlockCard';
 import PassingTimeCard from './PassingTimeCard';
 
 function TodaySchedule(/* { style }: { style?: any } */) {
+    const { value: Theme } = useTheme();
+
+    const styles = React.useMemo(
+        () =>
+            StyleSheet.create({
+                container: {},
+                blockCard: {
+                    marginBottom: 20,
+                },
+                status: {
+                    // marginTop: 10,
+                    color: Theme.foregroundColor,
+                    fontFamily: Theme.regularFont,
+                    fontSize: 20,
+                },
+            }),
+        [Theme],
+    );
+
     const { value: appState } = useAppState();
 
     let body: React.ReactNode[] = [];
@@ -58,18 +77,5 @@ function TodaySchedule(/* { style }: { style?: any } */) {
 
     return <View>{body}</View>;
 }
-
-const styles = StyleSheet.create({
-    container: {},
-    blockCard: {
-        marginBottom: 20,
-    },
-    status: {
-        // marginTop: 10,
-        color: Theme.foregroundColor,
-        fontFamily: Theme.regularFont,
-        fontSize: 20,
-    },
-});
 
 export default TodaySchedule;

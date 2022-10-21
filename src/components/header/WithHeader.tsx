@@ -3,8 +3,8 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
-import Theme from '../../Theme';
 import Header from './Header';
+import { useTheme } from '../../theme/ThemeContext';
 
 const WithHeader = React.forwardRef(
     (
@@ -31,6 +31,40 @@ const WithHeader = React.forwardRef(
         },
         ref: React.ForwardedRef<ScrollView | null>,
     ) => {
+        const { value: Theme } = useTheme();
+
+        const styles = React.useMemo(
+            () =>
+                StyleSheet.create({
+                    container: {
+                        width: '100%',
+                        flex: 1,
+                        backgroundColor: Theme.backgroundColor,
+                    },
+                    scroller: {
+                        width: '100%',
+                    },
+                    contentContainer: {
+                        width: '100%',
+                    },
+                    gradientBg: {
+                        width: '100%',
+                        position: 'absolute',
+                        top: 0,
+                    },
+                    content: {
+                        paddingHorizontal: 30,
+                        paddingTop: 15,
+                        paddingBottom: 50,
+                        backgroundColor: Theme.backgroundColor,
+                    },
+                    contentLargeBottom: {
+                        paddingBottom: 450,
+                    },
+                }),
+            [Theme],
+        );
+
         const insets = useSafeAreaInsets();
 
         return (
@@ -71,33 +105,5 @@ const WithHeader = React.forwardRef(
         );
     },
 );
-
-const styles = StyleSheet.create({
-    container: {
-        width: '100%',
-        flex: 1,
-        backgroundColor: Theme.backgroundColor,
-    },
-    scroller: {
-        width: '100%',
-    },
-    contentContainer: {
-        width: '100%',
-    },
-    gradientBg: {
-        width: '100%',
-        position: 'absolute',
-        top: 0,
-    },
-    content: {
-        paddingHorizontal: 30,
-        paddingTop: 15,
-        paddingBottom: 50,
-        backgroundColor: Theme.backgroundColor,
-    },
-    contentLargeBottom: {
-        paddingBottom: 450,
-    },
-});
 
 export default WithHeader;

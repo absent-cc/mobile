@@ -1,7 +1,7 @@
 const IS_DEV = process.env.APP_VARIANT === 'development';
 
-const appVersion = '2.0.2';
-const androidVersion = 5;
+const appVersion = '2.1.0';
+const androidVersion = 6;
 
 module.exports = {
     name: IS_DEV ? 'abSENT (Dev)' : 'abSENT',
@@ -43,6 +43,7 @@ module.exports = {
     runtimeVersion: {
         policy: 'sdkVersion',
     },
+    userInterfaceStyle: 'automatic',
     ios: {
         supportsTablet: true,
         bundleIdentifier: IS_DEV ? 'cc.absent.devclient' : 'cc.absent.client',

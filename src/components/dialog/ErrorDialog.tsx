@@ -3,7 +3,7 @@ import { Feather } from '@expo/vector-icons';
 import React from 'react';
 import { View, StyleSheet, Text, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Theme from '../../Theme';
+import { useTheme } from '../../theme/ThemeContext';
 
 function ErrorDialog({
     style,
@@ -20,6 +20,89 @@ function ErrorDialog({
     description: string;
     lightVersion?: boolean;
 }) {
+    const { value: Theme } = useTheme();
+
+    const styles = React.useMemo(
+        () =>
+            StyleSheet.create({
+                container: {
+                    width: '100%',
+                    backgroundColor: Theme.primaryColor,
+                    padding: 40,
+                    paddingRight: 60,
+
+                    shadowColor: '#000',
+                    shadowOffset: {
+                        width: 0,
+                        height: 0,
+                    },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 8,
+
+                    elevation: 5,
+                },
+                containerLight: {
+                    backgroundColor: Theme.lighterForeground,
+                },
+                close: {
+                    position: 'absolute',
+                    top: 20,
+                    right: 20,
+                    borderRadius: 50,
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    padding: 5,
+                },
+                closePressed: {
+                    backgroundColor: Theme.darkerPrimary,
+                },
+                closePressedLight: {
+                    backgroundColor: Theme.lightForeground,
+                },
+                icon: {
+                    color: Theme.foregroundAlternate,
+                },
+                iconLight: {
+                    color: Theme.primaryColor,
+                },
+                mainMessage: {
+                    fontFamily: Theme.regularFont,
+                    color: Theme.foregroundAlternate,
+                    fontSize: 20,
+                },
+                messageLight: {
+                    color: Theme.primaryColor,
+                },
+                showMore: {
+                    marginTop: 5,
+                    fontFamily: Theme.regularFont,
+                    color: Theme.foregroundAlternate,
+                    fontSize: 20,
+                    textDecorationLine: 'underline',
+                },
+                moreLight: {
+                    color: Theme.primaryColor,
+                },
+                moreDetails: {
+                    marginTop: 20,
+                    fontFamily: Theme.regularFont,
+                    color: Theme.foregroundAlternate,
+                    fontSize: 20,
+                },
+                description: {
+                    marginTop: 10,
+                    fontFamily: Theme.monospaceFont,
+                    color: Theme.foregroundAlternate,
+                    fontSize: 20,
+                },
+                detailsLight: {
+                    color: Theme.primaryColor,
+                },
+            }),
+        [Theme],
+    );
+
     const insets = useSafeAreaInsets();
     // const route = useRoute();
     // const lightVersion = ['Welcome', 'Loading'].includes(route.name);
@@ -106,82 +189,5 @@ function ErrorDialog({
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        width: '100%',
-        backgroundColor: Theme.primaryColor,
-        padding: 40,
-        paddingRight: 60,
-
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 0,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 8,
-
-        elevation: 5,
-    },
-    containerLight: {
-        backgroundColor: Theme.lighterForeground,
-    },
-    close: {
-        position: 'absolute',
-        top: 20,
-        right: 20,
-        borderRadius: 50,
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 5,
-    },
-    closePressed: {
-        backgroundColor: Theme.darkerPrimary,
-    },
-    closePressedLight: {
-        backgroundColor: Theme.lightForeground,
-    },
-    icon: {
-        color: Theme.foregroundAlternate,
-    },
-    iconLight: {
-        color: Theme.primaryColor,
-    },
-    mainMessage: {
-        fontFamily: Theme.regularFont,
-        color: Theme.foregroundAlternate,
-        fontSize: 20,
-    },
-    messageLight: {
-        color: Theme.primaryColor,
-    },
-    showMore: {
-        marginTop: 5,
-        fontFamily: Theme.regularFont,
-        color: Theme.foregroundAlternate,
-        fontSize: 20,
-        textDecorationLine: 'underline',
-    },
-    moreLight: {
-        color: Theme.primaryColor,
-    },
-    moreDetails: {
-        marginTop: 20,
-        fontFamily: Theme.regularFont,
-        color: Theme.foregroundAlternate,
-        fontSize: 20,
-    },
-    description: {
-        marginTop: 10,
-        fontFamily: Theme.monospaceFont,
-        color: Theme.foregroundAlternate,
-        fontSize: 20,
-    },
-    detailsLight: {
-        color: Theme.primaryColor,
-    },
-});
 
 export default ErrorDialog;

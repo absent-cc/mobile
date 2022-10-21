@@ -1,9 +1,9 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import Theme from '../../Theme';
 import InverseWave from './InverseWave';
 import { useAppState } from '../../state/AppStateContext';
+import { useTheme } from '../../theme/ThemeContext';
 
 function WaveHeader({
     iconName,
@@ -20,6 +20,51 @@ function WaveHeader({
     isLeft?: boolean;
     saveHeaderSize: boolean;
 }) {
+    const { value: Theme } = useTheme();
+
+    const styles = React.useMemo(
+        () =>
+            StyleSheet.create({
+                container: {
+                    width: '100%',
+                    justifyContent: 'center',
+                },
+                wave: {
+                    width: '100%',
+                    height: '100%',
+                    position: 'absolute',
+                },
+                header: {
+                    fontFamily: Theme.headerFont,
+                    color: Theme.foregroundAlternate,
+                    fontSize: 38,
+                    marginTop: 25,
+                    marginHorizontal: 30,
+                    marginBottom: 52,
+                },
+                headerWithRightIcon: {
+                    paddingRight: 30,
+                },
+                headerWithLeftIcon: {
+                    paddingRight: 30,
+                    marginTop: 80,
+                    marginBottom: 70,
+                },
+                icon: {
+                    position: 'absolute',
+                    top: 20,
+                    color: Theme.foregroundAlternate,
+                },
+                iconLeft: {
+                    left: 20,
+                },
+                iconRight: {
+                    right: 20,
+                },
+            }),
+        [Theme],
+    );
+
     const appState = useAppState();
     return (
         <View
@@ -72,44 +117,5 @@ function WaveHeader({
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        width: '100%',
-        justifyContent: 'center',
-    },
-    wave: {
-        width: '100%',
-        height: '100%',
-        position: 'absolute',
-    },
-    header: {
-        fontFamily: Theme.headerFont,
-        color: Theme.foregroundAlternate,
-        fontSize: 38,
-        marginTop: 25,
-        marginHorizontal: 30,
-        marginBottom: 52,
-    },
-    headerWithRightIcon: {
-        paddingRight: 30,
-    },
-    headerWithLeftIcon: {
-        paddingRight: 30,
-        marginTop: 80,
-        marginBottom: 70,
-    },
-    icon: {
-        position: 'absolute',
-        top: 20,
-        color: Theme.foregroundAlternate,
-    },
-    iconLeft: {
-        left: 20,
-    },
-    iconRight: {
-        right: 20,
-    },
-});
 
 export default WaveHeader;

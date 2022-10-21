@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, ScrollView, Alert, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Theme from '../../Theme';
 import TextButton from '../../components/button/TextButton';
 import ClassInput from '../../components/ClassInput';
 import ExtraTeachers from '../../components/ExtraTeachers';
@@ -12,8 +11,57 @@ import { BlockIterator } from '../../Utils';
 import ErrorCard from '../../components/card/ErrorCard';
 import LoadingCard from '../../components/card/LoadingCard';
 import WithHeader from '../../components/header/WithHeader';
+import { useTheme } from '../../theme/ThemeContext';
 
 function TeacherSettings({ navigation }: { navigation: any }) {
+    const { value: Theme } = useTheme();
+
+    const styles = React.useMemo(
+        () =>
+            StyleSheet.create({
+                pageView: {
+                    flex: 1,
+                    width: '100%',
+                    backgroundColor: Theme.backgroundColor,
+                },
+                note: {
+                    color: Theme.foregroundColor,
+                    fontFamily: Theme.regularFont,
+                    fontSize: 18,
+                    marginBottom: 20,
+                },
+                header: {
+                    color: Theme.foregroundColor,
+                    fontFamily: Theme.headerFont,
+                    fontSize: 30,
+                    marginBottom: 3,
+                },
+                inputField: {
+                    marginTop: 10,
+                    zIndex: 6,
+                },
+                classInput: {
+                    marginBottom: 30,
+                },
+                validation: {
+                    marginVertical: 20,
+                },
+                saveValidation: {
+                    marginBottom: 20,
+                },
+                savePanel: {
+                    position: 'absolute',
+                    bottom: 0,
+                    width: '100%',
+                    backgroundColor: Theme.backgroundColor,
+                    padding: 20,
+                    borderTopWidth: 2,
+                    borderColor: Theme.lightForeground,
+                },
+            }),
+        [Theme],
+    );
+
     const insets = useSafeAreaInsets();
 
     const api = useAPI();
@@ -287,47 +335,5 @@ function TeacherSettings({ navigation }: { navigation: any }) {
         </WithHeader>
     );
 }
-
-const styles = StyleSheet.create({
-    pageView: {
-        flex: 1,
-        width: '100%',
-        backgroundColor: Theme.backgroundColor,
-    },
-    note: {
-        color: Theme.foregroundColor,
-        fontFamily: Theme.regularFont,
-        fontSize: 18,
-        marginBottom: 20,
-    },
-    header: {
-        color: Theme.foregroundColor,
-        fontFamily: Theme.headerFont,
-        fontSize: 30,
-        marginBottom: 3,
-    },
-    inputField: {
-        marginTop: 10,
-        zIndex: 6,
-    },
-    classInput: {
-        marginBottom: 30,
-    },
-    validation: {
-        marginVertical: 20,
-    },
-    saveValidation: {
-        marginBottom: 20,
-    },
-    savePanel: {
-        position: 'absolute',
-        bottom: 0,
-        width: '100%',
-        backgroundColor: Theme.backgroundColor,
-        padding: 20,
-        borderTopWidth: 2,
-        borderColor: Theme.lightForeground,
-    },
-});
 
 export default TeacherSettings;

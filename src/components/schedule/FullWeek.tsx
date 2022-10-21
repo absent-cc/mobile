@@ -10,13 +10,179 @@ import {
 } from 'react-native';
 import { toTimeString } from '../../DateWordUtils';
 import { TimeRelation, useAppState } from '../../state/AppStateContext';
-import Theme from '../../Theme';
+import { useTheme } from '../../theme/ThemeContext';
 import { LunchNums, ShortBlocks } from '../../Utils';
 import Anchor from '../Anchor';
 import { useDialog } from '../dialog/Dialog';
 import BlockDialog from './BlockDialog';
 
 function FullWeek({ style }: { style?: any }) {
+    const { value: Theme } = useTheme();
+
+    const styles = React.useMemo(() => {
+        const blockLineColor = Theme.darkForeground;
+
+        return StyleSheet.create({
+            container: {
+                backgroundColor: Theme.lighterForeground,
+                flexDirection: 'row',
+                alignItems: 'flex-start',
+                borderWidth: 2,
+                borderBottomWidth: 0,
+                borderRightWidth: 0,
+                borderColor: blockLineColor,
+            },
+            day: {
+                borderColor: blockLineColor,
+                flex: 1,
+                overflow: 'hidden',
+            },
+            dayDivider: {
+                width: 2,
+                flex: 0,
+                backgroundColor: blockLineColor,
+            },
+            blockDivider: {
+                borderTopWidth: 2,
+                borderBottomWidth: 2,
+                borderColor: blockLineColor,
+            },
+            activeDivider: {
+                backgroundColor: Theme.primaryColor,
+            },
+            blockFlexDivider: {
+                borderTopWidth: 2,
+                borderColor: blockLineColor,
+                flex: 1,
+            },
+            block: {
+                width: '100%',
+                borderColor: Theme.primaryColor,
+                backgroundColor: Theme.backgroundColor,
+            },
+            blockPressed: {
+                backgroundColor: Theme.lighterForeground,
+            },
+            blockPressedActive: {
+                backgroundColor: Theme.darkerPrimary,
+            },
+            selectedBlock: {
+                backgroundColor: Theme.lightForeground,
+            },
+            selectedBlockActive: {
+                backgroundColor: Theme.darkerPrimary,
+            },
+            activeBlock: {
+                backgroundColor: Theme.primaryColor,
+            },
+            blockContent: {
+                padding: 5,
+            },
+            blockText: {
+                fontFamily: Theme.strongFont,
+                color: Theme.foregroundColor,
+                fontSize: 20,
+            },
+            activeBlockText: {
+                color: Theme.foregroundAlternate,
+            },
+            smallBlockText: {
+                fontSize: 16,
+            },
+            time: {
+                fontFamily: Theme.italicFont,
+                fontSize: 16,
+                color: Theme.darkForeground,
+                marginTop: 0,
+            },
+            activeTime: {
+                color: Theme.lighterForeground,
+            },
+            smallTime: {
+                fontSize: 13,
+            },
+            lunchLink: {
+                fontFamily: Theme.regularFont,
+                fontSize: 16,
+                color: Theme.primaryColor,
+                textDecorationLine: 'underline',
+                marginTop: 5,
+            },
+            loading: {
+                position: 'absolute',
+                top: 0,
+                bottom: 0,
+                right: 0,
+                left: 0,
+                backgroundColor: Theme.backgroundColor,
+                paddingTop: 50,
+            },
+            noSchoolContainer: {
+                height: '100%',
+                borderBottomWidth: 2,
+                borderColor: blockLineColor,
+                padding: 5,
+            },
+            noSchool: {
+                fontFamily: Theme.regularFont,
+                fontSize: 16,
+            },
+            fullTimeIndicator: {
+                position: 'absolute',
+                width: '100%',
+                right: 0,
+                height: 2,
+                backgroundColor: Theme.darkForeground,
+                opacity: 0.3,
+            },
+            timeIndicator: {
+                position: 'absolute',
+                width: '100%',
+                right: 0,
+                height: 2,
+                backgroundColor: Theme.foregroundAlternate,
+                opacity: 0.8,
+            },
+            timeIndicatorCircle: {
+                position: 'absolute',
+                width: 10,
+                height: 10,
+                right: -5,
+                backgroundColor: Theme.foregroundAlternate,
+                opacity: 1,
+                borderRadius: 5,
+            },
+            lunchIndicator: {
+                position: 'absolute',
+                width: '100%',
+                right: 0,
+                backgroundColor: Theme.darkForeground,
+                opacity: 0.1,
+            },
+            lunchIndicatorActive: {
+                backgroundColor: Theme.foregroundAlternate,
+                opacity: 0.1,
+            },
+            lunchIndicatorText: {
+                fontFamily: Theme.regularFont,
+                fontSize: 10,
+                color: Theme.darkForeground,
+                position: 'absolute',
+                right: 3,
+            },
+            lunchIndicatorActiveText: {
+                color: Theme.lighterForeground,
+            },
+            nshsSitePlug: {
+                marginTop: 10,
+                fontFamily: Theme.regularFont,
+                color: Theme.darkForeground,
+                fontSize: 16,
+                textAlign: 'center',
+            },
+        });
+    }, [Theme]);
+
     const { value: appState, setAppState } = useAppState();
     const { open: openDialog, close: closeDialog } = useDialog();
 
@@ -381,167 +547,5 @@ function FullWeek({ style }: { style?: any }) {
         </>
     );
 }
-
-const blockLineColor = Theme.darkForeground;
-
-const styles = StyleSheet.create({
-    container: {
-        backgroundColor: Theme.lighterForeground,
-        flexDirection: 'row',
-        alignItems: 'flex-start',
-        borderWidth: 2,
-        borderBottomWidth: 0,
-        borderRightWidth: 0,
-        borderColor: blockLineColor,
-    },
-    day: {
-        borderColor: blockLineColor,
-        flex: 1,
-        overflow: 'hidden',
-    },
-    dayDivider: {
-        width: 2,
-        flex: 0,
-        backgroundColor: blockLineColor,
-    },
-    blockDivider: {
-        borderTopWidth: 2,
-        borderBottomWidth: 2,
-        borderColor: blockLineColor,
-    },
-    activeDivider: {
-        backgroundColor: Theme.primaryColor,
-    },
-    blockFlexDivider: {
-        borderTopWidth: 2,
-        borderColor: blockLineColor,
-        flex: 1,
-    },
-    block: {
-        width: '100%',
-        borderColor: Theme.primaryColor,
-        backgroundColor: Theme.backgroundColor,
-    },
-    blockPressed: {
-        backgroundColor: Theme.lighterForeground,
-    },
-    blockPressedActive: {
-        backgroundColor: Theme.darkerPrimary,
-    },
-    selectedBlock: {
-        backgroundColor: Theme.lightForeground,
-    },
-    selectedBlockActive: {
-        backgroundColor: Theme.darkerPrimary,
-    },
-    activeBlock: {
-        backgroundColor: Theme.primaryColor,
-    },
-    blockContent: {
-        padding: 5,
-    },
-    blockText: {
-        fontFamily: Theme.strongFont,
-        color: Theme.foregroundColor,
-        fontSize: 20,
-    },
-    activeBlockText: {
-        color: Theme.foregroundAlternate,
-    },
-    smallBlockText: {
-        fontSize: 16,
-    },
-    time: {
-        fontFamily: Theme.italicFont,
-        fontSize: 16,
-        color: Theme.darkForeground,
-        marginTop: 0,
-    },
-    activeTime: {
-        color: Theme.lighterForeground,
-    },
-    smallTime: {
-        fontSize: 13,
-    },
-    lunchLink: {
-        fontFamily: Theme.regularFont,
-        fontSize: 16,
-        color: Theme.primaryColor,
-        textDecorationLine: 'underline',
-        marginTop: 5,
-    },
-    loading: {
-        position: 'absolute',
-        top: 0,
-        bottom: 0,
-        right: 0,
-        left: 0,
-        backgroundColor: Theme.backgroundColor,
-        paddingTop: 50,
-    },
-    noSchoolContainer: {
-        height: '100%',
-        borderBottomWidth: 2,
-        borderColor: blockLineColor,
-        padding: 5,
-    },
-    noSchool: {
-        fontFamily: Theme.regularFont,
-        fontSize: 16,
-    },
-    fullTimeIndicator: {
-        position: 'absolute',
-        width: '100%',
-        right: 0,
-        height: 2,
-        backgroundColor: Theme.darkForeground,
-        opacity: 0.3,
-    },
-    timeIndicator: {
-        position: 'absolute',
-        width: '100%',
-        right: 0,
-        height: 2,
-        backgroundColor: Theme.foregroundAlternate,
-        opacity: 0.8,
-    },
-    timeIndicatorCircle: {
-        position: 'absolute',
-        width: 10,
-        height: 10,
-        right: -5,
-        backgroundColor: Theme.foregroundAlternate,
-        opacity: 1,
-        borderRadius: 5,
-    },
-    lunchIndicator: {
-        position: 'absolute',
-        width: '100%',
-        right: 0,
-        backgroundColor: Theme.darkForeground,
-        opacity: 0.1,
-    },
-    lunchIndicatorActive: {
-        backgroundColor: Theme.foregroundAlternate,
-        opacity: 0.1,
-    },
-    lunchIndicatorText: {
-        fontFamily: Theme.regularFont,
-        fontSize: 10,
-        color: Theme.darkForeground,
-        position: 'absolute',
-        right: 3,
-    },
-    lunchIndicatorActiveText: {
-        color: Theme.lighterForeground,
-    },
-    nshsSitePlug: {
-        marginTop: 10,
-        fontFamily: Theme.regularFont,
-        color: Theme.darkForeground,
-        fontSize: 16,
-        textAlign: 'center',
-    },
-});
 
 export default FullWeek;

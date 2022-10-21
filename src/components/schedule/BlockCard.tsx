@@ -4,7 +4,7 @@ import { DayBlock, LunchType } from '../../api/APITypes';
 import { toTimeString } from '../../DateWordUtils';
 import { TimeRelation } from '../../state/AppStateContext';
 import { useSettings } from '../../state/SettingsContext';
-import Theme from '../../Theme';
+import { useTheme } from '../../theme/ThemeContext';
 import {
     ShortBlocks,
     DayBlockFullNames,
@@ -27,6 +27,135 @@ function BlockCard({
     isActive: boolean;
     activeLunchRelation: TimeRelation | null;
 }) {
+    const { value: Theme } = useTheme();
+
+    const styles = React.useMemo(
+        () =>
+            StyleSheet.create({
+                container: {
+                    borderRadius: 20,
+                    backgroundColor: Theme.lighterForeground,
+                    // padding: 20,
+                    overflow: 'hidden',
+                },
+                activeContainer: {
+                    backgroundColor: Theme.primaryColor,
+                },
+                row: {
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    padding: 20,
+                },
+                lunchRow: {
+                    backgroundColor: Theme.lighterForeground,
+                    alignItems: 'stretch',
+                },
+
+                blockBox: {
+                    // flex: 1,
+                    flexBasis: 'auto',
+                    flexShrink: 0,
+                    flexGrow: 0,
+                    // padding: 4,
+                    minWidth: 60,
+                    aspectRatio: 1,
+                    marginRight: 20,
+                    backgroundColor: Theme.lighterForeground,
+                    borderRadius: 20,
+
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                },
+                activeBlockBox: {
+                    backgroundColor: Theme.primaryColor,
+                },
+                content: {
+                    flexGrow: 4,
+                    flexShrink: 1,
+                },
+                block: {
+                    fontFamily: Theme.strongFont,
+                    color: Theme.darkForeground,
+                    fontSize: 50,
+                },
+                activeBlock: {
+                    color: Theme.foregroundAlternate,
+                },
+                smallBlockName: {
+                    fontSize: 25,
+                },
+                name: {
+                    fontFamily: Theme.strongFont,
+                    fontSize: 20,
+                    color: Theme.foregroundColor,
+                    marginBottom: 5,
+                },
+                activeName: {
+                    color: Theme.foregroundAlternate,
+                },
+                time: {
+                    fontFamily: Theme.italicFont,
+                    color: Theme.darkForeground,
+                    marginTop: 0,
+                    fontSize: 20,
+                },
+                activeTime: {
+                    color: Theme.lighterForeground,
+                },
+                note: {
+                    fontFamily: Theme.regularFont,
+                    // marginTop: 10,
+                    fontSize: 20,
+                    color: Theme.darkForeground,
+                },
+                activeNote: {
+                    color: Theme.foregroundAlternate,
+                },
+                lunchBox: {
+                    backgroundColor: Theme.lightForeground,
+                    borderRadius: 20,
+                    padding: 16,
+                    flex: 1,
+                },
+                lunchName: {
+                    fontFamily: Theme.strongFont,
+                    fontSize: 20,
+                    color: Theme.darkForeground,
+                },
+                activeLunchName: {
+                    color: Theme.foregroundAlternate,
+                },
+                lunchTime: {
+                    fontFamily: Theme.regularFont,
+                    color: Theme.darkForeground,
+                    marginTop: 0,
+                    fontSize: 16,
+                },
+                activeLunchTime: {
+                    color: Theme.lighterForeground,
+                },
+                midLunch: {
+                    marginHorizontal: 10,
+                },
+                activeLunch: {},
+                currentLunch: {
+                    backgroundColor: Theme.primaryColor,
+                },
+                lunchDivider: {
+                    width: 5,
+                    marginHorizontal: 5,
+                    marginVertical: 10,
+                    borderRadius: 20,
+                },
+                lunchDividerActive: {
+                    backgroundColor: Theme.primaryColor,
+                },
+            }),
+        [Theme],
+    );
+
     const { value: settings } = useSettings();
     let teacherName = null;
     if (isTeacherBlock(dayBlock.block)) {
@@ -141,128 +270,5 @@ function BlockCard({
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        borderRadius: 20,
-        backgroundColor: Theme.lighterForeground,
-        // padding: 20,
-        overflow: 'hidden',
-    },
-    activeContainer: {
-        backgroundColor: Theme.primaryColor,
-    },
-    row: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 20,
-    },
-    lunchRow: {
-        backgroundColor: Theme.lighterForeground,
-        alignItems: 'stretch',
-    },
-
-    blockBox: {
-        // flex: 1,
-        flexBasis: 'auto',
-        flexShrink: 0,
-        flexGrow: 0,
-        // padding: 4,
-        minWidth: 60,
-        aspectRatio: 1,
-        marginRight: 20,
-        backgroundColor: Theme.lighterForeground,
-        borderRadius: 20,
-
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    activeBlockBox: {
-        backgroundColor: Theme.primaryColor,
-    },
-    content: {
-        flexGrow: 4,
-        flexShrink: 1,
-    },
-    block: {
-        fontFamily: Theme.strongFont,
-        color: Theme.darkForeground,
-        fontSize: 50,
-    },
-    activeBlock: {
-        color: Theme.foregroundAlternate,
-    },
-    smallBlockName: {
-        fontSize: 25,
-    },
-    name: {
-        fontFamily: Theme.strongFont,
-        fontSize: 20,
-        color: Theme.foregroundColor,
-        marginBottom: 5,
-    },
-    activeName: {
-        color: Theme.foregroundAlternate,
-    },
-    time: {
-        fontFamily: Theme.italicFont,
-        color: Theme.darkForeground,
-        marginTop: 0,
-        fontSize: 20,
-    },
-    activeTime: {
-        color: Theme.lighterForeground,
-    },
-    note: {
-        fontFamily: Theme.regularFont,
-        // marginTop: 10,
-        fontSize: 20,
-        color: Theme.darkForeground,
-    },
-    activeNote: {
-        color: Theme.foregroundAlternate,
-    },
-    lunchBox: {
-        backgroundColor: Theme.lightForeground,
-        borderRadius: 20,
-        padding: 16,
-        flex: 1,
-    },
-    lunchName: {
-        fontFamily: Theme.strongFont,
-        fontSize: 20,
-        color: Theme.darkForeground,
-    },
-    activeLunchName: {
-        color: Theme.foregroundAlternate,
-    },
-    lunchTime: {
-        fontFamily: Theme.regularFont,
-        color: Theme.darkForeground,
-        marginTop: 0,
-        fontSize: 16,
-    },
-    activeLunchTime: {
-        color: Theme.lighterForeground,
-    },
-    midLunch: {
-        marginHorizontal: 10,
-    },
-    activeLunch: {},
-    currentLunch: {
-        backgroundColor: Theme.primaryColor,
-    },
-    lunchDivider: {
-        width: 5,
-        marginHorizontal: 5,
-        marginVertical: 10,
-        borderRadius: 20,
-    },
-    lunchDividerActive: {
-        backgroundColor: Theme.primaryColor,
-    },
-});
 
 export default BlockCard;
