@@ -14,6 +14,7 @@ export interface ThemeType {
     lighterForeground: string;
     lightForeground: string;
     darkForeground: string;
+    foregroundAlternateDarker: string;
     warning: string;
     darkerWarning: string;
     darkerPrimary: string;
@@ -40,6 +41,7 @@ export const Themes: Record<ThemeOption, ThemeType> = {
         warning: '#F9AF40',
         darkerWarning: '#f89c12',
         darkerPrimary: '#bc1010',
+        foregroundAlternateDarker: '#EEEEEE',
         regularFont: 'Inter_400Regular',
         strongFont: 'Inter_600SemiBold',
         headerFont: 'Inter_Display_600SemiBold',
@@ -60,6 +62,7 @@ export const Themes: Record<ThemeOption, ThemeType> = {
         warning: '#F9AF40',
         darkerWarning: '#f89c12',
         darkerPrimary: '#bc1010',
+        foregroundAlternateDarker: '#EEEEEE',
         regularFont: 'Inter_400Regular',
         strongFont: 'Inter_600SemiBold',
         headerFont: 'Inter_Display_600SemiBold',

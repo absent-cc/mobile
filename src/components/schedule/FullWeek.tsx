@@ -96,7 +96,7 @@ function FullWeek({ style }: { style?: any }) {
                 marginTop: 0,
             },
             activeTime: {
-                color: Theme.lighterForeground,
+                color: Theme.foregroundAlternateDarker,
             },
             smallTime: {
                 fontSize: 13,

@@ -102,7 +102,7 @@ function BlockCard({
                     fontSize: 20,
                 },
                 activeTime: {
-                    color: Theme.lighterForeground,
+                    color: Theme.foregroundAlternateDarker,
                 },
                 note: {
                     fontFamily: Theme.regularFont,
@@ -134,7 +134,7 @@ function BlockCard({
                     fontSize: 16,
                 },
                 activeLunchTime: {
-                    color: Theme.lighterForeground,
+                    color: Theme.foregroundAlternateDarker,
                 },
                 midLunch: {
                     marginHorizontal: 10,
