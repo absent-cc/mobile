@@ -118,7 +118,7 @@ function FullWeek({ style }: { style?: any }) {
                 paddingTop: 50,
             },
             noSchoolContainer: {
-                height: '100%',
+                flex: 1,
                 borderBottomWidth: 2,
                 borderColor: blockLineColor,
                 padding: 5,
@@ -126,6 +126,7 @@ function FullWeek({ style }: { style?: any }) {
             noSchool: {
                 fontFamily: Theme.regularFont,
                 fontSize: 16,
+                color: Theme.foregroundColor,
             },
             fullTimeIndicator: {
                 position: 'absolute',
@@ -227,26 +228,37 @@ function FullWeek({ style }: { style?: any }) {
     );
 
     const [isLoading, setLoading] = React.useState(!usePreviousNumbers);
+    // const [isLoading, setLoading] = React.useState(false);
     const [, forceUpdate] = React.useReducer((x) => x + 1, 0);
     const renderTimeout = React.useRef<NodeJS.Timeout | null>(null);
-    const finishedLoadingCb = () => {
-        setLoading(false);
-        // propogate up calculations when done
-        setAppState((oldState) => ({
-            ...oldState,
-            fullWeekMinuteRatio: minuteRatio,
-            fullWeekTooSmall: tooSmall.current,
-        }));
-    };
+    const finishedLoadingCb = React.useMemo(
+        () => () => {
+            console.log('done loading');
+            setLoading(false);
+            // propogate up calculations when done
+            setAppState((oldState) => ({
+                ...oldState,
+                fullWeekMinuteRatio: minuteRatio,
+                fullWeekTooSmall: tooSmall.current,
+            }));
+        },
+        [minuteRatio, setAppState],
+    );
     const loadingTimeout = React.useRef<NodeJS.Timeout | null>(null);
 
-    const rerenderSchedule = () => {
-        forceUpdate();
-        if (loadingTimeout.current) {
-            clearTimeout(loadingTimeout.current);
-        }
-        loadingTimeout.current = setTimeout(finishedLoadingCb, 150);
-    };
+    const rerenderSchedule = React.useMemo(
+        () => () => {
+            forceUpdate();
+            if (loadingTimeout.current) {
+                clearTimeout(loadingTimeout.current);
+            }
+            console.log('loading - rerender');
+            loadingTimeout.current = setTimeout(finishedLoadingCb, 150);
+        },
+        [finishedLoadingCb],
+    );
+
+    React.useEffect(rerenderSchedule, []);
 
     const minDiffToPx = (minDiff: number) => minDiff * minuteRatio;
 
@@ -352,6 +364,12 @@ function FullWeek({ style }: { style?: any }) {
                                 const { height: realHeight } =
                                     event.nativeEvent.layout;
 
+                                console.log(
+                                    'in onlayout',
+                                    blockKey,
+                                    height,
+                                    realHeight,
+                                );
                                 // react native's measurements seem to be a little funky
                                 // so there's a little 2 pixel tolerance
                                 // for some reason, real height reads 120.5 while height is 120.25
@@ -374,6 +392,7 @@ function FullWeek({ style }: { style?: any }) {
                                     if (renderTimeout.current) {
                                         clearTimeout(renderTimeout.current);
                                     }
+                                    console.log('scheduling');
                                     renderTimeout.current = setTimeout(
                                         rerenderSchedule,
                                         5,
