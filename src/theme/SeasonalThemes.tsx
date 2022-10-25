@@ -51,12 +51,14 @@ export const SeasonalThemes: SeasonalTheme[] = [
         },
         themes: {
             Default: {
-                ...Themes.Default,
-                primaryColor: '#0000ff',
+                primaryColor: '#9847b3',
+                secondaryColor: '#ff5e19',
+                tertiaryColor: '#431c52',
             },
             Dark: {
-                ...Themes.Dark,
-                primaryColor: '#0000ff',
+                primaryColor: '#9847b3',
+                secondaryColor: '#ff5e19',
+                tertiaryColor: '#431c52',
             },
         },
         elements: {
@@ -99,12 +101,14 @@ export const SeasonalThemes: SeasonalTheme[] = [
         },
         themes: {
             Default: {
-                ...Themes.Default,
-                primaryColor: '#0000ff',
+                primaryColor: '#9847b3',
+                secondaryColor: '#ff5e19',
+                tertiaryColor: '#431c52',
             },
             Dark: {
-                ...Themes.Dark,
-                primaryColor: '#0000ff',
+                primaryColor: '#9847b3',
+                secondaryColor: '#ff5e19',
+                tertiaryColor: '#431c52',
             },
         },
         elements: {
