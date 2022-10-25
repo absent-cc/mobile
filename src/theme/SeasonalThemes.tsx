@@ -43,7 +43,7 @@ export const SeasonalThemes: SeasonalTheme[] = [
         name: 'Prehalloween',
         dateStart: {
             month: 10,
-            day: 27,
+            day: 26,
         },
         dateEnd: {
             month: 10,
