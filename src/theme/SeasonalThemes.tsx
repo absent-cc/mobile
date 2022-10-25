@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import Video from 'react-native-video';
-import { ThemeOption, Themes, ThemeType } from './Themes';
+import { ThemeOption, ThemeType } from './Themes';
 
 export enum EditableElement {
     Animation = 'Animation',
