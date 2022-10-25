@@ -289,3 +289,6 @@ export function toTimeString(time: number): string {
         minute < 10 ? `0${minute}` : minute
     }`;
 }
+
+export const BlockNameRegex =
+    /((([A-G]|(W[Ii][Nn])|(A[Dd][Vv][Ii][Ss][Oo][Rr][Yy])|(L[Ii][Oo][Nn]))|(\b([A-Ga-g]|([Ww][Ii][Nn])|([Aa][Dd][Vv][Ii][Ss][Oo][Rr][Yy])|([Ll][Ii][Oo][Nn]))))[1-3]?)(( |-)?[Bb][Ll][Oo][Cc][Kk]([Ss])?)?(?![H-Za-z])/;

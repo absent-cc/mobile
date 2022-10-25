@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { AbsentTeacher } from '../../api/APITypes';
+import { BlockNameRegex } from '../../DateWordUtils';
 import { useTheme } from '../../theme/ThemeContext';
 import Divider from '../Divider';
 
@@ -52,6 +53,11 @@ function AllTeacherCard({
                     marginTop: 10,
                     fontSize: 20,
                 },
+                noteHighlight: {
+                    textDecorationLine: 'underline',
+                    textDecorationColor: Theme.primaryColor,
+                    textDecorationStyle: 'solid',
+                },
                 divider: {
                     marginVertical: 25,
                 },
@@ -61,6 +67,37 @@ function AllTeacherCard({
 
     // reverse it so last name comes first, and if there's only one name, use it as last
     const splitTeacherName = teacher.teacher.reversedSplitName;
+
+    const notes = [];
+
+    if (teacher.note && teacher.note.trim().length > 0) {
+        let index = 0;
+        let noteText = teacher.note.trim();
+        let match = noteText.match(BlockNameRegex);
+        while (match !== null) {
+            const matchIndex = match.index as number;
+            const matchLength = match[0].length;
+            const preMatch = noteText.substring(0, matchIndex);
+            const matchText = noteText.substring(
+                matchIndex,
+                matchIndex + matchLength,
+            );
+
+            notes.push(<Text key={index}>{preMatch}</Text>);
+            notes.push(
+                <Text key={index + 1} style={styles.noteHighlight}>
+                    {matchText}
+                </Text>,
+            );
+
+            noteText = noteText.substring(matchIndex + matchLength);
+
+            match = noteText.match(BlockNameRegex);
+            index += 2;
+        }
+
+        notes.push(<Text key={index}>{noteText}</Text>);
+    }
 
     return (
         <View style={[style, styles.container]}>
@@ -76,8 +113,8 @@ function AllTeacherCard({
                 ) : null}
             </View>
 
-            {teacher.note && teacher.note.trim().length > 0 ? (
-                <Text style={[styles.note]}>{teacher.note.trim()}</Text>
+            {notes.length > 0 ? (
+                <Text style={[styles.note]}>{notes}</Text>
             ) : null}
 
             {!last && <Divider style={styles.divider} />}
