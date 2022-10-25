@@ -16,7 +16,7 @@ function Header({
     style?: any;
     isLeft?: boolean;
 }) {
-    const { value: Theme } = useTheme();
+    const { Theme } = useTheme();
 
     const styles = React.useMemo(
         () =>

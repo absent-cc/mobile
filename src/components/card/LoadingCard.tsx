@@ -9,7 +9,7 @@ function LoadingCard({
     children: React.ReactNode;
     style?: any;
 }) {
-    const { value: Theme } = useTheme();
+    const { Theme } = useTheme();
 
     const styles = React.useMemo(
         () =>

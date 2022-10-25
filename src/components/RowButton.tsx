@@ -12,7 +12,7 @@ function RowButton({
     style?: any;
     onPress: () => void;
 }) {
-    const { value: Theme } = useTheme();
+    const { Theme } = useTheme();
 
     const styles = React.useMemo(
         () =>

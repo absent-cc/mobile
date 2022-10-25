@@ -25,7 +25,7 @@ function Dropdown({
     onChange: (val: number) => void;
     options: any[];
 }) {
-    const { value: Theme } = useTheme();
+    const { Theme } = useTheme();
 
     const styles = React.useMemo(
         () =>

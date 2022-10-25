@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '../../theme/ThemeContext';
 
 function UpdateDialog({ style, close }: { style?: any; close: () => void }) {
-    const { value: Theme } = useTheme();
+    const { Theme } = useTheme();
 
     const styles = React.useMemo(
         () =>

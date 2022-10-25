@@ -20,7 +20,7 @@ function ErrorDialog({
     description: string;
     lightVersion?: boolean;
 }) {
-    const { value: Theme } = useTheme();
+    const { Theme } = useTheme();
 
     const styles = React.useMemo(
         () =>

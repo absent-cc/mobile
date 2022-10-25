@@ -11,7 +11,7 @@ import { shuffleArray } from '../Utils';
 import { useTheme } from '../theme/ThemeContext';
 
 function Settings({ navigation }: { navigation: any }) {
-    const { value: Theme } = useTheme();
+    const { Theme } = useTheme();
 
     const styles = React.useMemo(
         () =>

@@ -3,7 +3,7 @@ import { Path, Svg } from 'react-native-svg';
 import { useTheme } from '../../theme/ThemeContext';
 
 function InverseWave({ style }: { style: any }) {
-    const { value: Theme } = useTheme();
+    const { Theme } = useTheme();
 
     return (
         <Svg style={style} viewBox="0 0 100 60" preserveAspectRatio="none">

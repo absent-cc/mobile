@@ -27,7 +27,7 @@ function BlockCard({
     isActive: boolean;
     activeLunchRelation: TimeRelation | null;
 }) {
-    const { value: Theme } = useTheme();
+    const { Theme } = useTheme();
 
     const styles = React.useMemo(
         () =>

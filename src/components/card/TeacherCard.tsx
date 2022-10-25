@@ -14,7 +14,7 @@ function TeacherCard({
     absenceItem: AbsenceItem;
     style?: any;
 }) {
-    const { value: Theme } = useTheme();
+    const { Theme } = useTheme();
 
     const styles = React.useMemo(
         () =>

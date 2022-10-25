@@ -292,3 +292,26 @@ export function toTimeString(time: number): string {
 
 export const BlockNameRegex =
     /((([A-G]|(W[Ii][Nn])|(A[Dd][Vv][Ii][Ss][Oo][Rr][Yy])|(L[Ii][Oo][Nn]))|(\b([A-Ga-g]|([Ww][Ii][Nn])|([Aa][Dd][Vv][Ii][Ss][Oo][Rr][Yy])|([Ll][Ii][Oo][Nn]))))[1-3]?)(( |-)?[Bb][Ll][Oo][Cc][Kk]([Ss])?)?(?![H-Za-z])/;
+
+export type MonthDate = {
+    month: number;
+    day: number;
+};
+
+// start inclusive, end exclusive
+export function isBetweenDates(
+    compare: MonthDate,
+    start: MonthDate,
+    end: MonthDate,
+) {
+    const year = new Date().getFullYear();
+    const compareDate = new Date(
+        year,
+        compare.month - 1,
+        compare.day,
+    ).getTime();
+    const startDate = new Date(year, start.month - 1, start.day).getTime();
+    const endDate = new Date(year, end.month - 1, end.day).getTime();
+
+    return compareDate >= startDate && compareDate < endDate;
+}

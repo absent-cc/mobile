@@ -6,7 +6,7 @@ import BlockCard from './BlockCard';
 import PassingTimeCard from './PassingTimeCard';
 
 function TodaySchedule(/* { style }: { style?: any } */) {
-    const { value: Theme } = useTheme();
+    const { Theme } = useTheme();
 
     const styles = React.useMemo(
         () =>

@@ -16,7 +16,7 @@ function TextButton({
     onPress: () => void;
     iconName?: keyof typeof Feather.glyphMap;
 }) {
-    const { value: Theme } = useTheme();
+    const { Theme } = useTheme();
 
     const styles = React.useMemo(
         () =>

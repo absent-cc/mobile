@@ -24,7 +24,7 @@ function ClassInput({
     defaultValue: string[];
     scrollRef: React.MutableRefObject<ScrollView | null>;
 }) {
-    const { value: Theme } = useTheme();
+    const { Theme } = useTheme();
 
     const styles = React.useMemo(
         () =>

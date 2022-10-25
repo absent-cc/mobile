@@ -8,7 +8,7 @@ import Dropdown from '../../components/input/Dropdown';
 import { useTheme } from '../../theme/ThemeContext';
 
 function DeveloperSettings({ navigation }: { navigation: any }) {
-    const { value: Theme } = useTheme();
+    const { Theme } = useTheme();
 
     const styles = React.useMemo(
         () =>

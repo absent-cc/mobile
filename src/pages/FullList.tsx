@@ -6,7 +6,7 @@ import WithWaveHeader from '../components/header/WithWaveHeader';
 import { useTheme } from '../theme/ThemeContext';
 
 function FullList({ navigation }: { navigation: any }) {
-    const { value: Theme } = useTheme();
+    const { Theme } = useTheme();
 
     const styles = React.useMemo(
         () =>

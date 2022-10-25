@@ -31,13 +31,13 @@ const WithWaveHeader = React.forwardRef(
             isLeft?: boolean;
             refreshControl?: React.ReactElement;
             reversed?: boolean;
-            footer?: React.ReactElement;
+            footer?: React.ReactNode;
             largeBottom?: boolean;
             saveHeaderSize?: boolean;
         },
         ref: React.ForwardedRef<ScrollView | null>,
     ) => {
-        const { value: Theme } = useTheme();
+        const { Theme } = useTheme();
 
         const styles = React.useMemo(
             () =>

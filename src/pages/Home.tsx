@@ -14,7 +14,7 @@ import WithWaveHeader from '../components/header/WithWaveHeader';
 import { useTheme } from '../theme/ThemeContext';
 
 function Home({ navigation }: { navigation: any }) {
-    const { value: Theme } = useTheme();
+    const { Theme, elements } = useTheme();
 
     const styles = React.useMemo(
         () =>
@@ -284,6 +284,7 @@ function Home({ navigation }: { navigation: any }) {
                     .
                 </Text>
             )}
+            {elements.Animation}
             {/* <Divider /> */}
             {body}
         </WithWaveHeader>

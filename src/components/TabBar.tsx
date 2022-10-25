@@ -21,7 +21,7 @@ function TabBar({
         { label: string; icon: keyof typeof Feather.glyphMap }
     >;
 }) {
-    const { value: Theme } = useTheme();
+    const { Theme } = useTheme();
 
     const styles = React.useMemo(
         () =>

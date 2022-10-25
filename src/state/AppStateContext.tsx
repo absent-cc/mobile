@@ -39,7 +39,7 @@ export interface AppStateContextType {
     setAppState: React.Dispatch<React.SetStateAction<AppStateType>>;
 }
 
-const virtualStartTime = new Date(2022, 9, 12, 12, 40, 45).getTime();
+const virtualStartTime = new Date(2022, 9, 26, 12, 40, 45).getTime();
 
 // Default settings
 export const defaultState: AppStateType = {

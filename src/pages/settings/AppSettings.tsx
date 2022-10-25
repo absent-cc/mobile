@@ -17,7 +17,7 @@ function AppSettings({ navigation }: { navigation: any }) {
 
     const api = useAPI();
     const settings = useSettings();
-    const { value: Theme, selection: selectedThemeOld, setTheme } = useTheme();
+    const { Theme, selection: selectedThemeOld, setTheme } = useTheme();
 
     const styles = React.useMemo(
         () =>

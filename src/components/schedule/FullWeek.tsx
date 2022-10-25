@@ -17,7 +17,7 @@ import { useDialog } from '../dialog/Dialog';
 import BlockDialog from './BlockDialog';
 
 function FullWeek({ style }: { style?: any }) {
-    const { value: Theme } = useTheme();
+    const { Theme } = useTheme();
 
     const styles = React.useMemo(() => {
         const blockLineColor = Theme.darkForeground;

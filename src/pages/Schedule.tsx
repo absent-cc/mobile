@@ -8,7 +8,7 @@ import { useDialog } from '../components/dialog/Dialog';
 import { useTheme } from '../theme/ThemeContext';
 
 function Schedule({ navigation }: { navigation: any }) {
-    const { value: Theme } = useTheme();
+    const { Theme } = useTheme();
 
     const styles = React.useMemo(
         () =>

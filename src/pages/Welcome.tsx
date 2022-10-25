@@ -9,7 +9,7 @@ import { useAPI } from '../api/APIContext';
 import { useTheme } from '../theme/ThemeContext';
 
 function Welcome({ navigation }: { navigation: any }) {
-    const { value: Theme } = useTheme();
+    const { Theme } = useTheme();
 
     const styles = React.useMemo(
         () =>
@@ -98,9 +98,10 @@ function Welcome({ navigation }: { navigation: any }) {
         <View style={styles.container}>
             <LinearGradient
                 colors={[
-                    Theme.secondaryColor,
-                    Theme.primaryColor,
-                    Theme.tertiaryColor,
+                    // hardcoded so welcome screen doesn't use seasonal themes
+                    '#FF793F',
+                    '#EF4344',
+                    '#DA2123',
                 ]}
                 locations={[0, 0.5, 1]}
                 start={{ x: 0.0, y: 0.0 }}

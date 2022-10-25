@@ -1,7 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { View, Text } from 'react-native';
-import Theme from '../Theme';
 import Anchor from './Anchor';
 
 class ErrorBoundary extends React.Component {

@@ -14,7 +14,7 @@ function AllTeacherCard({
     style?: any;
     last: boolean;
 }) {
-    const { value: Theme } = useTheme();
+    const { Theme } = useTheme();
 
     const styles = React.useMemo(
         () =>

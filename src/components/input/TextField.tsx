@@ -18,7 +18,7 @@ function TextField({
     onChange: (val: string) => void;
     isNumber?: boolean;
 }) {
-    const { value: Theme } = useTheme();
+    const { Theme } = useTheme();
 
     const styles = React.useMemo(
         () =>

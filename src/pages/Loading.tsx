@@ -4,7 +4,7 @@ import { StyleSheet, View, ActivityIndicator } from 'react-native';
 import { useTheme } from '../theme/ThemeContext';
 
 function Loading() {
-    const { value: Theme } = useTheme();
+    const { Theme } = useTheme();
 
     const styles = React.useMemo(
         () =>

@@ -13,7 +13,7 @@ function SwitchField({
     style?: any;
     onChange: (val: boolean) => void;
 }) {
-    const { value: Theme } = useTheme();
+    const { Theme } = useTheme();
 
     const styles = React.useMemo(
         () =>

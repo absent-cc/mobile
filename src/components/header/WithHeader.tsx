@@ -26,12 +26,12 @@ const WithHeader = React.forwardRef(
             text: string;
             isLeft?: boolean;
             refreshControl?: React.ReactElement;
-            footer?: React.ReactElement;
+            footer?: React.ReactNode;
             largeBottom?: boolean;
         },
         ref: React.ForwardedRef<ScrollView | null>,
     ) => {
-        const { value: Theme } = useTheme();
+        const { Theme } = useTheme();
 
         const styles = React.useMemo(
             () =>

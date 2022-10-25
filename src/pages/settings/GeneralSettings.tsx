@@ -19,7 +19,7 @@ import WithHeader from '../../components/header/WithHeader';
 import { useTheme } from '../../theme/ThemeContext';
 
 function GeneralSettings({ navigation }: { navigation: any }) {
-    const { value: Theme } = useTheme();
+    const { Theme } = useTheme();
 
     const styles = React.useMemo(
         () =>
