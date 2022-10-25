@@ -56,6 +56,7 @@ function AllTeacherCard({
                 noteHighlight: {
                     textDecorationLine: 'underline',
                     textDecorationColor: Theme.primaryColor,
+                    fontFamily: Theme.strongFont,
                     textDecorationStyle: 'solid',
                 },
                 divider: {

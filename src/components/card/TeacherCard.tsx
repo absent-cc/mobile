@@ -75,6 +75,7 @@ function TeacherCard({
                     textDecorationLine: 'underline',
                     textDecorationColor: Theme.primaryColor,
                     textDecorationStyle: 'solid',
+                    fontFamily: Theme.strongFont,
                 },
                 free: {
                     fontFamily: Theme.strongFont,
