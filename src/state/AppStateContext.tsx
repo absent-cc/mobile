@@ -39,7 +39,7 @@ export interface AppStateContextType {
     setAppState: React.Dispatch<React.SetStateAction<AppStateType>>;
 }
 
-const virtualStartTime = new Date(2022, 9, 26, 12, 40, 45).getTime();
+// const virtualStartTime = new Date(2022, 9, 27, 12, 40, 45).getTime();
 
 // Default settings
 export const defaultState: AppStateType = {
@@ -47,11 +47,11 @@ export const defaultState: AppStateType = {
     absences: [],
     teacherBlocksToday: [],
     dayBlocksToday: [],
-    // lastUpdateTime: new Date(),
-    lastUpdateTime: new Date(virtualStartTime),
+    lastUpdateTime: new Date(),
+    // lastUpdateTime: new Date(virtualStartTime),
     tallestWaveHeader: 150,
-    // dateToday: formatISODate(new Date()),
-    dateToday: formatISODate(new Date(virtualStartTime)),
+    dateToday: formatISODate(new Date()),
+    // dateToday: formatISODate(new Date(virtualStartTime)),
     weekSchedule: {},
     current: {
         block: null,
@@ -79,15 +79,15 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
         if (!appState.serverLoaded) return () => undefined;
 
         // debug mode
-        const loopStartTime = Date.now();
+        // const loopStartTime = Date.now();
 
         const update = () => {
             setAppState((oldAppState) => {
                 const lastStateUpdate = oldAppState.lastUpdateTime;
-                // const now = new Date();
-                const now = new Date(
-                    Date.now() - loopStartTime + virtualStartTime,
-                );
+                const now = new Date();
+                // const now = new Date(
+                //     Date.now() - loopStartTime + virtualStartTime,
+                // );
                 const nowMinRep = now.getHours() * 60 + now.getMinutes();
                 const dateToday = formatISODate(now);
 
