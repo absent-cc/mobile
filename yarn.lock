@@ -2186,7 +2186,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@expo/metro-config@npm:~0.3.18, @expo/metro-config@npm:~0.3.19":
+"@expo/metro-config@npm:~0.3.18":
   version: 0.3.22
   resolution: "@expo/metro-config@npm:0.3.22"
   dependencies:
@@ -2199,6 +2199,22 @@ __metadata:
     resolve-from: ^5.0.0
     sucrase: ^3.20.0
   checksum: f0084def2a88fde7aba6044e1680af5e4dfd0f5d201cc2f6402f1febfc2e2f5c489f43fa98792993622e045c2a503a694115c7d469b91bc985126253962ca6ba
+  languageName: node
+  linkType: hard
+
+"@expo/metro-config@npm:~0.4.0":
+  version: 0.4.0
+  resolution: "@expo/metro-config@npm:0.4.0"
+  dependencies:
+    "@expo/config": 7.0.1
+    "@expo/json-file": 8.2.36
+    chalk: ^4.1.0
+    debug: ^4.3.2
+    find-yarn-workspace-root: ~2.0.0
+    getenv: ^1.0.0
+    resolve-from: ^5.0.0
+    sucrase: ^3.20.0
+  checksum: 8f571dd36c9eafed15ff709183eaa18bd5b92c1f9a5f367e245913c862d1fd6084812351d34260ed293c967a83bc230774d6e148f1947c495a0fd5b815e75aba
   languageName: node
   linkType: hard
 
@@ -3481,7 +3497,7 @@ __metadata:
     expo-auth-session: ~3.7.1
     expo-build-properties: ~0.3.0
     expo-constants: ~13.2.3
-    expo-dev-client: ~1.2.1
+    expo-dev-client: ~1.3.1
     expo-font: ~10.2.0
     expo-linear-gradient: ~11.4.0
     expo-linking: ~3.2.2
@@ -3490,13 +3506,13 @@ __metadata:
     expo-splash-screen: ~0.16.1
     expo-status-bar: ~1.4.0
     expo-system-ui: ~1.3.0
-    expo-updates: ~0.14.5
+    expo-updates: ~0.14.6
     husky: ^7.0.4
     lint-staged: ^12.1.7
     prettier: ^2.5.1
     react: 18.0.0
     react-dom: 18.0.0
-    react-native: 0.69.5
+    react-native: 0.69.6
     react-native-gesture-handler: ~2.5.0
     react-native-pager-view: 5.4.24
     react-native-safe-area-context: 4.3.1
@@ -6020,33 +6036,33 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-dev-client@npm:~1.2.1":
-  version: 1.2.1
-  resolution: "expo-dev-client@npm:1.2.1"
+"expo-dev-client@npm:~1.3.1":
+  version: 1.3.1
+  resolution: "expo-dev-client@npm:1.3.1"
   dependencies:
     "@expo/config-plugins": ~5.0.0
-    expo-dev-launcher: 1.2.1
-    expo-dev-menu: 1.2.1
+    expo-dev-launcher: 1.3.1
+    expo-dev-menu: 1.3.1
     expo-dev-menu-interface: 0.7.2
     expo-manifests: ~0.3.0
     expo-updates-interface: ~0.7.0
   peerDependencies:
     expo: "*"
-  checksum: f0d07e6c46612ed3d2cc5bce8c4c8157eafecd9ccd1e906559bc46b9fe7c0948d746b9112798255d9e5ffaf452fc64411932c7b35be63b581a4a4819ae2a8103
+  checksum: 387266d889103f25695c4f53f654be8ba37de3f596a024377b9c95ab448b2f80501b56c981a5c8c40ac8504d2d39178e81c08a294a49bec053fe28fb65b6f563
   languageName: node
   linkType: hard
 
-"expo-dev-launcher@npm:1.2.1":
-  version: 1.2.1
-  resolution: "expo-dev-launcher@npm:1.2.1"
+"expo-dev-launcher@npm:1.3.1":
+  version: 1.3.1
+  resolution: "expo-dev-launcher@npm:1.3.1"
   dependencies:
     "@expo/config-plugins": ~5.0.0
-    expo-dev-menu: 1.2.1
+    expo-dev-menu: 1.3.1
     resolve-from: ^5.0.0
     semver: ^7.3.5
   peerDependencies:
     expo: "*"
-  checksum: 6f56f65bed66db6e074e567340c62a00119b86efcb4f02b95e727e76e49fbae47d81d5969a7ede570bdc800b101d5a9b98302a269047fe6132ee8a7e5790deae
+  checksum: 2444f48b5f4b1dc51a64adf507f6e45a7446232c0b100e5748329bf6faa7c51e0cb28cf27354140789266e2e021826190eb33c6beaa4f9b11d24a2f9e607dfb2
   languageName: node
   linkType: hard
 
@@ -6059,16 +6075,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-dev-menu@npm:1.2.1":
-  version: 1.2.1
-  resolution: "expo-dev-menu@npm:1.2.1"
+"expo-dev-menu@npm:1.3.1":
+  version: 1.3.1
+  resolution: "expo-dev-menu@npm:1.3.1"
   dependencies:
     "@expo/config-plugins": ~5.0.0
     expo-dev-menu-interface: 0.7.2
     semver: ^7.3.5
   peerDependencies:
     expo: "*"
-  checksum: 11085b10f7a912f950919ea89706afb0355b44f04e1c653b42af16fd6f34fa783778f9d929390d824584986c8db15083c07bf5378fbf1f5d6ce7f052588536c9
+  checksum: 1274fb53dda5aaca8a4e7dc113a698a2bc53e91172d310f17d6bf2aeaf9f6164575b3f5ed3feb975a0bf0bd6328a6e620a0addeeec75e3ed9c77bc16e7ef2cf7
   languageName: node
   linkType: hard
 
@@ -6251,14 +6267,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-updates@npm:~0.14.5":
-  version: 0.14.5
-  resolution: "expo-updates@npm:0.14.5"
+"expo-updates@npm:~0.14.6":
+  version: 0.14.6
+  resolution: "expo-updates@npm:0.14.6"
   dependencies:
     "@expo/code-signing-certificates": 0.0.2
     "@expo/config": ~7.0.1
     "@expo/config-plugins": ~5.0.1
-    "@expo/metro-config": ~0.3.19
+    "@expo/metro-config": ~0.4.0
     arg: 4.1.0
     expo-eas-client: ~0.3.0
     expo-manifests: ~0.3.0
@@ -6271,7 +6287,7 @@ __metadata:
     expo: "*"
   bin:
     expo-updates: bin/cli.js
-  checksum: af35117e980c5b62ff064a3ce2712749f33d2110c9e6a4ccc60bda06017015c989c794a6d8a5cfcf8885c08f840cad4d23e920f1f575a8eab7b383c0606700e4
+  checksum: ee6e7e30785e9d5b53236b8097e1380adc2efcfd465458ffbeaa5c4d81dc7dd02c327cb5d107cfb6a7db5a91a2e89f87ee755b556ac668151b7635fd43649e69
   languageName: node
   linkType: hard
 
@@ -10116,12 +10132,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"promise@npm:^8.0.3":
-  version: 8.1.0
-  resolution: "promise@npm:8.1.0"
+"promise@npm:^8.2.0":
+  version: 8.2.0
+  resolution: "promise@npm:8.2.0"
   dependencies:
     asap: ~2.0.6
-  checksum: 89b71a56154ed7d66a73236d8e8351a9c59adddba3929ecc845f75421ff37fc08ea0c67ad76cd5c0b0d81812c7d07a32bed27e7df5fcc960c6d68b0c1cd771f7
+  checksum: 45d65ffe4fbd9172ef848f790ac1366822e63f063a5ef42a14e75b577ffa3c37870a9d8472729d9d429d7c8a770428f9d13650b52aafaa361dcc69cf84873b20
   languageName: node
   linkType: hard
 
@@ -10412,9 +10428,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native@npm:0.69.5":
-  version: 0.69.5
-  resolution: "react-native@npm:0.69.5"
+"react-native@npm:0.69.6":
+  version: 0.69.6
+  resolution: "react-native@npm:0.69.6"
   dependencies:
     "@jest/create-cache-key-function": ^27.0.1
     "@react-native-community/cli": ^8.0.4
@@ -10437,7 +10453,7 @@ __metadata:
     mkdirp: ^0.5.1
     nullthrows: ^1.1.1
     pretty-format: ^26.5.2
-    promise: ^8.0.3
+    promise: ^8.2.0
     react-devtools-core: 4.24.0
     react-native-codegen: ^0.69.2
     react-native-gradle-plugin: ^0.0.7
@@ -10453,7 +10469,7 @@ __metadata:
     react: 18.0.0
   bin:
     react-native: cli.js
-  checksum: 4f7cfcd0d614cc6fe897a49197bd036210625c5eb547342ac7ebea45ab5febae73d6a9a7438f08f454d1e02c2e041b3f910461c4a6e5c6e0e44f5cfe70405990
+  checksum: d050b9f0389362368cd1286c02dd46cd84def9fcbf4774dcedd5cbc3aa9ad594de48f22c5458ec257c07646d79722256bc837b25205c3a52752d5c5b6a7873f4
   languageName: node
   linkType: hard
 
