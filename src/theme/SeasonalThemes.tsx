@@ -73,6 +73,8 @@ export const SeasonalThemes: SeasonalTheme[] = [
                         repeat
                         playWhenInactive
                         resizeMode="contain"
+                        ignoreSilentSwitch="obey"
+                        disableFocus
                     />
                 ),
             },
@@ -85,6 +87,8 @@ export const SeasonalThemes: SeasonalTheme[] = [
                         repeat
                         playWhenInactive
                         resizeMode="contain"
+                        ignoreSilentSwitch="obey"
+                        disableFocus
                     />
                 ),
             },
@@ -124,6 +128,8 @@ export const SeasonalThemes: SeasonalTheme[] = [
                         repeat
                         playWhenInactive
                         resizeMode="contain"
+                        ignoreSilentSwitch="obey"
+                        disableFocus
                     />
                 ),
             },
@@ -136,6 +142,8 @@ export const SeasonalThemes: SeasonalTheme[] = [
                         repeat
                         playWhenInactive
                         resizeMode="contain"
+                        ignoreSilentSwitch="obey"
+                        disableFocus
                     />
                 ),
             },
