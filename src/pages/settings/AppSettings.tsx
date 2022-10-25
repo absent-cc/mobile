@@ -17,7 +17,13 @@ function AppSettings({ navigation }: { navigation: any }) {
 
     const api = useAPI();
     const settings = useSettings();
-    const { Theme, selection: selectedThemeOld, setTheme } = useTheme();
+    const {
+        Theme,
+        selection: selectedThemeOld,
+        setTheme,
+        allowSeasonal,
+        setAllowSeasonal,
+    } = useTheme();
 
     const styles = React.useMemo(
         () =>
@@ -70,6 +76,7 @@ function AppSettings({ navigation }: { navigation: any }) {
     const defaultValue = { ...settings.value.app };
     const appSettings = React.useRef(defaultValue);
     const selectedTheme = React.useRef(selectedThemeOld);
+    const enableSeasonalTheme = React.useRef(allowSeasonal);
 
     const [saving, setSaving] = React.useState(false);
     const [saveError, setSaveError] = React.useState(false);
@@ -78,6 +85,7 @@ function AppSettings({ navigation }: { navigation: any }) {
     React.useEffect(() => {
         if (saving) {
             setTheme(selectedTheme.current);
+            setAllowSeasonal(enableSeasonalTheme.current);
             api.saveAppSettings(appSettings.current)
                 .then(() => {
                     hasUnsavedChanges.current = false;
@@ -87,7 +95,7 @@ function AppSettings({ navigation }: { navigation: any }) {
                     setSaveError(true);
                 });
         }
-    }, [saving, api, navigate, setTheme]);
+    }, [saving, api, navigate, setTheme, setAllowSeasonal]);
 
     // reset screen on exit
     // React.useEffect(() => {
@@ -217,12 +225,22 @@ function AppSettings({ navigation }: { navigation: any }) {
             <Dropdown
                 label="Theme"
                 onChange={(newValue: number) => {
+                    hasUnsavedChanges.current = true;
                     selectedTheme.current = ThemeList[newValue];
                 }}
-                style={[styles.inputField, { zIndex: 2 }]}
+                style={[styles.inputField, { zIndex: 1 }]}
                 placeholder="Select a backend"
                 options={['Use System Theme', 'Light', 'Dark']}
                 defaultValue={ThemeList.indexOf(selectedTheme.current)}
+            />
+            <SwitchField
+                style={[styles.inputField, { zIndex: 0 }]}
+                label="Enable seasonal themes"
+                onChange={(newValue: boolean) => {
+                    hasUnsavedChanges.current = true;
+                    enableSeasonalTheme.current = newValue;
+                }}
+                defaultValue={enableSeasonalTheme.current}
             />
         </WithHeader>
     );

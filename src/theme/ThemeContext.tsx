@@ -14,6 +14,7 @@ export interface ThemeContextType {
     elements: Record<EditableElement, React.ReactNode>;
     message: string | null;
     selection: ThemeOption | null;
+    allowSeasonal: boolean;
     setTheme: React.Dispatch<React.SetStateAction<ThemeOption | null>>;
     setAllowSeasonal: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -23,6 +24,7 @@ const ThemeContext = React.createContext<ThemeContextType>({
     elements: DefaultElements,
     message: null,
     selection: null,
+    allowSeasonal: true,
     setTheme: () => undefined,
     setAllowSeasonal: () => undefined,
 });
@@ -85,10 +87,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
             elements: finalElements,
             message,
             selection: theme,
+            allowSeasonal,
             setTheme,
             setAllowSeasonal,
         }),
-        [theme, finalTheme, finalElements, message],
+        [theme, finalTheme, finalElements, allowSeasonal, message],
     );
 
     return (
