@@ -95,7 +95,8 @@ function FullList({ navigation }: { navigation: any }) {
                         b.teacher.reversedSplitName[0],
                     ),
             )
-            .map((absence, index) => {
+            .filter((value) => value.teacher.name.length > 0)
+            .map((absence, index, all) => {
                 return (
                     <AllTeacherCard
                         teacher={absence}
@@ -106,7 +107,7 @@ function FullList({ navigation }: { navigation: any }) {
                                 marginTop: 10,
                             },
                         ]}
-                        last={index === appState.absences.length - 1}
+                        last={index === all.length - 1}
                     />
                 );
             });
