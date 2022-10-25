@@ -10,6 +10,7 @@ export enum EditableElement {
 export interface SeasonalTheme {
     name: string;
     message?: string;
+    emoji?: string;
     dateStart: {
         month: number;
         day: number;
@@ -41,6 +42,7 @@ export const DefaultElements: Record<EditableElement, React.ReactNode> = {
 export const SeasonalThemes: SeasonalTheme[] = [
     {
         name: 'Prehalloween',
+        emoji: '🔮',
         dateStart: {
             month: 10,
             day: 26,
@@ -91,6 +93,7 @@ export const SeasonalThemes: SeasonalTheme[] = [
     {
         name: 'Halloween',
         message: 'Happy Halloween!',
+        emoji: '🍬',
         dateStart: {
             month: 10,
             day: 31,

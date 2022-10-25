@@ -14,7 +14,12 @@ import WithWaveHeader from '../components/header/WithWaveHeader';
 import { useTheme } from '../theme/ThemeContext';
 
 function Home({ navigation }: { navigation: any }) {
-    const { Theme, elements, message: themeMessage } = useTheme();
+    const {
+        Theme,
+        elements,
+        message: themeMessage,
+        emoji: themeEmoji,
+    } = useTheme();
 
     const styles = React.useMemo(
         () =>
@@ -258,8 +263,8 @@ function Home({ navigation }: { navigation: any }) {
                 settings.user.name.length > 0
                     ? `Good ${timeWords}, ${
                           splitName(settings.user.name)[0]
-                      }! ${timeEmoji}`
-                    : `Good ${timeWords}! ${timeEmoji}`
+                      }! ${themeEmoji ?? timeEmoji}`
+                    : `Good ${timeWords}! ${themeEmoji ?? timeEmoji}`
             }
             refreshControl={
                 <RefreshControl
