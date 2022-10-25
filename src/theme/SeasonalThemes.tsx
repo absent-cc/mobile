@@ -9,6 +9,7 @@ export enum EditableElement {
 
 export interface SeasonalTheme {
     name: string;
+    message?: string;
     dateStart: {
         month: number;
         day: number;
@@ -39,10 +40,58 @@ export const DefaultElements: Record<EditableElement, React.ReactNode> = {
 
 export const SeasonalThemes: SeasonalTheme[] = [
     {
-        name: 'Halloween',
+        name: 'Prehalloween',
         dateStart: {
             month: 10,
-            day: 25,
+            day: 27,
+        },
+        dateEnd: {
+            month: 10,
+            day: 31,
+        },
+        themes: {
+            Default: {
+                ...Themes.Default,
+                primaryColor: '#0000ff',
+            },
+            Dark: {
+                ...Themes.Dark,
+                primaryColor: '#0000ff',
+            },
+        },
+        elements: {
+            Default: {
+                Animation: (
+                    <Video
+                        style={styles.animation}
+                        // eslint-disable-next-line global-require, import/extensions
+                        source={require('../../assets/video/halloween_anim_light.mp4')}
+                        repeat
+                        playWhenInactive
+                        resizeMode="contain"
+                    />
+                ),
+            },
+            Dark: {
+                Animation: (
+                    <Video
+                        style={styles.animation}
+                        // eslint-disable-next-line global-require, import/extensions
+                        source={require('../../assets/video/halloween_anim_dark.mp4')}
+                        repeat
+                        playWhenInactive
+                        resizeMode="contain"
+                    />
+                ),
+            },
+        },
+    },
+    {
+        name: 'Halloween',
+        message: 'Happy Halloween!',
+        dateStart: {
+            month: 10,
+            day: 31,
         },
         dateEnd: {
             month: 11,

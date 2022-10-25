@@ -12,6 +12,7 @@ import { ThemeOption, Themes, ThemeType } from './Themes';
 export interface ThemeContextType {
     Theme: ThemeType;
     elements: Record<EditableElement, React.ReactNode>;
+    message: string | null;
     selection: ThemeOption | null;
     setTheme: React.Dispatch<React.SetStateAction<ThemeOption | null>>;
     setAllowSeasonal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -20,6 +21,7 @@ export interface ThemeContextType {
 const ThemeContext = React.createContext<ThemeContextType>({
     Theme: Themes[ThemeOption.Default],
     elements: DefaultElements,
+    message: null,
     selection: null,
     setTheme: () => undefined,
     setAllowSeasonal: () => undefined,
@@ -43,20 +45,27 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
     let finalElements = DefaultElements;
     let finalTheme = Themes[effectiveTheme];
-    if (allowSeasonal) {
+    let message: string | null = null;
+
+    const currentMonth = appState.lastUpdateTime.getMonth() + 1;
+    const currentDay = appState.lastUpdateTime.getDate();
+
+    const seasonalTheme = React.useMemo(() => {
         const currentMonthDate = {
-            month: appState.lastUpdateTime.getMonth() + 1,
-            day: appState.lastUpdateTime.getDate(),
+            month: currentMonth,
+            day: currentDay,
         };
 
-        const seasonalTheme = SeasonalThemes.find((comparingTheme) =>
+        return SeasonalThemes.find((comparingTheme) =>
             isBetweenDates(
                 currentMonthDate,
                 comparingTheme.dateStart,
                 comparingTheme.dateEnd,
             ),
         );
+    }, [currentDay, currentMonth]);
 
+    if (allowSeasonal) {
         if (seasonalTheme) {
             finalTheme = {
                 ...finalTheme,
@@ -66,6 +75,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
                 ...finalElements,
                 ...seasonalTheme.elements[effectiveTheme],
             };
+            message = seasonalTheme.message ?? null;
         }
     }
 
@@ -73,11 +83,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         () => ({
             Theme: finalTheme,
             elements: finalElements,
+            message,
             selection: theme,
             setTheme,
             setAllowSeasonal,
         }),
-        [theme, finalTheme, finalElements],
+        [theme, finalTheme, finalElements, message],
     );
 
     return (

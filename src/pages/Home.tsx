@@ -14,7 +14,7 @@ import WithWaveHeader from '../components/header/WithWaveHeader';
 import { useTheme } from '../theme/ThemeContext';
 
 function Home({ navigation }: { navigation: any }) {
-    const { Theme, elements } = useTheme();
+    const { Theme, elements, message: themeMessage } = useTheme();
 
     const styles = React.useMemo(
         () =>
@@ -29,6 +29,12 @@ function Home({ navigation }: { navigation: any }) {
                     fontFamily: Theme.regularFont,
                     fontSize: 20,
                     marginTop: 10,
+                },
+                themeMessage: {
+                    color: Theme.foregroundColor,
+                    fontFamily: Theme.regularFont,
+                    fontSize: 20,
+                    marginTop: 5,
                 },
                 blockList: {
                     marginTop: 20,
@@ -271,6 +277,9 @@ function Home({ navigation }: { navigation: any }) {
             <Text style={styles.hello}>
                 Today is <Text style={styles.date}>{dateFormatter(now)}</Text>.
             </Text>
+            {themeMessage && (
+                <Text style={styles.themeMessage}>{themeMessage}</Text>
+            )}
             {appState.dayBlocksToday?.length > 0 && (
                 <Text style={styles.blockList}>
                     The blocks are{' '}
