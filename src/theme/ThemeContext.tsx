@@ -87,7 +87,13 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
                 );
             });
         }
-    }, [themeState, openDialog, closeDialog]);
+    }, [
+        themeState,
+        themeState.theme,
+        themeState.allowSeasonal,
+        openDialog,
+        closeDialog,
+    ]);
 
     let effectiveTheme: ThemeOption;
     if (themeState.theme === null) {
