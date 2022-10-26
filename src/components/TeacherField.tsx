@@ -376,6 +376,7 @@ function TeacherField({
                 <TextInput
                     onChangeText={onTextInput}
                     placeholder="e.g. Rebecca Realson"
+                    placeholderTextColor={Theme.lightForeground}
                     style={styles.input}
                     value={rawTextValue}
                     onBlur={onBlur}

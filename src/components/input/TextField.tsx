@@ -71,6 +71,7 @@ function TextField({
                     onChangeText={changeFunc}
                     value={value}
                     placeholder={placeholder}
+                    placeholderTextColor={Theme.lightForeground}
                     keyboardType={isNumber ? 'numeric' : 'default'}
                 />
                 <Feather
