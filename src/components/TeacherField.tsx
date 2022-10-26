@@ -333,7 +333,13 @@ function TeacherField({
                 </Pressable>
             );
         });
-    }, [teacherList]);
+    }, [
+        styles.option,
+        styles.optionPressed,
+        styles.optionText,
+        styles.withBorder,
+        teacherList,
+    ]);
 
     // suggestions
     const suggestionKeylist: string[] = [];

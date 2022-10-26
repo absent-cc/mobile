@@ -68,11 +68,11 @@ function TodaySchedule(/* { style }: { style?: any } */) {
             }
         });
     } else {
-        body = (
+        body = [
             <Text style={styles.status}>
                 No school today! Enjoy your day! 🎉
-            </Text>
-        );
+            </Text>,
+        ];
     }
 
     return <View>{body}</View>;
