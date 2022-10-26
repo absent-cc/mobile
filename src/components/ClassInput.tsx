@@ -169,7 +169,7 @@ function ClassInput({
                         setTeacher(index, newTeacher);
                     }}
                     defaultValue={teacher.teacher}
-                    deletable={index > 0}
+                    deletable={value.teachers.length > 1}
                     onDelete={() => {
                         removeTeacher(index);
                     }}
