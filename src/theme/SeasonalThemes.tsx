@@ -56,11 +56,13 @@ export const SeasonalThemes: SeasonalTheme[] = [
                 primaryColor: '#9847b3',
                 secondaryColor: '#ff5e19',
                 tertiaryColor: '#431c52',
+                darkerPrimary: '#6c3380',
             },
             Dark: {
                 primaryColor: '#9847b3',
                 secondaryColor: '#ff5e19',
                 tertiaryColor: '#431c52',
+                darkerPrimary: '#6c3380',
             },
         },
         elements: {
@@ -75,6 +77,7 @@ export const SeasonalThemes: SeasonalTheme[] = [
                         resizeMode="contain"
                         ignoreSilentSwitch="obey"
                         disableFocus
+                        muted
                     />
                 ),
             },
@@ -89,6 +92,7 @@ export const SeasonalThemes: SeasonalTheme[] = [
                         resizeMode="contain"
                         ignoreSilentSwitch="obey"
                         disableFocus
+                        muted
                     />
                 ),
             },
@@ -111,11 +115,13 @@ export const SeasonalThemes: SeasonalTheme[] = [
                 primaryColor: '#9847b3',
                 secondaryColor: '#ff5e19',
                 tertiaryColor: '#431c52',
+                darkerPrimary: '#6c3380',
             },
             Dark: {
                 primaryColor: '#9847b3',
                 secondaryColor: '#ff5e19',
                 tertiaryColor: '#431c52',
+                darkerPrimary: '#6c3380',
             },
         },
         elements: {
@@ -130,6 +136,7 @@ export const SeasonalThemes: SeasonalTheme[] = [
                         resizeMode="contain"
                         ignoreSilentSwitch="obey"
                         disableFocus
+                        muted
                     />
                 ),
             },
@@ -144,6 +151,7 @@ export const SeasonalThemes: SeasonalTheme[] = [
                         resizeMode="contain"
                         ignoreSilentSwitch="obey"
                         disableFocus
+                        muted
                     />
                 ),
             },
