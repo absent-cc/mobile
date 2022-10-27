@@ -38,14 +38,18 @@ function BlockCard({
                     // padding: 20,
                     overflow: 'hidden',
                 },
-                activeContainer: {
-                    backgroundColor: Theme.primaryColor,
-                },
+                // activeContainer: {
+                //     backgroundColor: Theme.primaryColor,
+                // },
                 row: {
                     flexDirection: 'row',
                     justifyContent: 'center',
                     alignItems: 'center',
                     padding: 20,
+                    borderRadius: 20,
+                },
+                activeRow: {
+                    backgroundColor: Theme.primaryColor,
                 },
                 lunchRow: {
                     backgroundColor: Theme.lighterForeground,
@@ -172,10 +176,10 @@ function BlockCard({
             style={[
                 style,
                 styles.container,
-                isActive && styles.activeContainer,
+                // isActive && styles.activeContainer,
             ]}
         >
-            <View style={styles.row}>
+            <View style={[styles.row, isActive && styles.activeRow]}>
                 <View
                     style={[styles.blockBox, isActive && styles.activeBlockBox]}
                 >
