@@ -88,7 +88,7 @@ function Welcome({ navigation }: { navigation: any }) {
     const [request, response, promptAsync] =
         Google.useIdTokenAuthRequest(googleOptions);
     const api = useAPI();
-    const { value: appState, setAppState } = useAppState();
+    const { setAppState } = useAppState();
 
     React.useEffect(() => {
         if (response?.type === 'success' && response.params.id_token) {
