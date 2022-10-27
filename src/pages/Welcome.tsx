@@ -7,6 +7,7 @@ import { Feather } from '@expo/vector-icons';
 import GoogleSignIn from '../components/button/GoogleSignIn';
 import { useAPI } from '../api/APIContext';
 import { useTheme } from '../theme/ThemeContext';
+import { useAppState } from '../state/AppStateContext';
 
 function Welcome({ navigation }: { navigation: any }) {
     const { Theme } = useTheme();
@@ -87,12 +88,15 @@ function Welcome({ navigation }: { navigation: any }) {
     const [request, response, promptAsync] =
         Google.useIdTokenAuthRequest(googleOptions);
     const api = useAPI();
+    const { value: appState, setAppState } = useAppState();
 
     React.useEffect(() => {
         if (response?.type === 'success' && response.params.id_token) {
             api.login(response.params.id_token);
         }
     }, [response, api]);
+
+    const demoClick = React.useRef(0);
 
     return (
         <View style={styles.container}>
@@ -117,11 +121,28 @@ function Welcome({ navigation }: { navigation: any }) {
                         },
                     ]}
                 >
-                    <Image
-                        style={styles.logo}
-                        // eslint-disable-next-line global-require, import/extensions
-                        source={require('../../assets/images/text_logo.png')}
-                    />
+                    <Pressable
+                        onPress={() => {
+                            demoClick.current += 1;
+                            if (demoClick.current % 5 === 0) {
+                                setAppState((oldAppState) => ({
+                                    ...oldAppState,
+                                    demo: true,
+                                }));
+                            } else {
+                                setAppState((oldAppState) => ({
+                                    ...oldAppState,
+                                    demo: false,
+                                }));
+                            }
+                        }}
+                    >
+                        <Image
+                            style={styles.logo}
+                            // eslint-disable-next-line global-require, import/extensions
+                            source={require('../../assets/images/text_logo.png')}
+                        />
+                    </Pressable>
                     <Text style={styles.subtitle}>
                         Cancelled classes at your fingertips.
                     </Text>

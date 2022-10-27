@@ -61,7 +61,7 @@ export type UserSettings = {
 
 export type AbsentTeacher = {
     time: string;
-    note: string;
+    note: string | null;
     teacher: Teacher;
 };
 

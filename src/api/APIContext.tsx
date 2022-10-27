@@ -23,6 +23,13 @@ import {
 } from './APIErrors';
 import { useDialog } from '../components/dialog/Dialog';
 import ErrorDialog from '../components/dialog/ErrorDialog';
+import {
+    DEMO_REFRESH,
+    DEMO_TOKEN,
+    DEMO_ABSENCE_LIST,
+    DEMO_SETTINGS,
+    GENERATE_DEMO_WEEK_SCHEDULE,
+} from './DemoData';
 
 export interface APIDataType {
     ready: boolean;
@@ -110,7 +117,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
     const { value: appState, setAppState, resetAppState } = useAppState();
     const { open: openDialog, close: closeDialog } = useDialog();
 
-    const dateStr = appState.dateToday;
+    const { dateToday: dateStr, demo } = appState;
     const schoolName = settings.user.school;
 
     // TODO: figure out how this is different from apiSettings.isVerified
@@ -130,6 +137,28 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
         });
         setAPIServerLoaded(false);
     }, [resetAppState, resetSettings]);
+
+    // demo mode login
+    React.useEffect(() => {
+        if (demo) {
+            const token = DEMO_TOKEN;
+            const refresh = DEMO_REFRESH;
+            const onboarded = true;
+            const now = Date.now();
+
+            setSettings((oldState) => ({
+                ...oldState,
+                userOnboarded: onboarded,
+            }));
+            setAPISettings((oldState) => ({
+                ...oldState,
+                lastTokenUpdate: now,
+                refresh,
+                token,
+                isLoggedIn: true,
+            }));
+        }
+    }, [demo, setSettings]);
 
     const parseError = React.useCallback(
         (error: any, hasRetried: boolean, caller: string): boolean => {
@@ -247,6 +276,17 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
 
     const verifyToken = React.useCallback(
         async (forceRefresh = false): Promise<string | null> => {
+            // demo mode
+            if (demo) {
+                setAPISettings((oldState) => ({
+                    ...oldState,
+                    isVerified: true,
+                    lastTokenUpdate: now,
+                    token: DEMO_TOKEN,
+                }));
+                return DEMO_TOKEN;
+            }
+
             if (apiSettings.token === null || apiSettings.refresh === null) {
                 return null;
             }
@@ -285,17 +325,24 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             }
         },
         [
-            backend,
-            apiSettings.lastTokenUpdate,
-            setSettings,
-            apiSettings.refresh,
+            demo,
             apiSettings.token,
+            apiSettings.refresh,
+            apiSettings.lastTokenUpdate,
+            backend,
+            setSettings,
             parseError,
         ],
     );
 
     const logout = React.useCallback(
         async (hasRetried = false) => {
+            // demo mode
+            if (demo) {
+                await simpleLogout();
+                return;
+            }
+
             const token = await verifyToken(hasRetried);
             if (token === null) return;
 
@@ -310,11 +357,14 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 }
             }
         },
-        [backend, parseError, simpleLogout, verifyToken],
+        [backend, demo, parseError, simpleLogout, verifyToken],
     );
 
     const fetchAbsences = React.useCallback(
         async (hasRetried = false): Promise<AbsenceList | null> => {
+            // demo mode
+            if (demo) return DEMO_ABSENCE_LIST;
+
             const token = await verifyToken(hasRetried);
             if (token === null) return null;
 
@@ -339,7 +389,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 return null;
             }
         },
-        [backend, dateStr, schoolName, parseError, verifyToken],
+        [demo, verifyToken, backend, dateStr, schoolName, parseError],
     );
 
     const fetchSettings = React.useCallback(
@@ -351,6 +401,9 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             schedule: Schedule;
             app: AppSettings;
         } | null> => {
+            // demo mode
+            if (demo) return DEMO_SETTINGS;
+
             const token = await verifyToken(hasRetried);
             if (token === null) return null;
 
@@ -375,7 +428,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 return null;
             }
         },
-        [backend, parseError, verifyToken],
+        [backend, demo, parseError, verifyToken],
     );
 
     const saveSettings = React.useCallback(
@@ -387,6 +440,9 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             },
             hasRetried = false,
         ): Promise<boolean> => {
+            // demo mode
+            if (demo) return true;
+
             const token = await verifyToken(hasRetried);
             if (token === null) return false;
 
@@ -419,11 +475,14 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             }
             return false;
         },
-        [backend, parseError, setSettings, verifyToken],
+        [backend, demo, parseError, setSettings, verifyToken],
     );
 
     const saveSchedule = React.useCallback(
         async (newSettings: EditingSchedule, hasRetried = false) => {
+            // demo mode
+            if (demo) return;
+
             const token = await verifyToken(hasRetried);
             if (token === null) return;
 
@@ -451,11 +510,14 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 }
             }
         },
-        [backend, parseError, setSettings, verifyToken],
+        [backend, demo, parseError, setSettings, verifyToken],
     );
 
     const saveUserSettings = React.useCallback(
         async (newSettings: UserSettings, hasRetried = false) => {
+            // demo mode
+            if (demo) return;
+
             const token = await verifyToken(hasRetried);
             if (token === null) return;
 
@@ -480,11 +542,14 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 }
             }
         },
-        [backend, parseError, verifyToken, setSettings],
+        [demo, verifyToken, backend, setSettings, parseError],
     );
 
     const saveAppSettings = React.useCallback(
         async (newSettings: AppSettings, hasRetried = false) => {
+            // demo mode
+            if (demo) return;
+
             const token = await verifyToken(hasRetried);
             if (token === null) return;
 
@@ -509,7 +574,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 }
             }
         },
-        [backend, parseError, verifyToken, setSettings],
+        [demo, verifyToken, backend, setSettings, parseError],
     );
 
     const searchTeachers = React.useCallback(
@@ -517,6 +582,9 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             searchString: string,
             hasRetried = false,
         ): Promise<string[] | null> => {
+            // demo mode
+            if (demo) return null;
+
             const token = await verifyToken(hasRetried);
             if (token === null) return null;
 
@@ -539,7 +607,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 return null;
             }
         },
-        [backend, verifyToken, schoolName, parseError],
+        [demo, verifyToken, schoolName, backend, parseError],
     );
 
     const isRealTeacher = React.useCallback(
@@ -550,6 +618,13 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
             isReal: boolean;
             similar: string[];
         } | null> => {
+            // demo mode
+            if (demo)
+                return {
+                    isReal: true,
+                    similar: [],
+                };
+
             const token = await verifyToken(hasRetried);
             if (token === null) return null;
 
@@ -572,11 +647,14 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 return null;
             }
         },
-        [backend, verifyToken, schoolName, parseError],
+        [demo, verifyToken, schoolName, backend, parseError],
     );
 
     const fetchWeekSchedule = React.useCallback(
         async (hasRetried = false): Promise<WeekSchedule | null> => {
+            // demo mode
+            if (demo) return GENERATE_DEMO_WEEK_SCHEDULE(dateStr);
+
             const token = await verifyToken(hasRetried);
             if (token === null) return null;
 
@@ -599,7 +677,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 return null;
             }
         },
-        [backend, verifyToken, dateStr, schoolName, parseError],
+        [demo, verifyToken, dateStr, schoolName, backend, parseError],
     );
 
     // (step 2 **) only if the user hasn't logged in before
@@ -634,6 +712,9 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
 
     const saveFCMToken = React.useCallback(
         async (fcmToken: string, hasRetried = false): Promise<void> => {
+            // demo mode
+            if (demo) return;
+
             const token = await verifyToken(hasRetried);
             if (token === null) return;
 
@@ -650,11 +731,14 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 }
             }
         },
-        [backend, verifyToken, parseError],
+        [demo, verifyToken, backend, parseError],
     );
 
     const deleteAccount = React.useCallback(
         async (hasRetried = false): Promise<void> => {
+            // demo mode
+            if (demo) return;
+
             const token = await verifyToken(hasRetried);
             if (token === null) return;
 
@@ -672,7 +756,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                 }
             }
         },
-        [backend, verifyToken, simpleLogout, parseError],
+        [demo, verifyToken, backend, simpleLogout, parseError],
     );
 
     const refreshData = React.useCallback(async (): Promise<void> => {
@@ -735,13 +819,20 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
                     : {};
             })
             .then((savedSettings) => {
-                // if the user has logged in before, isLoggedIn will be true
-                setAPISettings({
-                    ...defaultState,
-                    ...savedSettings,
-                    isVerified: false,
-                    ready: true,
-                });
+                if (savedSettings.refresh !== DEMO_REFRESH) {
+                    // if the user has logged in before, isLoggedIn will be true
+                    setAPISettings({
+                        ...defaultState,
+                        ...savedSettings,
+                        isVerified: false,
+                        ready: true,
+                    });
+                } else {
+                    setAPISettings({
+                        ...defaultState,
+                        ready: true,
+                    });
+                }
             })
             .catch(() => {
                 setAPISettings({

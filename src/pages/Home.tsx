@@ -1,4 +1,10 @@
-import { StyleSheet, Text, RefreshControl, ScrollView } from 'react-native';
+import {
+    StyleSheet,
+    Text,
+    RefreshControl,
+    ScrollView,
+    View,
+} from 'react-native';
 import React from 'react';
 import notifee from '@notifee/react-native';
 import messaging from '@react-native-firebase/messaging';
@@ -76,6 +82,18 @@ function Home({ navigation }: { navigation: any }) {
                     marginTop: 30,
                     marginBottom: -5,
                 },
+                demoNoteArea: {
+                    borderRadius: 20,
+                    backgroundColor: Theme.primaryColor,
+                    overflow: 'hidden',
+                    padding: 20,
+                    marginBottom: 10,
+                },
+                demoNote: {
+                    color: Theme.foregroundAlternate,
+                    fontFamily: Theme.regularFont,
+                    fontSize: 18,
+                },
             }),
         [Theme],
     );
@@ -107,7 +125,7 @@ function Home({ navigation }: { navigation: any }) {
 
     const { value: settings } = useSettings();
     const { value: appState } = useAppState();
-    const { refreshData } = useAPI();
+    const { refreshData, logout } = useAPI();
 
     React.useEffect(() => {
         // get notfication permission
@@ -255,9 +273,13 @@ function Home({ navigation }: { navigation: any }) {
     return (
         <WithWaveHeader
             style={[styles.pageView]}
-            iconName="settings"
+            iconName={!appState.demo ? 'settings' : 'log-out'}
             iconClick={() => {
-                navigation.navigate('Settings');
+                if (!appState.demo) {
+                    navigation.navigate('Settings');
+                } else {
+                    logout();
+                }
             }}
             text={
                 settings.user.name.length > 0
@@ -279,6 +301,15 @@ function Home({ navigation }: { navigation: any }) {
             }
             ref={scrollRef}
         >
+            {appState.demo && (
+                <View style={styles.demoNoteArea}>
+                    <Text style={styles.demoNote}>
+                        You are using a DEMO edition of abSENT.{' \n'}If you are
+                        an Newton Public Schools student, please log out and
+                        sign in to your NPS account.
+                    </Text>
+                </View>
+            )}
             <Text style={styles.hello}>
                 Today is <Text style={styles.date}>{dateFormatter(now)}</Text>.
             </Text>

@@ -14,6 +14,7 @@ export enum TimeRelation {
     After,
 }
 export interface AppStateType {
+    demo: boolean;
     serverLoaded: boolean;
     absences: AbsenceList;
     teacherBlocksToday: TeacherBlock[];
@@ -43,6 +44,7 @@ export interface AppStateContextType {
 
 // Default settings
 export const defaultState: AppStateType = {
+    demo: false,
     serverLoaded: false,
     absences: [],
     teacherBlocksToday: [],
