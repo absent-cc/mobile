@@ -3,7 +3,7 @@ import { Feather } from '@expo/vector-icons';
 import React from 'react';
 import { View, StyleSheet, Text, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useTheme } from '../../theme/ThemeContext';
+import { Themes } from '../../theme/Themes';
 
 function ErrorDialog({
     style,
@@ -20,7 +20,7 @@ function ErrorDialog({
     description: string;
     lightVersion?: boolean;
 }) {
-    const { Theme } = useTheme();
+    const Theme = Themes.Default;
 
     const styles = React.useMemo(
         () =>
