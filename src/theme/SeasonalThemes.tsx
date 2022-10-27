@@ -42,7 +42,7 @@ export const DefaultElements: Record<EditableElement, React.ReactNode> = {
 export const SeasonalThemes: SeasonalTheme[] = [
     {
         name: 'Prehalloween',
-        emoji: '🔮',
+        emoji: '🦇',
         dateStart: {
             month: 10,
             day: 26,
@@ -109,6 +109,64 @@ export const SeasonalThemes: SeasonalTheme[] = [
         dateEnd: {
             month: 11,
             day: 1,
+        },
+        themes: {
+            Default: {
+                primaryColor: '#9847b3',
+                secondaryColor: '#ff5e19',
+                tertiaryColor: '#431c52',
+                darkerPrimary: '#6c3380',
+            },
+            Dark: {
+                primaryColor: '#9847b3',
+                secondaryColor: '#ff5e19',
+                tertiaryColor: '#431c52',
+                darkerPrimary: '#6c3380',
+            },
+        },
+        elements: {
+            Default: {
+                Animation: (
+                    <Video
+                        style={styles.animation}
+                        // eslint-disable-next-line global-require, import/extensions
+                        source={require('../../assets/video/halloween_anim_light.mp4')}
+                        repeat
+                        playWhenInactive
+                        resizeMode="contain"
+                        ignoreSilentSwitch="obey"
+                        disableFocus
+                        muted
+                    />
+                ),
+            },
+            Dark: {
+                Animation: (
+                    <Video
+                        style={styles.animation}
+                        // eslint-disable-next-line global-require, import/extensions
+                        source={require('../../assets/video/halloween_anim_dark.mp4')}
+                        repeat
+                        playWhenInactive
+                        resizeMode="contain"
+                        ignoreSilentSwitch="obey"
+                        disableFocus
+                        muted
+                    />
+                ),
+            },
+        },
+    },
+    {
+        name: 'Posthalloween',
+        emoji: '🍂',
+        dateStart: {
+            month: 11,
+            day: 1,
+        },
+        dateEnd: {
+            month: 11,
+            day: 5,
         },
         themes: {
             Default: {
