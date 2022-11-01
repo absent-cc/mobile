@@ -137,6 +137,7 @@ function AppSettings({ navigation }: { navigation: any }) {
             }}
             isLeft
             text="App Options"
+            largeBottom
             footer={
                 <View
                     style={[
